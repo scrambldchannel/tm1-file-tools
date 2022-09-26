@@ -4,6 +4,8 @@ from pathlib import Path
 class TM1FileObject:
     """
     Represents a file in the TM1 data directory
+
+    I need to migrate functionality to this class or similar
     """
 
     def __init__(self, path: Path):
