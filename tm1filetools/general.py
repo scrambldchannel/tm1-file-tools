@@ -1,8 +1,9 @@
 from typing import List
 
-from .helpers import case_insensitive_glob, get_name_part
+from .tools.filetool import TM1FileTool
 
 # a bit ugly but :shrug:
+# these can be moved to static properties of the tool class
 attr_prefix = "}ElementAttributes_"
 attr_prefix_lower = attr_prefix.lower()
 
@@ -12,7 +13,7 @@ def get_files_by_ext(path: str, ext: str, prefix: str = "", recursive: bool = Fa
     Returns all files with specified ext and optional prefix
     """
 
-    return [get_name_part(a) for a in case_insensitive_glob(f"{path}/{prefix}*.{ext}")]
+    return [TM1FileTool.get_name_part(a) for a in TM1FileTool.case_insensitive_glob(f"{path}/{prefix}*.{ext}")]
 
 
 def get_rux_files(path: str) -> List[str]:

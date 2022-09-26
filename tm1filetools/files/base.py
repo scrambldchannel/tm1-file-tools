@@ -9,6 +9,6 @@ class TM1File:
 
     """
 
-    def __init__(self):
-        # What is
-        pass
+    def __init__(self, path):
+
+        self._path = path
