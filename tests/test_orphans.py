@@ -1,4 +1,4 @@
-from tm1filetools.files.orphans import (  # attr_prefix,
+from tm1filetools.orphans import (  # attr_prefix,
     attr_prefix,
     get_orphan_attribute_cube_files,
     get_orphan_attribute_dim_files,

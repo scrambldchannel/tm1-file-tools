@@ -1,4 +1,4 @@
-from tm1filetools.files.general import (  # get_sub_files,; get_vue_files,
+from tm1filetools.general import (  # get_sub_files,; get_vue_files,
     attr_prefix,
     get_attribute_cub_files,
     get_attribute_dim_files,
