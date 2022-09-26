@@ -6,7 +6,9 @@ setup(
     description="Tools for working with files created by a TM1 database",
     py_modules=["tm1-file-utils"],
     # install_requires=[],
-    extras_require={"test": ["pytest"], },
+    extras_require={
+        "test": ["pytest"],
+    },
     author_email="sutcliffe.alex@gmail.com",
     url="http://github.com/scrambldchannel/tm1-file-utils",
     packages=find_packages(),
