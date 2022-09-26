@@ -1,6 +1,6 @@
 import pytest
 
-from tm1filetools.files.general import attr_prefix
+from tm1filetools.general import attr_prefix
 
 cub_files = ["cat", "dog"]
 rux_files = ["dog", "giraffe"]
