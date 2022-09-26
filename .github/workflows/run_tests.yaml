@@ -1,0 +1,59 @@
+name: Tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths: ["tm1filetools/**/*", "tests/**/*"]
+
+  push:
+    branches:
+    - main
+    paths:
+    - "tm1filetools/**/*"
+
+jobs:
+
+  pytest:
+    runs-on: ubuntu-latest
+    env:
+      APP_ENVIRONMENT: DEVELOPMENT
+
+    # potentially add further python versions to test against
+    strategy:
+      matrix:
+        python-version: ['3.9.7']
+
+    steps:
+
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: setup python env
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: upgrade pip
+        run:
+          python -m pip install --upgrade pip
+
+      - name: install tm1py
+        run:
+          pip install TM1py
+
+      - name: install pytest
+        run:
+          pip install pytest
+
+      # somehow pytest isn't picking up the mark and ignoring these files / fix this later
+      # maybe I should try registering the mark via a different file?
+      - name: install mdutils
+        run:
+          pip install mdutils
+
+      - name: run core tests
+        run: python -m pytest -s -v tests -m "not mdutils"
+
+      # re-enable this when working, for now, it's covered by the tests above
+      # - name: run mdutils tests
+      #   run: pytest -s -v tests -m mdutils
