@@ -3,15 +3,11 @@ name: black
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    paths: ["tm1filetools/**/*", "tests/**/*"]
+    paths: ["setup.py", "tm1filetools/**/*", "tests/**/*"]
 
 jobs:
   black:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - name: Run black
-        uses: lgeiger/black-action@master
-        with:
-          args: ". --check"
+      - uses: psf/black@stable
