@@ -1,9 +1,9 @@
-from tm1filetools.orphans import (  # attr_prefix,
-    attr_prefix,
+from tm1filetools.orphans import (
     get_orphan_attribute_cube_files,
     get_orphan_attribute_dim_files,
     get_orphan_rux_files,
 )
+from tm1filetools.tools.filetool import TM1FileTool
 
 
 def test_orphan_rux(artifact_files):
@@ -36,9 +36,9 @@ def test_orphan_attr_dim(artifact_files):
 
     assert len(orphans) > 0
 
-    assert orphans.count(attr_prefix + "koala") == 0
+    assert orphans.count(TM1FileTool.attr_prefix + "koala") == 0
 
-    assert orphans.count(attr_prefix + "kangaroo") == 1
+    assert orphans.count(TM1FileTool.attr_prefix + "kangaroo") == 1
 
 
 def test_orphan_attr_cube(artifact_files):
@@ -55,6 +55,6 @@ def test_orphan_attr_cube(artifact_files):
 
     assert len(orphans) > 0
 
-    assert orphans.count(attr_prefix + "foo") == 0
+    assert orphans.count(TM1FileTool.attr_prefix + "foo") == 0
 
-    assert orphans.count(attr_prefix + "humphrey") == 1
+    assert orphans.count(TM1FileTool.attr_prefix + "humphrey") == 1

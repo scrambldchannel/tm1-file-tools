@@ -2,18 +2,13 @@ from typing import List
 
 from .tools.filetool import TM1FileTool
 
-# a bit ugly but :shrug:
-# these can be moved to static properties of the tool class
-attr_prefix = "}ElementAttributes_"
-attr_prefix_lower = attr_prefix.lower()
-
 
 def get_files_by_ext(path: str, ext: str, prefix: str = "", recursive: bool = False) -> List[str]:
     """
     Returns all files with specified ext and optional prefix
     """
 
-    return [TM1FileTool.get_name_part(a) for a in TM1FileTool.case_insensitive_glob(f"{path}/{prefix}*.{ext}")]
+    return [TM1FileTool._get_name_part(a) for a in TM1FileTool._case_insensitive_glob(f"{path}/{prefix}*.{ext}")]
 
 
 def get_rux_files(path: str) -> List[str]:
@@ -45,7 +40,7 @@ def get_attribute_dim_files(path: str, strip_prefix=False) -> List[str]:
     Returns all attribute dim files
     """
 
-    return get_files_by_ext(path=path, ext="dim", prefix=attr_prefix)
+    return get_files_by_ext(path=path, ext="dim", prefix=TM1FileTool.attr_prefix)
 
 
 def get_attribute_cub_files(path: str, strip_prefix=False) -> List[str]:
@@ -53,7 +48,7 @@ def get_attribute_cub_files(path: str, strip_prefix=False) -> List[str]:
     Returns all attribute cub files
     """
 
-    return get_files_by_ext(path=path, ext="cub", prefix=attr_prefix)
+    return get_files_by_ext(path=path, ext="cub", prefix=TM1FileTool.attr_prefix)
 
 
 def get_attribute_rux_files(path: str) -> List[str]:
@@ -61,7 +56,7 @@ def get_attribute_rux_files(path: str) -> List[str]:
     Returns all cub files
     """
 
-    return get_files_by_ext(path=path, ext="cub", prefix=attr_prefix)
+    return get_files_by_ext(path=path, ext="cub", prefix=TM1FileTool.attr_prefix)
 
 
 def get_blb_files(path: str) -> List[str]:

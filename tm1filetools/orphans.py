@@ -1,12 +1,7 @@
 from typing import List
 
-from .general import (
-    attr_prefix,
-    get_cub_files,
-    get_dim_files,
-    get_files_by_ext,
-    get_rux_files,
-)
+from .general import get_cub_files, get_dim_files, get_files_by_ext, get_rux_files
+from .tools.filetool import TM1FileTool
 
 
 def get_orphan_rux_files(path: str) -> List[str]:
@@ -38,14 +33,14 @@ def get_orphan_attribute_files(path: str, ext: str, strip_prefix=False) -> List[
     # get a list of all the dimension files
     dims = get_dim_files(path)
 
-    artifacts = get_files_by_ext(path=path, ext=ext, prefix=attr_prefix)
+    artifacts = get_files_by_ext(path=path, ext=ext, prefix=TM1FileTool.attr_prefix)
 
     orphans = []
 
     for a in artifacts:
 
         # python 3.9 dependent
-        a_dim = a.removeprefix(attr_prefix)
+        a_dim = a.removeprefix(TM1FileTool.attr_prefix)
 
         if a_dim not in dims:
 

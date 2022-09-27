@@ -1,6 +1,6 @@
 import pytest
 
-from tm1filetools.general import attr_prefix
+from tm1filetools.tools.filetool import TM1FileTool
 
 cub_files = ["cat", "dog"]
 rux_files = ["dog", "giraffe"]
@@ -43,14 +43,14 @@ def artifact_files(tmp_path_factory):
 
     for da in dim_attributes:
 
-        da = attr_prefix + da
+        da = TM1FileTool.attr_prefix + da
 
         f = d / f"{da}.dim"
         f.touch()
 
     for ca in cub_attributes:
 
-        ca = attr_prefix + ca
+        ca = TM1FileTool.attr_prefix + ca
 
         f = d / f"{ca}.cub"
         f.touch()
@@ -92,13 +92,13 @@ def artifact_files_mixed_case(tmp_path_factory):
 
     for da in dim_attributes:
 
-        da = attr_prefix + da
+        da = TM1FileTool.attr_prefix + da
         f = d / f"{da}.DIM"
         f.touch()
 
     for ca in cub_attributes:
 
-        ca = attr_prefix + ca
+        ca = TM1FileTool.attr_prefix + ca
 
         f = d / f"{ca}.CUB"
         f.touch()

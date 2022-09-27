@@ -1,5 +1,4 @@
 from tm1filetools.general import (  # get_sub_files,; get_vue_files,
-    attr_prefix,
     get_attribute_cub_files,
     get_attribute_dim_files,
     get_blb_files,
@@ -8,6 +7,7 @@ from tm1filetools.general import (  # get_sub_files,; get_vue_files,
     get_files_by_ext,
     get_rux_files,
 )
+from tm1filetools.tools.filetool import TM1FileTool
 
 
 def test_get_files_by_ext(artifact_files):
@@ -72,36 +72,23 @@ def test_get_attribute_dims(artifact_files, artifact_files_mixed_case):
 
     attr_dims = get_attribute_dim_files(artifact_files)
 
-    assert attr_dims.count(attr_prefix + "cockatoo") == 0
-    assert attr_dims.count(attr_prefix + "kangaroo") == 1
+    assert attr_dims.count(TM1FileTool.attr_prefix + "cockatoo") == 0
+    assert attr_dims.count(TM1FileTool.attr_prefix + "kangaroo") == 1
 
     attr_dims = get_attribute_dim_files(artifact_files_mixed_case)
 
-    assert attr_dims.count(attr_prefix + "cockatoo") == 0
-    assert attr_dims.count(attr_prefix + "kangaroo") == 1
+    assert attr_dims.count(TM1FileTool.attr_prefix + "cockatoo") == 0
+    assert attr_dims.count(TM1FileTool.attr_prefix + "kangaroo") == 1
 
 
 def test_get_attribute_cubes(artifact_files, artifact_files_mixed_case):
 
     attr_cubs = get_attribute_cub_files(artifact_files)
 
-    assert attr_cubs.count(attr_prefix + "cockatoo") == 0
-    assert attr_cubs.count(attr_prefix + "humphrey") == 1
+    assert attr_cubs.count(TM1FileTool.attr_prefix + "cockatoo") == 0
+    assert attr_cubs.count(TM1FileTool.attr_prefix + "humphrey") == 1
 
     attr_cubs = get_attribute_cub_files(artifact_files_mixed_case)
 
-    assert attr_cubs.count(attr_prefix + "cockatoo") == 0
-    assert attr_cubs.count(attr_prefix + "humphrey") == 1
-
-
-# def test_get_vue(artifact_files, artifact_files_mixed_case):
-
-#     vues = get_vue_files(artifact_files)
-
-#     assert vues.count("cockatoo") == 0
-#     assert vues.count("giraffe") == 1
-
-#     # vues = get_vue_files(artifact_files_mixed_case)
-
-#     # assert vues.count("cockatoo") == 0
-#     # assert vues.count("giraffe") == 1
+    assert attr_cubs.count(TM1FileTool.attr_prefix + "cockatoo") == 0
+    assert attr_cubs.count(TM1FileTool.attr_prefix + "humphrey") == 1
