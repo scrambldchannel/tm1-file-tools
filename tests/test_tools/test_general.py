@@ -25,8 +25,8 @@ def test_case_insensitive_glob():
     # assert result
 
 
-def test_get_files_by_ext(tm1_file_tool_test):
-    dims = tm1_file_tool_test._get_files_by_ext(ext="dim")
+def test_get_files(tm1_file_tool_test):
+    dims = tm1_file_tool_test._get_files(ext="dim")
 
     assert len(dims) > 0
 

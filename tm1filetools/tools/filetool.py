@@ -29,13 +29,19 @@ class TM1FileTool:
         """
         return self._get_orphans(object_ext="cub", artifact_ext="rux")
 
-    def _get_orphans(self, object_ext: str, artifact_ext: str) -> List[str]:
+    def get_orphan_attr_dims(self):
+        """
+        Return orphaned attribute dim files - i.e. a
+        """
+        return self._get_orphans(object_ext="dim", artifact_ext="dim", artifact_prefix=self.attr_prefix)
+
+    def _get_orphans(self, object_ext: str, artifact_ext: str, artifact_prefix: str = "") -> List[str]:
         """
         Return a list of orphaned artifacts
         """
 
-        objects = self._get_files_by_ext(ext=object_ext)
-        artifacts = self._get_files_by_ext(ext=artifact_ext)
+        objects = self._get_files(ext=object_ext)
+        artifacts = self._get_files(ext=artifact_ext, prefix=artifact_prefix)
 
         return [a for a in artifacts if a not in objects]
 
@@ -44,63 +50,70 @@ class TM1FileTool:
         Returns all blb file names
         """
 
-        return self._get_files_by_ext(ext="blb")
+        return self._get_files(ext="blb")
 
     def get_ruxes(self) -> List[str]:
         """
         Returns all rux file names
         """
 
-        return self._get_files_by_ext(ext="rux")
+        return self._get_files(ext="rux")
 
     def get_dims(self) -> List[str]:
         """
         Returns all dim file names
         """
 
-        return self._get_files_by_ext(ext="dim")
+        return self._get_files(ext="dim")
 
     def get_vues(self) -> List[str]:
         """
         Returns all vue file names
         """
 
-        return self._get_files_by_ext(ext="vue")
+        return self._get_files(ext="vue")
 
     def get_subs(self) -> List[str]:
         """
         Returns all sub file names
         """
 
-        return self._get_files_by_ext(ext="sub")
+        return self._get_files(ext="sub")
 
     def get_cubs(self) -> List[str]:
         """
         Returns all cub file names
         """
 
-        return self._get_files_by_ext(ext="cub")
+        return self._get_files(ext="cub")
 
     def get_attr_dims(self) -> List[str]:
         """
         Return all attribute dimension names
         """
 
-        return self._get_files_by_ext(ext="dim", prefix=self.attr_prefix)
+        return self._get_files(ext="dim", prefix=self.attr_prefix)
 
     def get_attr_cubs(self) -> List[str]:
         """
         Return all attribute cube names
         """
 
-        return self._get_files_by_ext(ext="cub", prefix=self.attr_prefix)
+        return self._get_files(ext="cub", prefix=self.attr_prefix)
 
-    def _get_files_by_ext(self, ext: str, prefix: str = "") -> List[str]:
+    def _get_files(self, ext: str, prefix: str = "", strip_prefix=True) -> List[str]:
         """
         Returns all files with specified ext and optional prefix within the path
         """
 
-        return [self._get_name_part(a) for a in self._case_insensitive_glob(f"{self._path}/{prefix}*.{ext}")]
+        if strip_prefix:
+            return [
+                self._get_name_part(a.removeprefix(prefix))
+                for a in self._case_insensitive_glob(f"{self._path}/{prefix}*.{ext}")
+            ]
+
+        else:
+            return [self._get_name_part(a) for a in self._case_insensitive_glob(f"{self._path}/{prefix}*.{ext}")]
 
     @staticmethod
     def _case_insensitive_glob(pattern: str):
