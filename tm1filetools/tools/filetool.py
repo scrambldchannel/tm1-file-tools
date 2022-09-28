@@ -1,4 +1,5 @@
 import glob
+from typing import List
 
 
 class TM1FileTool:
@@ -10,17 +11,84 @@ class TM1FileTool:
     # static properties
 
     control_prefix = "}"
-    attr_prefix = "}ElementAttributes_"
+    attr_prefix = control_prefix + "ElementAttributes_"
     # etc....
+    # Case?
+    cell_security_prefix = control_prefix + "CellSecurity_"
+    picklist_prefix = control_prefix + "Picklist_"
+    drill_prefix = control_prefix + "Drill_"
+    annotations_prefix = control_prefix + "ElementAnnotations_"
 
     def __init__(self, path=None):
         # Can be initialised with a path but also without to access class methods
         self._path = path
 
+    def get_blbs(self) -> List[str]:
+        """
+        Returns all blb file names
+        """
+
+        return self._get_files_by_ext(ext="blb")
+
+    def get_ruxes(self) -> List[str]:
+        """
+        Returns all rux file names
+        """
+
+        return self._get_files_by_ext(ext="rux")
+
+    def get_dims(self) -> List[str]:
+        """
+        Returns all dim file names
+        """
+
+        return self._get_files_by_ext(ext="dim")
+
+    def get_vues(self) -> List[str]:
+        """
+        Returns all vue file names
+        """
+
+        return self._get_files_by_ext(ext="vue")
+
+    def get_subs(self) -> List[str]:
+        """
+        Returns all sub file names
+        """
+
+        return self._get_files_by_ext(ext="sub")
+
+    def get_cubs(self) -> List[str]:
+        """
+        Returns all cub file names
+        """
+
+        return self._get_files_by_ext(ext="cub")
+
+    def get_attr_dims(self) -> List[str]:
+        """
+        Return all attribute dimension names
+        """
+
+        return self._get_files_by_ext(ext="dim", prefix=self.attr_prefix)
+
+    def get_attr_cubs(self) -> List[str]:
+        """
+        Return all attribute cube names
+        """
+
+        return self._get_files_by_ext(ext="cub", prefix=self.attr_prefix)
+
+    def _get_files_by_ext(self, ext: str, prefix: str = "") -> List[str]:
+        """
+        Returns all files with specified ext and optional prefix within the path
+        """
+
+        return [self._get_name_part(a) for a in self._case_insensitive_glob(f"{self._path}/{prefix}*.{ext}")]
+
     @staticmethod
     def _case_insensitive_glob(pattern: str):
         # I still don't find this that transparent
-        # is there a library that takes care of this maybe?
 
         def either(c):
             return "[%s%s]" % (c.lower(), c.upper()) if c.isalpha() else c

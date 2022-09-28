@@ -59,7 +59,7 @@ def artifact_files(tmp_path_factory):
     return d
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def artifact_files_mixed_case(tmp_path_factory):
     """
     Create a bunch of temp files that can be used to test the filesys functions with session scope
@@ -114,3 +114,12 @@ def tm1_file_tool_test(artifact_files):
     """
 
     return TM1FileTool(artifact_files)
+
+
+@pytest.fixture(scope="session")
+def tm1_file_tool_test_mixed_case(artifact_files_mixed_case):
+    """
+    Returns a TM1FileTool object initialised with the tmp path fixture
+    """
+
+    return TM1FileTool(artifact_files_mixed_case)
