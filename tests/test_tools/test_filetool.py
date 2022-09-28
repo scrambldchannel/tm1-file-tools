@@ -1,3 +1,5 @@
+import pytest
+
 from tm1filetools.tools.filetool import TM1FileTool
 
 
@@ -20,10 +22,12 @@ def test_get_name_part():
 
 def test_case_insensitive_glob():
 
-    pass
     # this is lazy and isn't portable
     # names = ["/random_folder/chimpy.RuX", "Trevor.blb", "julie.PRO"]
 
     # struggling to know how to test this :shrug:
 
-    # assert TM1FileTool.case_insensitive_glob("RuX")
+    # result = TM1FileTool._case_insensitive_glob("RuX")
+
+    pytest.skip("no idea how to test this")
+    # assert result
