@@ -23,6 +23,22 @@ class TM1FileTool:
         # Can be initialised with a path but also without to access class methods
         self._path = path
 
+    def get_orphan_ruxes(self):
+        """
+        Return orphaned rux files
+        """
+        return self._get_orphans(object_ext="cub", artifact_ext="rux")
+
+    def _get_orphans(self, object_ext: str, artifact_ext: str) -> List[str]:
+        """
+        Return a list of orphaned artifacts
+        """
+
+        objects = self._get_files_by_ext(ext=object_ext)
+        artifacts = self._get_files_by_ext(ext=artifact_ext)
+
+        return [a for a in artifacts if a not in objects]
+
     def get_blbs(self) -> List[str]:
         """
         Returns all blb file names
