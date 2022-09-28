@@ -105,3 +105,12 @@ def artifact_files_mixed_case(tmp_path_factory):
 
     # return the path
     return d
+
+
+@pytest.fixture(scope="session")
+def tm1_file_tool_test(artifact_files):
+    """
+    Returns a TM1FileTool object initialised with the tmp path fixture
+    """
+
+    return TM1FileTool(artifact_files)
