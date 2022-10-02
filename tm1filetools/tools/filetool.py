@@ -35,13 +35,15 @@ class TM1FileTool:
         """
         return self._get_orphans(object_ext="dim", artifact_ext="dim", artifact_prefix=self.attr_prefix)
 
-    def _get_orphans(self, object_ext: str, artifact_ext: str, artifact_prefix: str = "") -> List[str]:
+    def _get_orphans(
+        self, object_ext: str, artifact_ext: str, artifact_prefix: str = "", strip_prefix=True
+    ) -> List[str]:
         """
         Return a list of orphaned artifacts
         """
 
         objects = self._get_files(ext=object_ext)
-        artifacts = self._get_files(ext=artifact_ext, prefix=artifact_prefix)
+        artifacts = self._get_files(ext=artifact_ext, prefix=artifact_prefix, strip_prefix=strip_prefix)
 
         return [a for a in artifacts if a not in objects]
 
@@ -101,19 +103,19 @@ class TM1FileTool:
 
         return self._get_files(ext="cub", prefix=self.attr_prefix)
 
-    def _get_files(self, ext: str, prefix: str = "", strip_prefix=True) -> List[str]:
+    def _get_files(self, ext: str, prefix: str = "", strip_prefix=False, strip_suffix=True) -> List[str]:
         """
         Returns all files with specified ext and optional prefix within the path
         """
 
-        if strip_prefix:
-            return [
-                self._get_name_part(a.removeprefix(prefix))
-                for a in self._case_insensitive_glob(f"{self._path}/{prefix}*.{ext}")
-            ]
+        files = self._case_insensitive_glob(f"{self._path}/{prefix}*.{ext}")
 
-        else:
-            return [self._get_name_part(a) for a in self._case_insensitive_glob(f"{self._path}/{prefix}*.{ext}")]
+        files = [self._get_name_part(f, strip_suffix=strip_suffix) for f in files]
+
+        if strip_prefix:
+            files = [f.removeprefix(prefix) for f in files]
+
+        return files
 
     @staticmethod
     def _case_insensitive_glob(pattern: str):
@@ -125,10 +127,13 @@ class TM1FileTool:
         return glob.glob("".join(map(either, pattern)))
 
     @staticmethod
-    def _get_name_part(name: str) -> str:
+    def _get_name_part(name: str, strip_suffix=True) -> str:
         """
         Returns just the name part of a pathname (stem?)
-        Is there maybe a built in function of the path object that does this?
+        There must be an existing implementation of something like this
         """
 
-        return name.split("/")[-1].split(".")[0]
+        if strip_suffix:
+            return name.split("/")[-1].split(".")[0]
+        else:
+            return name.split("/")[-1]
