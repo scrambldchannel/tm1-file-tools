@@ -6,6 +6,7 @@ cub_files = ["cat", "dog"]
 rux_files = ["dog", "giraffe"]
 dim_files = ["koala", "possum"]
 blb_files = ["emu", "unicorn"]
+sub_files = ["platypus", "donkey"]
 dim_attributes = ["koala", "kangaroo"]
 cub_attributes = ["koala", "humphrey"]
 
@@ -39,6 +40,11 @@ def artifact_files(tmp_path_factory):
     for b in blb_files:
 
         f = d / f"{b}.blb"
+        f.touch()
+
+    for s in sub_files:
+
+        f = d / f"{s}.sub"
         f.touch()
 
     for da in dim_attributes:
@@ -88,6 +94,11 @@ def artifact_files_mixed_case(tmp_path_factory):
     for b in blb_files:
 
         f = d / f"{b}.bLB"
+        f.touch()
+
+    for s in sub_files:
+
+        f = d / f"{s}.suB"
         f.touch()
 
     for da in dim_attributes:

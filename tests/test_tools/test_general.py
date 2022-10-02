@@ -83,19 +83,17 @@ def test_get_cubs(tm1_file_tool_test, tm1_file_tool_test_mixed_case):
     assert cubs.count("cat") == 1
 
 
-@pytest.mark.skip("failing")
 def test_get_subs(tm1_file_tool_test, tm1_file_tool_test_mixed_case):
 
     subs = tm1_file_tool_test.get_subs()
 
-    # need to change the test cases I guess
     assert subs.count("basilisk") == 0
-    assert subs.count("dog") == 1
+    assert subs.count("platypus") == 1
 
     subs = tm1_file_tool_test_mixed_case.get_subs()
 
     assert subs.count("basilisk") == 0
-    assert subs.count("cat") == 1
+    assert subs.count("platypus") == 1
 
 
 def test_get_attribute_dims(tm1_file_tool_test, tm1_file_tool_test_mixed_case):
