@@ -1,4 +1,4 @@
-from base import TM1File
+from .base import TM1File
 
 
 class TM1BinaryFile(TM1File):
@@ -7,6 +7,6 @@ class TM1BinaryFile(TM1File):
 
     """
 
-    def __init__(self):
-        # What is
-        pass
+    def __init__(self, path):
+
+        super().__init__(path)
