@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from tm1filetools.files.text.cfg import TM1CfgFile
+from tm1filetools.files import TM1CfgFile
 
 
 def test_read_and_write(test_folder):

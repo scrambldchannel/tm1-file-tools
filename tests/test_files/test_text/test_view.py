@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from tm1filetools.files.text.view import TM1ViewFile
+from tm1filetools.files import TM1ViewFile
 
 
 def test_public_view(test_folder):

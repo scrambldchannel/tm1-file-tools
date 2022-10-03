@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from tm1filetools.files.binary.cube import (
+from tm1filetools.files import (
     TM1AttributeCubeFile,
     TM1CellSecurityCubeFile,
     TM1CubeFile,

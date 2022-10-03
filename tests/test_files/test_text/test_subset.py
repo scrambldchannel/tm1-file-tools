@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from tm1filetools.files.text.subset import TM1SubsetFile
+from tm1filetools.files import TM1SubsetFile
 
 
 def test_public_subset(test_folder):
