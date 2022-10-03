@@ -5,15 +5,17 @@ from .text import TM1TextFile
 
 class TM1SubsetFile(TM1TextFile):
     """
-    A class representation of a tm1 view file
+    A class representation of a tm1 subset file
 
     """
+
+    folder_suffix = "}subs"
 
     def __init__(self, path: Path, public: bool = True):
 
         super().__init__(path)
 
-        self.cube = self._get_cube_name()
+        self.dimension = self._get_dimension_name()
         self.public = public
         self.owner = self._get_owner_name()
         # subset_name maybe a clearer API than stem?
@@ -31,9 +33,9 @@ class TM1SubsetFile(TM1TextFile):
         self._path = self._path.replace(new_path)
         self.public = True
 
-    def _get_cube_name(self) -> str:
+    def _get_dimension_name(self) -> str:
 
-        return self._path.parent.stem.removesuffix("}subs")
+        return self._path.parent.stem.removesuffix(self.folder_suffix)
 
     def _get_owner_name(self) -> str:
 
