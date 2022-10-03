@@ -8,6 +8,9 @@ class TM1File:
 
     control_prefix = "}"
 
+    config_file = "tm1.cfg"
+    # add log files etc ...
+
     # prefixes (incomplete, case as per default Windows names)
     prefixes = {
         "attr_prefix": f"{control_prefix}ElementAttributes_",
@@ -56,7 +59,11 @@ class TM1File:
     # could easily be an attribute I suppose
     def is_tm1_file(self):
 
-        return str(self.suffix) in self.suffixes.values()
+        # special files
+        if self.name.lower() == "tm1.cfg":
+            return True
+
+        return any(s.lower() == self.suffix.lower() for s in self.suffixes.values())
 
     def delete(self):
 
@@ -67,8 +74,8 @@ class TM1File:
     def rename(self, new_name: str):
 
         # I feel there must be a more elegant way to do this
-        new_path = Path.joinpath(self._path.parent, new_name, self.suffix)
-        self._path.rename(new_path)
+        new_path = Path.joinpath(self._path.parent, f"{new_name}.{self.suffix}")
+        self._path = self._path.rename(new_path)
 
         # This could lead to some confusion about the difference b/w stem and name :shrug:
         # Maybe there's a better way to handle this but let's just update the attribute
