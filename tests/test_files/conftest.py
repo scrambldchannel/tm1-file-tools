@@ -20,6 +20,11 @@ def test_folder(tmp_path_factory):
     # create a temp path
     d = tmp_path_factory.mktemp("data")
 
+    # create cfg file
+
+    f = d / "tm1.cfg"
+    f.touch()
+
     # create the temp files
 
     for c in cub_files:

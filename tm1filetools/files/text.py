@@ -12,7 +12,7 @@ class TM1TextFile(TM1File):
     """
 
     def __init__(self, path: Path):
-        # do I need to do this or should I just not override the init?
+
         super().__init__(path)
 
         # this introduces a dependency and may not really be useful
