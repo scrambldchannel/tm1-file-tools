@@ -5,7 +5,7 @@ from tm1filetools.files.text import TM1TextFile
 
 def test_read_and_write(test_folder):
 
-    f = TM1TextFile(Path.joinpath(test_folder, "platypus.sub"))
+    f = TM1TextFile(Path.joinpath(test_folder, "emu.blb"))
 
     assert f.read() == ""
 

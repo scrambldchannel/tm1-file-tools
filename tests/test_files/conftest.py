@@ -47,9 +47,21 @@ def test_folder(tmp_path_factory):
         f = d / f"{b}.blb"
         f.touch()
 
+    # create dir for subsets
+    subs_dir = d / "cat}subs"
+    subs_dir.mkdir()
+    # create dir for subsets
+    user_dir = d / "Alex"
+    user_dir.mkdir()
+    user_subs_dir = user_dir / "cat}subs"
+    user_subs_dir.mkdir()
+
     for s in sub_files:
 
-        f = d / f"{s}.sub"
+        f = subs_dir / f"{s}.sub"
+        f.touch()
+
+        f = user_subs_dir / f"{s}.sub"
         f.touch()
 
     for da in dim_attributes:
