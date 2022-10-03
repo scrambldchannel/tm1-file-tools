@@ -6,6 +6,8 @@ class TM1DimensionFile(TM1BinaryFile):
     A class representation of a tm1 dim file
     """
 
+    suffix = "dim"
+
     def __init__(self, path):
 
         super().__init__(path)

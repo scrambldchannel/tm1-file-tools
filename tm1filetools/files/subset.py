@@ -9,6 +9,7 @@ class TM1SubsetFile(TM1UserFile):
 
     """
 
+    suffix = "sub"
     folder_suffix = "}subs"
 
     def __init__(self, path: Path, public: bool = True):
