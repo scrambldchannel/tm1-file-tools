@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import chardet
+
 from .base import TM1File
 
 
@@ -12,6 +14,11 @@ class TM1TextFile(TM1File):
     def __init__(self, path: Path):
         # do I need to do this or should I just not override the init?
         super().__init__(path)
+
+        # this introduces a dependency and may not really be useful
+        with open(self._path, "rb") as f:
+            data = f.read()
+            self.encoding = chardet.detect(data)["encoding"]
 
     def read(self):
         with open(self._path, "r") as f:

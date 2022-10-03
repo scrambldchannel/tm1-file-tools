@@ -5,7 +5,7 @@ setup(
     version="0.0.1",
     description="Tools for working with files created by a TM1 database",
     py_modules=["tm1-file-utils"],
-    # install_requires=[],
+    install_requires=["chardet"],
     extras_require={
         "test": ["pytest"],
     },
