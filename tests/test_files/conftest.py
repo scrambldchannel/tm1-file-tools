@@ -1,5 +1,7 @@
 import pytest
 
+from tm1filetools.files.subset import TM1SubsetFile
+from tm1filetools.files.view import TM1ViewFile
 from tm1filetools.tools.filetool import TM1FileTool
 
 cub_files = ["cat", "dog"]
@@ -7,6 +9,7 @@ rux_files = ["dog", "giraffe"]
 dim_files = ["koala", "possum"]
 blb_files = ["emu", "unicorn"]
 sub_files = ["platypus", "donkey"]
+view_files = ["mouse", "squirrel"]
 dim_attributes = ["koala", "kangaroo"]
 cub_attributes = ["koala", "humphrey"]
 
@@ -48,12 +51,12 @@ def test_folder(tmp_path_factory):
         f.touch()
 
     # create dir for subsets
-    subs_dir = d / "cat}subs"
+    subs_dir = d / f"cat{TM1SubsetFile.folder_suffix}"
     subs_dir.mkdir()
     # create dir for subsets
     user_dir = d / "Alex"
     user_dir.mkdir()
-    user_subs_dir = user_dir / "cat}subs"
+    user_subs_dir = user_dir / f"cat{TM1SubsetFile.folder_suffix}"
     user_subs_dir.mkdir()
 
     for s in sub_files:
@@ -62,6 +65,23 @@ def test_folder(tmp_path_factory):
         f.touch()
 
         f = user_subs_dir / f"{s}.sub"
+        f.touch()
+
+    # create dir for views
+    views_dir = d / f"cat{TM1ViewFile.folder_suffix}"
+    views_dir.mkdir()
+    # create dir for private views
+    user_dir = d / "Chimpy"
+    user_dir.mkdir()
+    user_views_dir = user_dir / f"cat{TM1ViewFile.folder_suffix}"
+    user_views_dir.mkdir()
+
+    for v in view_files:
+
+        f = views_dir / f"{v}.vue"
+        f.touch()
+
+        f = user_views_dir / f"{v}.vue"
         f.touch()
 
     for da in dim_attributes:
