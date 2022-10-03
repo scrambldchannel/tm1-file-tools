@@ -3,23 +3,23 @@ from pathlib import Path
 from .text import TM1TextFile
 
 
-class TM1SubsetFile(TM1TextFile):
+class TM1ViewFile(TM1TextFile):
     """
-    A class representation of a tm1 subset file
+    A class representation of a tm1 view file
 
     """
 
-    folder_suffix = "}subs"
+    # still can't really decide if this belongs here
+    folder_suffix = "}vues"
 
     def __init__(self, path: Path, public: bool = True):
 
         super().__init__(path)
 
-        self.dimension = self._get_dimension_name()
+        self.cube = self._get_cube_name()
         self.public = public
         self.owner = self._get_owner_name()
-        # subset_name maybe a clearer API than stem?
-        self.subset_name = self.stem
+        self.view_name = self.stem
 
     def move_to_public(self) -> None:
 
@@ -29,11 +29,11 @@ class TM1SubsetFile(TM1TextFile):
 
         # what to do if a public view with same name already exists?
         # Will throw an error on windows...
-        new_path = Path.joinpath(self._get_public_subsets_path(), self.name)
+        new_path = Path.joinpath(self._get_public_views_path(), self.name)
         self._path = self._path.replace(new_path)
         self.public = True
 
-    def _get_dimension_name(self) -> str:
+    def _get_cube_name(self) -> str:
 
         return self._path.parent.stem.removesuffix(self.folder_suffix)
 
@@ -41,7 +41,7 @@ class TM1SubsetFile(TM1TextFile):
 
         return None if self.public else self._path.parent.parent.stem
 
-    def _get_public_subsets_path(self) -> str:
+    def _get_public_views_path(self) -> str:
 
         # Is this useful in any other context other than moving to the public folder?
         if self.public:
