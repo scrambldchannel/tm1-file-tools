@@ -30,7 +30,7 @@ def test_get_cube_name(test_folder):
 
     f = TM1ViewFile(Path.joinpath(test_folder, f"cat{TM1ViewFile.folder_suffix}", "squirrel.vue"))
 
-    assert f._get_cube_name() == "cat"
+    assert f._get_object_name() == "cat"
 
 
 # this is kinda redundant as it's tested in test_private_view
@@ -47,13 +47,13 @@ def test_get_public_views_path(test_folder):
 
     f = TM1ViewFile(Path.joinpath(test_folder, f"cat{TM1ViewFile.folder_suffix}", "squirrel.vue"))
 
-    assert f._get_public_views_path() == Path.joinpath(test_folder, f"cat{TM1ViewFile.folder_suffix}")
+    assert f._get_public_path() == Path.joinpath(test_folder, f"cat{TM1ViewFile.folder_suffix}")
 
     f = TM1ViewFile(
         Path.joinpath(test_folder, "Chimpy", f"cat{TM1ViewFile.folder_suffix}", "squirrel.vue"), public=False
     )
 
-    new_path = f._get_public_views_path()
+    new_path = f._get_public_path()
 
     assert new_path == Path.joinpath(test_folder, f"cat{TM1ViewFile.folder_suffix}")
 
