@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from tm1filetools.files.rules import TM1RulesFile
+from tm1filetools.files.text.rules import TM1RulesFile
 
 
 def test_get_cube_path(test_folder):

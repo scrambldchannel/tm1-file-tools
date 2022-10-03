@@ -1,4 +1,4 @@
-from .base import TM1File
+from ..base import TM1File
 
 
 class TM1BinaryFile(TM1File):

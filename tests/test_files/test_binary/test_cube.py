@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from tm1filetools.files.cube import TM1CubeFile
+from tm1filetools.files.binary.cube import TM1CubeFile
 
 
 def test_init(test_folder):

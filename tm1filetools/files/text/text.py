@@ -2,7 +2,7 @@ from pathlib import Path
 
 import chardet
 
-from .base import TM1File
+from ..base import TM1File
 
 
 class TM1TextFile(TM1File):
