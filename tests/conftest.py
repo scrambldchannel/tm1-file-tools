@@ -1,7 +1,7 @@
 import pytest
 
-from tm1filetools.files.binary.attribute_cube import TM1AttributeCubeFile
-from tm1filetools.files.binary.attribute_dimension import TM1AttributeDimensionFile
+from tm1filetools.files.binary.cube import TM1AttributeCubeFile
+from tm1filetools.files.binary.dimension import TM1AttributeDimensionFile
 from tm1filetools.files.text.subset import TM1SubsetFile
 from tm1filetools.files.text.view import TM1ViewFile
 

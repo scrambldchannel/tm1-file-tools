@@ -13,8 +13,7 @@ class TM1FileTool:
     # static properties
     # etc....
     # Case?
-    cell_security_prefix = TM1File.control_prefix + "CellSecurity_"
-    picklist_prefix = TM1File.control_prefix + "Picklist_"
+
     drill_prefix = TM1File.control_prefix + "Drill_"
     annotations_prefix = TM1File.control_prefix + "ElementAnnotations_"
 

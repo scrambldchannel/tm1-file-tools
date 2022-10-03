@@ -7,6 +7,8 @@ class TM1BinaryFile(TM1File):
 
     """
 
+    attribute_prefix = f"{TM1File.control_prefix}ElementAttributes_"
+
     def __init__(self, path):
 
         super().__init__(path)

@@ -14,3 +14,40 @@ class TM1CubeFile(TM1BinaryFile):
 
         # what else?
         # public view path? Whether views exist?
+
+
+class TM1AttributeCubeFile(TM1CubeFile):
+    """
+    A class representation of a tm1 attribute cube file
+    """
+
+    # is this right?
+    prefix = f"{TM1CubeFile.control_prefix}{TM1BinaryFile.attribute_prefix}"
+
+    def __init__(self, path):
+
+        super().__init__(path)
+
+
+class TM1CellSecurityCubeFile(TM1CubeFile):
+    """
+    A class representation of a tm1 cell security cube file
+    """
+
+    prefix = f"{TM1CubeFile.control_prefix}CellSecurity_"
+
+    def __init__(self, path):
+
+        super().__init__(path)
+
+
+class TM1PicklistCubeFile(TM1CubeFile):
+    """
+    A class representation of a tm1 picklist cube file
+    """
+
+    prefix = f"{TM1CubeFile.control_prefix}Picklist_"
+
+    def __init__(self, path):
+
+        super().__init__(path)
