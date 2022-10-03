@@ -10,6 +10,7 @@ class TM1ViewFile(TM1UserFile):
     """
 
     # still can't really decide if this belongs here
+    suffix = "vue"
     folder_suffix = "}vues"
 
     def __init__(self, path: Path, public: bool = True):

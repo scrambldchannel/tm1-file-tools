@@ -10,6 +10,8 @@ class TM1CfgFile(TM1TextFile):
 
     """
 
+    suffix = "cfg"
+
     # Could add a list of valid options here
 
     _section = "TM1S"
