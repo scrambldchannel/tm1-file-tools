@@ -38,14 +38,10 @@ jobs:
           python -m pip install --upgrade pip
 
       # There are so few deps so list them individually
-      - name: install tm1py
-        run:
-          pip install TM1py
 
       - name: install chardet
         run:
           pip install chardet
-
 
       - name: install pytest
         run:
