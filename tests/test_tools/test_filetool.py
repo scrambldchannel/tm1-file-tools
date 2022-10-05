@@ -118,32 +118,6 @@ def test_get_rules(test_folder):
     assert all(r.stem != "basilisk" for r in rules)
 
 
-# def test_get_rux(tm1_file_tool_test, tm1_file_tool_test_mixed_case):
-
-#     ruxes = tm1_file_tool_test.get_ruxes()
-
-#     assert ruxes.count("cockatoo") == 0
-#     assert ruxes.count("giraffe") == 1
-
-#     ruxes = tm1_file_tool_test_mixed_case.get_ruxes()
-
-#     assert ruxes.count("cockatoo") == 0
-#     assert ruxes.count("giraffe") == 1
-
-
-# def test_get_cubs(tm1_file_tool_test, tm1_file_tool_test_mixed_case):
-
-#     cubs = tm1_file_tool_test.get_cubs()
-
-#     assert cubs.count("basilisk") == 0
-#     assert cubs.count("dog") == 1
-
-#     cubs = tm1_file_tool_test_mixed_case.get_cubs()
-
-#     assert cubs.count("basilisk") == 0
-#     assert cubs.count("cat") == 1
-
-
 # def test_get_subs(tm1_file_tool_test, tm1_file_tool_test_mixed_case):
 
 #     subs = tm1_file_tool_test.get_subs()
