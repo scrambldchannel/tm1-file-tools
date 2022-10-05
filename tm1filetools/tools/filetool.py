@@ -1,7 +1,7 @@
 # import glob
 
 # simplify API in files/__init.py__ ?
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 # from tm1filetools.files.base import TM1File
 from tm1filetools.files.text.cfg import TM1CfgFile
@@ -13,11 +13,18 @@ class TM1FileTool:
 
     """
 
-    def __init__(self, path: Path):
-        # Should we initialise via path to cfg file instead?
+    def __init__(self, path: Path, local: bool = False):
+
         self._path: Path = path
 
+        # local means the code is running on the machine the folder exists
+        # this means that an absolute path in the cfg file can be used
+        self._local = local
+
         self.config_file = self._get_config_file()
+
+        # if we do have a config file, attempt to derive paths to logs, data etc
+        self.data_path = self._get_data_path_from_cfg()
 
     def _get_config_file(self):
 
@@ -27,6 +34,40 @@ class TM1FileTool:
             return TM1CfgFile(cfg_file_path)
 
         return None
+
+    def _get_data_path_from_cfg(self):
+
+        if not self.config_file:
+            return self._path
+
+        # need to read the data directory from the config file
+        # which may be relative or absolute
+        # a further complexity might be that the code is running on a different
+        # OS to one where this tm1s.cfg file comes from...
+        # for now, I'm going to assume this is a windows path
+
+        data_dir = self.config_file.get_parameter("DataBaseDirectory")
+
+        if data_dir:
+            # Note, this is the 90% case
+            # I can't find any details on how this parameter might look
+            # with TM1 running on *nix, nor do I have much understanding
+            pure_path = PureWindowsPath(data_dir)
+
+            if pure_path.is_absolute():
+
+                if self._local:
+                    return pure_path
+                # there are ways we could make an educated guess here but it's probably
+                # more trouble than it's worth
+                return None
+            else:
+                # thanks to the magic of pathlib, this seems to work cross platform :)
+                # note, I've made it an absolute path, not sure this is strictly necessary
+                # It does make writing a test a bit easier
+                return Path.joinpath(self._path, pure_path).resolve()
+
+        return self._path
 
     # def get_orphan_ruxes(self):
     #     """

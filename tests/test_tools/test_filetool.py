@@ -16,15 +16,46 @@ def test_case_insensitive_glob(test_folder):
 
 def test_get_config_file(test_folder, empty_folder):
 
+    ft = TM1FileTool(path=empty_folder)
+
+    assert not ft.config_file
+
     ft = TM1FileTool(path=test_folder)
 
     assert ft.config_file
 
     assert isinstance(ft.config_file, TM1CfgFile)
 
+
+def test_get_data_path_no_cfg(empty_folder):
+
+    # if config file not found, should just be the original path
     ft = TM1FileTool(path=empty_folder)
 
-    assert not ft.config_file
+    assert ft.data_path == empty_folder
+
+
+def test_get_data_path_invalid_cfg(invalid_config_folder):
+
+    ft = TM1FileTool(path=invalid_config_folder)
+
+    assert ft.data_path == invalid_config_folder
+
+
+def test_get_data_path_abs(abs_config_folder):
+
+    # an absolute path is only going to get returned running locally
+    ft = TM1FileTool(path=abs_config_folder, local=True)
+
+    assert ft.data_path.is_absolute()
+
+
+def test_get_data_path_rel(rel_config_folder):
+
+    ft = TM1FileTool(path=rel_config_folder)
+
+    assert ft.data_path.is_absolute()
+    assert ft.data_path.exists()
 
 
 # def test_get_blbs(tm1_file_tool_test, tm1_file_tool_test_mixed_case):
