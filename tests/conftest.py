@@ -26,7 +26,7 @@ def test_folder(tmp_path_factory):
 
     # create cfg file
 
-    f = d / "tm1.cfg"
+    f = d / "tm1s.cfg"
     f.touch()
 
     # create the temp files

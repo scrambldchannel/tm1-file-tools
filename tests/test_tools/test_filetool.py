@@ -1,26 +1,26 @@
 # import pytest
 
-# from tm1filetools.tools.filetool import TM1FileTool
+from tm1filetools.files.text.cfg import TM1CfgFile
+from tm1filetools.tools.filetool import TM1FileTool
 
 
-# def test_case_insensitive_glob(test_tm1tool):
+def test_case_insensitive_glob(test_folder):
 
-#     # this is lazy and isn't portable
-#     # names = ["/random_folder/chimpy.RuX", "Trevor.blb", "julie.PRO"]
-
-#     # struggling to know how to test this :shrug:
-
-#     # result = TM1FileTool._case_insensitive_glob("RuX")
-
-#     pytest.skip("no idea how to test this")
-#     # assert result
+    # pretty trivial tests but do seem to work
+    # i.e. an empty list is false
+    assert list(TM1FileTool._case_insensitive_glob(path=test_folder, pattern="tm1s.cfg"))
+    assert not list(TM1FileTool._case_insensitive_glob(path=test_folder, pattern="THIS_FILE_DOES_NOT_EXIST"))
+    assert list(TM1FileTool._case_insensitive_glob(path=test_folder, pattern="tm1s.CFG"))
+    assert list(TM1FileTool._case_insensitive_glob(path=test_folder, pattern="TM1s.cFg"))
 
 
-# def test_get_files(test_tm1tool):
+def test_get_config_file(test_folder):
 
-#     dims = test_tm1tool._get_files(ext="dim")
+    ft = TM1FileTool(path=test_folder)
 
-#     assert len(dims) > 0
+    assert ft.config_file
+
+    assert isinstance(ft.config_file, TM1CfgFile)
 
 
 # def test_get_blbs(tm1_file_tool_test, tm1_file_tool_test_mixed_case):

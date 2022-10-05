@@ -51,3 +51,29 @@ class TM1PicklistCubeFile(TM1CubeFile):
     def __init__(self, path):
 
         super().__init__(path)
+
+
+# Not really sure there's any value in the below
+# Review and possibly remove
+
+# class TM1DrillCubeFile(TM1CubeFile):
+#     """
+#     A class representation of a tm1 drill cube file
+#     """
+
+#     prefix = f"{TM1CubeFile.control_prefix}Drill_"
+
+#     def __init__(self, path):
+
+#         super().__init__(path)
+
+# class TM1AnnotationsCubeFile(TM1CubeFile):
+#     """
+#     A class representation of a tm1 annotations cube file
+#     """
+
+#     prefix = f"{TM1CubeFile.control_prefix}ElementAnnotations_"
+
+#     def __init__(self, path):
+
+#         super().__init__(path)

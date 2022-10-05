@@ -6,7 +6,7 @@ from .text import TM1TextFile
 
 class TM1CfgFile(TM1TextFile):
     """
-    A class representation of a tm1.cfg file
+    A class representation of a tm1s.cfg file
 
     """
 

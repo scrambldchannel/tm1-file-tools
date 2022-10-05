@@ -1,7 +1,10 @@
-import glob
+# import glob
 
 # simplify API in files/__init.py__ ?
-from tm1filetools.files.base import TM1File
+from pathlib import Path
+
+# from tm1filetools.files.base import TM1File
+from tm1filetools.files.text.cfg import TM1CfgFile
 
 
 class TM1FileTool:
@@ -10,16 +13,18 @@ class TM1FileTool:
 
     """
 
-    # static properties
-    # etc....
-    # Case?
-
-    drill_prefix = TM1File.control_prefix + "Drill_"
-    annotations_prefix = TM1File.control_prefix + "ElementAnnotations_"
-
-    def __init__(self, path=None):
+    def __init__(self, path: Path):
         # Should we initialise via path to cfg file instead?
-        self._path = path
+        self._path: Path = path
+
+        self.config_file = self._get_config_file()
+
+    def _get_config_file(self):
+        # if a tm1s.cfg file exists in this path, set it as the
+
+        # don't know how reliable this is
+        # this returns a generator
+        return TM1CfgFile(next(self._case_insensitive_glob(path=self._path, pattern="tm1s.cfg")))
 
     # def get_orphan_ruxes(self):
     #     """
@@ -64,10 +69,10 @@ class TM1FileTool:
     #     return files
 
     @staticmethod
-    def _case_insensitive_glob(pattern: str):
+    def _case_insensitive_glob(path: Path, pattern: str):
         # I still don't find this that transparent
 
         def either(c):
             return "[%s%s]" % (c.lower(), c.upper()) if c.isalpha() else c
 
-        return glob.glob("".join(map(either, pattern)))
+        return path.glob("".join(map(either, pattern)))

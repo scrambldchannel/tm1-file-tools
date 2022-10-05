@@ -5,7 +5,7 @@ from tm1filetools.files import TM1CfgFile
 
 def test_read_and_write(test_folder):
 
-    f = TM1CfgFile(Path.joinpath(test_folder, "tm1.cfg"))
+    f = TM1CfgFile(Path.joinpath(test_folder, "tm1s.cfg"))
 
     # need to create the section
     f.config.add_section(f._section)
@@ -22,6 +22,6 @@ def test_read_and_write(test_folder):
 
     # also re-open file to check it's been written to disk
 
-    f2 = TM1CfgFile(Path.joinpath(test_folder, "tm1.cfg"))
+    f2 = TM1CfgFile(Path.joinpath(test_folder, "tm1s.cfg"))
 
     assert f2.get_parameter(param) == value

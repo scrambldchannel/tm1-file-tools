@@ -46,7 +46,7 @@ class TM1File:
     def is_tm1_file(self):
 
         # special files
-        if self.name.lower() == "tm1.cfg":
+        if self.name.lower() == "tm1s.cfg":
             return True
 
         return any(s.lower() == self.suffix.lower() for s in self.suffixes.values())

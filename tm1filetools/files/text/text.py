@@ -16,9 +16,7 @@ class TM1TextFile(TM1File):
         super().__init__(path)
 
         # this introduces a dependency and may not really be useful
-        with open(self._path, "rb") as f:
-            data = f.read()
-            self.encoding = chardet.detect(data)["encoding"]
+        self.encoding = self._get_encoding()
 
     def read(self):
         with open(self._path, "r") as f:
@@ -27,3 +25,10 @@ class TM1TextFile(TM1File):
     def write(self, text):
         with open(self._path, "w") as f:
             f.write(text)
+
+    def _get_encoding(self):
+
+        # Check if exists?
+        with open(self._path, "rb") as f:
+            data = f.read()
+            return chardet.detect(data)["encoding"]
