@@ -1,10 +1,10 @@
 # import glob
 
 # simplify API in files/__init.py__ ?
-from pathlib import Path, PureWindowsPath
+from pathlib import Path, PureWindowsPath, WindowsPath
 
 # from tm1filetools.files.base import TM1File
-from tm1filetools.files.text.cfg import TM1CfgFile
+from tm1filetools.files import TM1CfgFile, TM1CubeFile, TM1DimensionFile, TM1RulesFile
 
 
 class TM1FileTool:
@@ -25,6 +25,28 @@ class TM1FileTool:
 
         # if we do have a config file, attempt to derive paths to logs, data etc
         self.data_path = self._get_data_path_from_cfg()
+
+        self.dimension_files = self._get_dims()
+        self.cube_files = self._get_cubes()
+        self.cube_rules = self._get_rules()
+
+    def _get_dims(self):
+        """
+        Returns a list of all dim file objects
+        """
+        return [TM1DimensionFile(d) for d in self._get_files_by_suffix(TM1DimensionFile.suffix)]
+
+    def _get_cubes(self):
+
+        return [TM1CubeFile(c) for c in self._get_files_by_suffix(TM1CubeFile.suffix)]
+
+    def _get_rules(self):
+
+        return [TM1RulesFile(r) for r in self._get_files_by_suffix(TM1RulesFile.suffix)]
+
+    def _get_files_by_suffix(self, suffix: str):
+
+        return self._case_insensitive_glob(self.data_path, f"*.{suffix}")
 
     def _get_config_file(self):
 
@@ -57,7 +79,7 @@ class TM1FileTool:
             if pure_path.is_absolute():
 
                 if self._local:
-                    return pure_path
+                    return WindowsPath(pure_path)
                 # there are ways we could make an educated guess here but it's probably
                 # more trouble than it's worth
                 return None
