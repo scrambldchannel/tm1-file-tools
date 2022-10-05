@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from tm1filetools.files.dimension import TM1DimensionFile
+from tm1filetools.files import TM1DimensionFile
 
 
 def test_init(test_folder):

@@ -55,17 +55,6 @@ def test_stem(test_folder):
     assert f.stem == "cat"
 
 
-def test_prefix(test_folder):
-
-    f = TM1File(Path.joinpath(test_folder, "cat.cub"))
-
-    assert f.prefix is None
-
-    f = TM1File(Path.joinpath(test_folder, "}ElementAttributes_cat.cub"))
-
-    assert f.prefix == f.prefixes["attr_prefix"]
-
-
 def test_suffix(test_folder):
 
     f = TM1File(Path.joinpath(test_folder, "cat.cub"))
@@ -101,7 +90,7 @@ def test_is_tm1_file(test_folder):
     f = TM1File(Path.joinpath(test_folder, "unicorn.txt"))
     assert not f.is_tm1_file()
 
-    f = TM1File(Path.joinpath(test_folder, "Tm1.cfg"))
+    f = TM1File(Path.joinpath(test_folder, "Tm1s.cfg"))
     assert f.is_tm1_file()
 
     f = TM1File(Path.joinpath(test_folder, "tm2.cfg"))

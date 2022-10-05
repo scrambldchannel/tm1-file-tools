@@ -6,20 +6,9 @@ class TM1File:
     Base class for TM1 files
     """
 
+    prefix = ""
+    suffix = None
     control_prefix = "}"
-
-    config_file = "tm1.cfg"
-    # add log files etc ...
-
-    # prefixes (incomplete, case as per default Windows names)
-    prefixes = {
-        "attr_prefix": f"{control_prefix}ElementAttributes_",
-        "cell_security_prefix": f"{control_prefix}CellSecurity_",
-        "picklist_prefix": f"{control_prefix}Picklist_",
-        "drill_prefix": f"{control_prefix}Drill_",
-        "annotations_prefix": f"{control_prefix}ElementAnnotations_",
-        # ...
-    }
 
     # suffixes (incomplete, all lower case, not sure what default is)
     suffixes = {
@@ -44,9 +33,6 @@ class TM1File:
         self.suffix = self._path.suffix.split(".")[1]
         # Set the prefix
         self.prefix = None
-        for p in self.prefixes.values():
-            if self.name.lower().startswith(p.lower()):
-                self.prefix = p
 
     def exists(self):
 
@@ -60,7 +46,7 @@ class TM1File:
     def is_tm1_file(self):
 
         # special files
-        if self.name.lower() == "tm1.cfg":
+        if self.name.lower() == "tm1s.cfg":
             return True
 
         return any(s.lower() == self.suffix.lower() for s in self.suffixes.values())
