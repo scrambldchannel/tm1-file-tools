@@ -14,13 +14,17 @@ def test_case_insensitive_glob(test_folder):
     assert list(TM1FileTool._case_insensitive_glob(path=test_folder, pattern="TM1s.cFg"))
 
 
-def test_get_config_file(test_folder):
+def test_get_config_file(test_folder, empty_folder):
 
     ft = TM1FileTool(path=test_folder)
 
     assert ft.config_file
 
     assert isinstance(ft.config_file, TM1CfgFile)
+
+    ft = TM1FileTool(path=empty_folder)
+
+    assert not ft.config_file
 
 
 # def test_get_blbs(tm1_file_tool_test, tm1_file_tool_test_mixed_case):

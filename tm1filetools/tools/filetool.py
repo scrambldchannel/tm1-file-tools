@@ -20,11 +20,13 @@ class TM1FileTool:
         self.config_file = self._get_config_file()
 
     def _get_config_file(self):
-        # if a tm1s.cfg file exists in this path, set it as the
 
-        # don't know how reliable this is
-        # this returns a generator
-        return TM1CfgFile(next(self._case_insensitive_glob(path=self._path, pattern="tm1s.cfg")))
+        cfg_file_path = next(self._case_insensitive_glob(path=self._path, pattern="tm1s.cfg"), None)
+
+        if cfg_file_path:
+            return TM1CfgFile(cfg_file_path)
+
+        return None
 
     # def get_orphan_ruxes(self):
     #     """

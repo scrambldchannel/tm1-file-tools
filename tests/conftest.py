@@ -16,6 +16,15 @@ cub_attributes = ["koala", "humphrey"]
 
 
 @pytest.fixture(scope="function")
+def empty_folder(tmp_path_factory):
+    """
+    Create an empty folder for testing
+    """
+
+    return tmp_path_factory.mktemp("data")
+
+
+@pytest.fixture(scope="function")
 def test_folder(tmp_path_factory):
     """
     Create a bunch of temp files that can be used to test the filesys functions with session scope
