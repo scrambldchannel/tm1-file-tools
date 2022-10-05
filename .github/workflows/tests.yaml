@@ -15,8 +15,6 @@ jobs:
 
   pytest:
     runs-on: ubuntu-latest
-    env:
-      APP_ENVIRONMENT: DEVELOPMENT
 
     # potentially add further python versions to test against
     strategy:
