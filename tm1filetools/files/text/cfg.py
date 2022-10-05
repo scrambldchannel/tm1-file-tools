@@ -35,3 +35,13 @@ class TM1CfgFile(TM1TextFile):
 
         with open(self._path, "w") as f:
             self.config.write(f)
+
+    def is_valid(self):
+        # check file has the necessary sections and mandatory params
+
+        return (
+            self.config.has_section(self._section)
+            and self.config.has_option(section=self._section, option="ServerName")  # noqa
+            and self.config.has_option(section=self._section, option="DataBaseDirectory")  # noqa
+            and self.config.has_option(section=self._section, option="PortNumber")  # noqa
+        )
