@@ -70,12 +70,14 @@ class TM1FileTool:
 
     def get_attr_cubes(self):
 
-        return [TM1AttributeCubeFile(c) for c in self.cube_files if c.name.find(c.attribute_prefix) == 0]
+        return [TM1AttributeCubeFile(c._path) for c in self.cube_files if c.name.find(c.attribute_prefix) == 0]
 
     def get_attr_dimensions(self):
 
         return [
-            TM1AttributeDimensionFile(d) for d in self.dim_files if d.name.lower().find(d.attribute_prefix.lower()) == 0
+            TM1AttributeDimensionFile(d._path)
+            for d in self.dim_files
+            if d.name.lower().find(d.attribute_prefix.lower()) == 0
         ]
 
     def _find_dims(self):
