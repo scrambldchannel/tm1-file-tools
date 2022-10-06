@@ -33,12 +33,13 @@ class TM1File:
         self.suffix = self._path.suffix.split(".")[1]
         # Set the prefix
         self.prefix = None
+        self.is_control = self._is_control_object()
 
     def exists(self):
 
         return self._path.exists()
 
-    def is_control_object(self):
+    def _is_control_object(self):
 
         return self.stem[0] == self.control_prefix
 

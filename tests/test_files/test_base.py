@@ -66,11 +66,11 @@ def test_is_control(test_folder):
 
     f = TM1File(Path.joinpath(test_folder, "cat.cub"))
 
-    assert not f.is_control_object()
+    assert not f.is_control
 
     f = TM1File(Path.joinpath(test_folder, "}ElementAttributes_koala.cub"))
 
-    assert f.is_control_object()
+    assert f.is_control
 
 
 def test_is_tm1_file(test_folder):
