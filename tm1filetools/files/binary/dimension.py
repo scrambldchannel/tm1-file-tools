@@ -12,12 +12,22 @@ class TM1DimensionFile(TM1BinaryFile):
 
         super().__init__(path)
 
-        # what else?
-        # public subsets path? Whether subsets exist?
-        # Presumably this binary file is also where all the hierarchy info lives?
+
+class TM1ControlDimensionFile(TM1DimensionFile):
+    """
+    A class representation of a tm1 control dimension dim file
+    """
+
+    def __init__(self, path):
+
+        super().__init__(path)
+
+    def is_control_object(self):
+
+        return True
 
 
-class TM1AttributeDimensionFile(TM1DimensionFile):
+class TM1AttributeDimensionFile(TM1ControlDimensionFile):
     """
     A class representation of a tm1 dimension attribute dim file
     """
@@ -28,6 +38,5 @@ class TM1AttributeDimensionFile(TM1DimensionFile):
 
         super().__init__(path)
 
-        # what else?
-        # public subsets path? Whether subsets exist?
-        # Presumably this binary file is also where all the hierarchy info lives?
+
+# Other control dimensions exist, this is not a full list

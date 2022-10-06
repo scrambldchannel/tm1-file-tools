@@ -172,9 +172,3 @@ def test_folder(tmp_path_factory):
 
     # return the path
     return d
-
-
-# @pytest.fixture(scope="function")
-# def test_tm1tool(test_folder):
-#     # might want to change path to config file
-#     return TM1FileTool(test_folder)
