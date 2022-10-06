@@ -3,7 +3,7 @@ import sys
 import pytest
 
 from tm1filetools.files import TM1CfgFile
-from tm1filetools.tools.filetool import TM1FileTool
+from tm1filetools.tools import TM1FileTool
 
 
 def test_case_insensitive_glob(test_folder):
@@ -69,24 +69,24 @@ def test_get_data_path_rel(rel_config_folder):
     assert ft.data_path.exists()
 
 
-def test_get_files_by_suffix(test_folder):
+def test_find_files_by_suffix(test_folder):
 
     ft = TM1FileTool(test_folder)
 
-    dims = list(ft._get_files_by_suffix(suffix="dim"))
+    dims = list(ft._find_files(suffix="dim"))
 
     assert dims
 
-    exes = list(ft._get_files_by_suffix(suffix="exes"))
+    exes = list(ft._find_files(suffix="exes"))
 
     assert not exes
 
 
-def test_get_dims(test_folder):
+def test_find_dims(test_folder):
 
     ft = TM1FileTool(test_folder)
 
-    dims = ft._get_dims()
+    dims = ft._find_dims()
 
     assert dims
 
@@ -94,11 +94,11 @@ def test_get_dims(test_folder):
     assert all(d.stem != "bunyip" for d in dims)
 
 
-def test_get_cubes(test_folder):
+def test_find_cubes(test_folder):
 
     ft = TM1FileTool(test_folder)
 
-    cubes = ft._get_cubes()
+    cubes = ft._find_cubes()
 
     assert cubes
 
@@ -106,11 +106,11 @@ def test_get_cubes(test_folder):
     assert all(c.stem != "unicorn" for c in cubes)
 
 
-def test_get_rules(test_folder):
+def test_find_rules(test_folder):
 
     ft = TM1FileTool(test_folder)
 
-    rules = ft._get_rules()
+    rules = ft._find_rules()
 
     assert rules
 
@@ -118,30 +118,28 @@ def test_get_rules(test_folder):
     assert all(r.stem != "basilisk" for r in rules)
 
 
-# def test_get_subs(tm1_file_tool_test, tm1_file_tool_test_mixed_case):
+def test_find_subs(test_folder):
 
-#     subs = tm1_file_tool_test.get_subs()
+    ft = TM1FileTool(test_folder)
 
-#     assert subs.count("basilisk") == 0
-#     assert subs.count("platypus") == 1
+    subs = ft._find_subs()
 
-#     subs = tm1_file_tool_test_mixed_case.get_subs()
+    assert subs
 
-#     assert subs.count("basilisk") == 0
-#     assert subs.count("platypus") == 1
+    assert any(r.stem == "platypus" for r in subs)
+    assert all(r.stem != "womble" for r in subs)
 
 
-# def test_get_attribute_dims(tm1_file_tool_test, tm1_file_tool_test_mixed_case):
+# def test_get_attribute_dims(test_folder):
 
-#     attr_dims = tm1_file_tool_test.get_attr_dims()
+#     ft = TM1FileTool(test_folder)
 
-#     assert attr_dims.count(TM1FileTool.attr_prefix + "cockatoo") == 0
-#     assert attr_dims.count(TM1FileTool.attr_prefix + "kangaroo") == 1
+#     attr_dims = ft._find_attr_dims()
 
-#     attr_dims = tm1_file_tool_test_mixed_case.get_attr_dims()
+# assert attr_dims
 
-#     assert attr_dims.count(TM1FileTool.attr_prefix + "cockatoo") == 0
-#     assert attr_dims.count(TM1FileTool.attr_prefix + "kangaroo") == 1
+# assert any(r.stem == "kangaroo" for r in subs)
+# assert all(r.stem != "cockatoo" for r in subs)
 
 
 # def test_get_blbs(tm1_file_tool_test, tm1_file_tool_test_mixed_case):

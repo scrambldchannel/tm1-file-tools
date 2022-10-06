@@ -4,7 +4,14 @@
 from pathlib import Path, PureWindowsPath, WindowsPath
 
 # from tm1filetools.files.base import TM1File
-from tm1filetools.files import TM1CfgFile, TM1CubeFile, TM1DimensionFile, TM1RulesFile
+from tm1filetools.files import (
+    TM1CfgFile,
+    TM1CubeFile,
+    TM1DimensionFile,
+    TM1RulesFile,
+    TM1SubsetFile,
+    TM1ViewFile,
+)
 
 
 class TM1FileTool:
@@ -21,34 +28,52 @@ class TM1FileTool:
         # this means that an absolute path in the cfg file can be used
         self._local = local
 
-        self.config_file = self._get_config_file()
+        self.config_file = self._find_config_file()
 
         # if we do have a config file, attempt to derive paths to logs, data etc
         self.data_path = self._get_data_path_from_cfg()
 
-        self.dimension_files = self._get_dims()
-        self.cube_files = self._get_cubes()
-        self.cube_rules = self._get_rules()
+        self.dimension_files = self._find_dims()
+        self.cube_files = self._find_cubes()
+        self.rules_rules = self._find_rules()
 
-    def _get_dims(self):
+    def _find_dims(self):
         """
         Returns a list of all dim file objects
         """
-        return [TM1DimensionFile(d) for d in self._get_files_by_suffix(TM1DimensionFile.suffix)]
+        return [TM1DimensionFile(d) for d in self._find_files(TM1DimensionFile.suffix)]
 
-    def _get_cubes(self):
+    def _find_cubes(self):
 
-        return [TM1CubeFile(c) for c in self._get_files_by_suffix(TM1CubeFile.suffix)]
+        return [TM1CubeFile(c) for c in self._find_files(TM1CubeFile.suffix)]
 
-    def _get_rules(self):
+    def _find_rules(self):
 
-        return [TM1RulesFile(r) for r in self._get_files_by_suffix(TM1RulesFile.suffix)]
+        return [TM1RulesFile(r) for r in self._find_files(TM1RulesFile.suffix)]
 
-    def _get_files_by_suffix(self, suffix: str):
+    def _find_subs(self):
 
-        return self._case_insensitive_glob(self.data_path, f"*.{suffix}")
+        return [
+            TM1SubsetFile(
+                s,
+            )
+            for s in self._find_files(TM1SubsetFile.suffix, recursive=True)
+        ]
 
-    def _get_config_file(self):
+    def _find_views(self):
+
+        return [
+            TM1ViewFile(
+                v,
+            )
+            for v in self._find_files(TM1ViewFile.suffix, recursive=True)
+        ]
+
+    def _find_files(self, suffix: str, recursive: bool = False, prefix: str = ""):
+
+        return self._case_insensitive_glob(self.data_path, f"{prefix}*.{suffix}", recursive=recursive)
+
+    def _find_config_file(self):
 
         cfg_file_path = next(self._case_insensitive_glob(path=self._path, pattern="tm1s.cfg"), None)
 
@@ -115,29 +140,12 @@ class TM1FileTool:
 
     #     return [a for a in artifacts if a not in objects]
 
-    # def get_ruxes(self) -> List[str]:
-    #     """
-    #     Returns all rux file names
-    #     """
-
-    #     return self._get_files(ext="rux")
-
-    # def _get_files(self, ext: str, prefix: str = "") -> List[str]:
-    #     """
-    #     Returns all files with specified ext and optional prefix within the path
-    #     """
-
-    #     files = self._case_insensitive_glob(f"{self._path}/{prefix}*.{ext}")
-
-    #     files = [self._get_name_part(f, strip_suffix=strip_suffix) for f in files]
-
-    #     return files
-
     @staticmethod
-    def _case_insensitive_glob(path: Path, pattern: str):
-        # I still don't find this that transparent
-
+    def _case_insensitive_glob(path: Path, pattern: str, recursive: bool = False):
         def either(c):
             return "[%s%s]" % (c.lower(), c.upper()) if c.isalpha() else c
+
+        if recursive:
+            return path.rglob("".join(map(either, pattern)))
 
         return path.glob("".join(map(either, pattern)))
