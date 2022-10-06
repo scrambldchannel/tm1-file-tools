@@ -6,6 +6,8 @@ from .binary.cube import (  # noqa
 )
 from .binary.dimension import TM1AttributeDimensionFile, TM1DimensionFile  # noqa
 from .text.cfg import TM1CfgFile  # noqa
+from .text.cma import TM1CMAFile  # noqa
+from .text.log import TM1LogFile  # noqa
 from .text.rules import TM1RulesFile  # noqa
 from .text.subset import TM1SubsetFile  # noqa
 from .text.text import TM1TextFile  # noqa

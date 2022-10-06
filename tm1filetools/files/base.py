@@ -7,33 +7,16 @@ class TM1File:
     """
 
     prefix = ""
-    suffix = None
     control_prefix = "}"
-
-    # suffixes (incomplete, all lower case, not sure what default is)
-    suffixes = {
-        "cube_suffix": "cub",
-        "dimension_suffix": "dim",
-        "subset_suffix": "sub",
-        "view_suffix": "vue",
-        "ti_suffix": "pro",
-        "rule_prefix": "rux",
-        "blb_suffix": "blb",
-        "cma_suffix": "cma",
-        # ...
-    }
+    is_tm1_file = True
 
     def __init__(self, path):
 
         self._path = Path(path)
         self.name = self._path.name
         self.stem = self._path.stem
-        # Potentially flags files that aren't TM1 artifacts based on suffix
-        # Seems an elegant way to drop the "."
-        self.suffix = self._path.suffix.split(".")[1]
-        # Set the prefix
-        self.prefix = None
         self.is_control = self._is_control_object()
+        self.suffix = self._get_suffix()
 
     def exists(self):
 
@@ -43,14 +26,9 @@ class TM1File:
 
         return self.stem[0] == self.control_prefix
 
-    # could easily be an attribute I suppose
-    def is_tm1_file(self):
+    def _get_suffix(self):
 
-        # special files
-        if self.name.lower() == "tm1s.cfg":
-            return True
-
-        return any(s.lower() == self.suffix.lower() for s in self.suffixes.values())
+        return self._path.suffix[1:]
 
     def delete(self):
 
@@ -67,3 +45,15 @@ class TM1File:
         # This could lead to some confusion about the difference b/w stem and name :shrug:
         # Maybe there's a better way to handle this but let's just update the attribute
         self.stem = self._path.stem
+
+
+class NonTM1File(TM1File):
+
+    # Kind of a stupid name
+
+    def __init__(self, path):
+
+        super().__init__(path)
+
+        self.is_control = False
+        self.is_tm1_file = False

@@ -20,6 +20,15 @@ class TM1FileTool:
 
     """
 
+    suffixes = [
+        TM1CfgFile.suffix,
+        TM1CubeFile.suffix,
+        TM1DimensionFile.suffix,
+        TM1RulesFile.suffix,
+        TM1SubsetFile.suffix,
+        TM1ViewFile.suffix,
+    ]
+
     def __init__(self, path: Path, local: bool = False):
 
         self._path: Path = path

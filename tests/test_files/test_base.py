@@ -76,22 +76,4 @@ def test_is_control(test_folder):
 def test_is_tm1_file(test_folder):
 
     f = TM1File(Path.joinpath(test_folder, "cat.cub"))
-    assert f.is_tm1_file()
-
-    f = TM1File(Path.joinpath(test_folder, "cat.CUb"))
-    assert f.is_tm1_file()
-
-    f = TM1File(Path.joinpath(test_folder, "cat.DIM"))
-    assert f.is_tm1_file()
-
-    f = TM1File(Path.joinpath(test_folder, "cat.vUe"))
-    assert f.is_tm1_file()
-
-    f = TM1File(Path.joinpath(test_folder, "unicorn.txt"))
-    assert not f.is_tm1_file()
-
-    f = TM1File(Path.joinpath(test_folder, "Tm1s.cfg"))
-    assert f.is_tm1_file()
-
-    f = TM1File(Path.joinpath(test_folder, "tm2.cfg"))
-    assert not f.is_tm1_file()
+    assert f.is_tm1_file
