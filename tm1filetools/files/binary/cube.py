@@ -12,16 +12,28 @@ class TM1CubeFile(TM1BinaryFile):
 
         super().__init__(path)
 
-        # what else?
-        # public view path? Whether views exist?
+
+class TM1ControlCubeFile(TM1CubeFile):
+    """
+    A class representation of a tm1 cube file
+    """
+
+    suffix = "cub"
+
+    def __init__(self, path):
+
+        super().__init__(path)
+
+    def is_control_object(self):
+
+        return True
 
 
-class TM1AttributeCubeFile(TM1CubeFile):
+class TM1AttributeCubeFile(TM1ControlCubeFile):
     """
     A class representation of a tm1 attribute cube file
     """
 
-    # is this right?
     prefix = f"{TM1CubeFile.control_prefix}{TM1BinaryFile.attribute_prefix}"
 
     def __init__(self, path):
@@ -29,7 +41,7 @@ class TM1AttributeCubeFile(TM1CubeFile):
         super().__init__(path)
 
 
-class TM1CellSecurityCubeFile(TM1CubeFile):
+class TM1CellSecurityCubeFile(TM1ControlCubeFile):
     """
     A class representation of a tm1 cell security cube file
     """
@@ -41,7 +53,7 @@ class TM1CellSecurityCubeFile(TM1CubeFile):
         super().__init__(path)
 
 
-class TM1PicklistCubeFile(TM1CubeFile):
+class TM1PicklistCubeFile(TM1ControlCubeFile):
     """
     A class representation of a tm1 picklist cube file
     """
@@ -53,27 +65,10 @@ class TM1PicklistCubeFile(TM1CubeFile):
         super().__init__(path)
 
 
-# Not really sure there's any value in the below
-# Review and possibly remove
+# This is not an exhaustive list
+# Some others we could add are:
 
-# class TM1DrillCubeFile(TM1CubeFile):
-#     """
-#     A class representation of a tm1 drill cube file
-#     """
-
-#     prefix = f"{TM1CubeFile.control_prefix}Drill_"
-
-#     def __init__(self, path):
-
-#         super().__init__(path)
-
-# class TM1AnnotationsCubeFile(TM1CubeFile):
-#     """
-#     A class representation of a tm1 annotations cube file
-#     """
-
-#     prefix = f"{TM1CubeFile.control_prefix}ElementAnnotations_"
-
-#     def __init__(self, path):
-
-#         super().__init__(path)
+# }Drill_
+# }ElementAnnotations_
+# Other security objects (probably higher value)
+# etc ...
