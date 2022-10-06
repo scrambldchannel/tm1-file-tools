@@ -6,6 +6,7 @@ from pathlib import Path, PureWindowsPath, WindowsPath
 # from tm1filetools.files.base import TM1File
 from tm1filetools.files import (
     TM1CfgFile,
+    TM1CMAFile,
     TM1CubeFile,
     TM1DimensionFile,
     TM1RulesFile,
@@ -27,6 +28,7 @@ class TM1FileTool:
         TM1RulesFile.suffix,
         TM1SubsetFile.suffix,
         TM1ViewFile.suffix,
+        TM1CMAFile.suffix,
     ]
 
     def __init__(self, path: Path, local: bool = False):
@@ -45,11 +47,13 @@ class TM1FileTool:
         self.dimension_files = self._find_dims()
         self.cube_files = self._find_cubes()
         self.rules_rules = self._find_rules()
+        self.cma_rules = self._find_cmas()
 
     def _find_dims(self):
         """
         Returns a list of all dim file objects
         """
+
         return [TM1DimensionFile(d) for d in self._find_files(TM1DimensionFile.suffix)]
 
     def _find_cubes(self):
@@ -77,6 +81,10 @@ class TM1FileTool:
             )
             for v in self._find_files(TM1ViewFile.suffix, recursive=True)
         ]
+
+    def _find_cmas(self):
+
+        return [TM1CMAFile(r) for r in self._find_files(TM1CMAFile.suffix, recursive=True)]
 
     def _find_files(self, suffix: str, recursive: bool = False, prefix: str = ""):
 
