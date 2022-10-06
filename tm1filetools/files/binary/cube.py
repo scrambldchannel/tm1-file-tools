@@ -32,7 +32,7 @@ class TM1AttributeCubeFile(TM1ControlCubeFile):
     A class representation of a tm1 attribute cube file
     """
 
-    prefix = f"{TM1CubeFile.control_prefix}{TM1BinaryFile.attribute_prefix}"
+    prefix = f"{TM1BinaryFile.attribute_prefix}"
 
     def __init__(self, path):
 
