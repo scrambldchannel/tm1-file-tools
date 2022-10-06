@@ -46,8 +46,8 @@ class TM1FileTool:
 
         self.dimension_files = self._find_dims()
         self.cube_files = self._find_cubes()
-        self.rules_rules = self._find_rules()
-        self.cma_rules = self._find_cmas()
+        self.rules_files = self._find_rules()
+        self.cma_files = self._find_cmas()
 
     def _find_dims(self):
         """
