@@ -20,7 +20,7 @@ def test_attr_cube(test_folder):
     f = TM1CubeFile(Path.joinpath(test_folder, f"{TM1AttributeCubeFile.prefix}cat.cub"))
 
     assert f
-    assert f.is_control_object
+    assert f.is_control
 
 
 def test_cellsec_cube(test_folder):
