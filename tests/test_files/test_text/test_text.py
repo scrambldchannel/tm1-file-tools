@@ -14,13 +14,13 @@ def test_read_and_write(test_folder):
     assert f.read() == "some text"
 
 
-def test_is_empty(test_folder):
+def test_is_non_empty(test_folder):
 
     f = TM1TextFile(Path.joinpath(test_folder, "emu.blb"))
 
-    assert f._get_empty()
+    assert not f._get_non_empty()
 
     f.write("some text")
 
-    assert not f._get_empty()
-    assert not f.is_empty
+    assert f._get_non_empty()
+    assert f.is_non_empty
