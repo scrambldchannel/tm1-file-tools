@@ -1,10 +1,10 @@
-# import glob
-
 # simplify API in files/__init.py__ ?
 from pathlib import Path, PureWindowsPath, WindowsPath
 
 # from tm1filetools.files.base import TM1File
 from tm1filetools.files import (
+    TM1AttributeCubeFile,
+    TM1AttributeDimensionFile,
     TM1CfgFile,
     TM1CMAFile,
     TM1CubeFile,
@@ -44,10 +44,39 @@ class TM1FileTool:
         # if we do have a config file, attempt to derive paths to logs, data etc
         self.data_path = self._get_data_path_from_cfg()
 
-        self.dimension_files = self._find_dims()
+        # maybe this can all be abstracted to a single scan folder function?
+        self.dim_files = self._find_dims()
         self.cube_files = self._find_cubes()
         self.rules_files = self._find_rules()
         self.cma_files = self._find_cmas()
+        self.view_files = self._find_views()
+        self.sub_files = self._find_subs()
+
+    def get_model_cubes(self):
+
+        return [c for c in self.cube_files if not c.is_control]
+
+    def get_model_dimensions(self):
+
+        return [d for d in self.dim_files if not d.is_control]
+
+    def get_control_cubes(self):
+
+        return [c for c in self.cube_files if c.is_control]
+
+    def get_control_dimensions(self):
+
+        return [d for d in self.dim_files if d.is_control]
+
+    def get_attr_cubes(self):
+
+        return [TM1AttributeCubeFile(c) for c in self.cube_files if c.name.find(c.attribute_prefix) == 0]
+
+    def get_attr_dimensions(self):
+
+        return [
+            TM1AttributeDimensionFile(d) for d in self.dim_files if d.name.lower().find(d.attribute_prefix.lower()) == 0
+        ]
 
     def _find_dims(self):
         """

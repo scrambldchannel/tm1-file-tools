@@ -32,7 +32,7 @@ class TM1AttributeDimensionFile(TM1ControlDimensionFile):
     A class representation of a tm1 dimension attribute dim file
     """
 
-    prefix = f"{TM1DimensionFile.control_prefix}{TM1BinaryFile.attribute_prefix}"
+    prefix = f"{TM1BinaryFile.attribute_prefix}"
 
     def __init__(self, path):
 
