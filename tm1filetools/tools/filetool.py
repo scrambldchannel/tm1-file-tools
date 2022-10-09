@@ -52,6 +52,70 @@ class TM1FileTool:
 
         self._scan_all()
 
+    def delete(self, file_object):
+
+        file_object.delete()
+
+        self._scan_all()
+
+    def delete_all_feeders(self):
+
+        for fd in self.feeders_files:
+            fd.delete()
+
+        self.feeders_files = self._find_feeders()
+
+    def delete_all_orphans(self):
+
+        self.delete_orphan_rules()
+        self.delete_orphan_attr_dims()
+        self.delete_orphan_attr_cubes()
+        self.delete_orphan_views()
+        self.delete_orphan_subsets()
+        self.delete_orphan_feeders()
+
+    def delete_orphan_rules(self):
+
+        for r in self.get_orphan_rules():
+            r.delete()
+
+        self.rules_files = self._find_rules()
+
+    def delete_orphan_attr_dims(self):
+
+        for d in self.get_orphan_attr_dims():
+            d.delete()
+
+        self.dim_files = self._find_dims()
+
+    def delete_orphan_attr_cubes(self):
+
+        for c in self.get_orphan_attr_cubes():
+            c.delete()
+
+        self.cube_files = self._find_cubes()
+
+    def delete_orphan_views(self):
+
+        for v in self.get_orphan_views():
+            v.delete()
+
+        self.view_files = self._find_views()
+
+    def delete_orphan_subsets(self):
+
+        for s in self.get_orphan_subsets():
+            s.delete()
+
+        self.sub_files = self._find_subs()
+
+    def delete_orphan_feeders(self):
+
+        for f in self.get_orphan_feeders():
+            f.delete()
+
+        self.feeders_files = self._find_feeders()
+
     def get_model_cubes(self):
 
         return [c for c in self.cube_files if not c.is_control]
@@ -207,30 +271,6 @@ class TM1FileTool:
                 return Path.joinpath(self._path, pure_path).resolve()
 
         return self._path
-
-    # def get_orphan_ruxes(self):
-    #     """
-    #     Return orphaned rux files
-    #     """
-    #     return self._get_orphans(object_ext="cub", artifact_ext="rux")
-
-    # def get_orphan_attr_dims(self):
-    #     """
-    #     Return orphaned attribute dim files - i.e. a
-    #     """
-    #     return self._get_orphans(object_ext="dim", artifact_ext="dim", artifact_prefix=self.attr_prefix)
-
-    # def _get_orphans(
-    #     self, object_ext: str, artifact_ext: str, artifact_prefix: str = "", strip_prefix=True
-    # ) -> List[str]:
-    #     """
-    #     Return a list of orphaned artifacts
-    #     """
-
-    #     objects = self._get_files(ext=object_ext)
-    #     artifacts = self._get_files(ext=artifact_ext, prefix=artifact_prefix, strip_prefix=strip_prefix)
-
-    #     return [a for a in artifacts if a not in objects]
 
     @staticmethod
     def _case_insensitive_glob(path: Path, pattern: str, recursive: bool = False):
