@@ -18,6 +18,8 @@ A Python package that simplifies working with files associated with a TM1 server
 
 If you want to try it out, you can install directly from this repo. I'll think about publishing it to PyPi once it's considered a bit more stable.
 
+**Note: Requires Python >= 3.9**
+
 ```sh
 pip install git+https://github.com/scrambldchannel/tm1-file-tools.git
 ```
