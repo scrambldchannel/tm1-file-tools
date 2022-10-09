@@ -1,3 +1,4 @@
+from .base import NonTM1File  # noqa
 from .binary.cube import (  # noqa
     TM1AttributeCubeFile,
     TM1CellSecurityCubeFile,

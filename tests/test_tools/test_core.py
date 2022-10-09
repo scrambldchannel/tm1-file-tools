@@ -174,3 +174,20 @@ def test_re_scan(test_folder):
     ft.re_scan()
 
     assert all(f.stem != "cat" for f in ft.feeders_files)
+
+
+def test_non_tm1_files(test_folder):
+
+    ft = TM1FileTool(test_folder)
+
+    assert any(f.name == "cat.cub.bak" for f in ft.non_tm1_files)
+
+    for f in ft.non_tm1_files:
+        if f.name == "cat.cub.bak":
+            f.delete()
+
+    assert any(f.name == "cat.cub.bak" for f in ft.non_tm1_files)
+
+    ft.re_scan()
+
+    assert all(f.name != "cat.cub.bak" for f in ft.non_tm1_files)
