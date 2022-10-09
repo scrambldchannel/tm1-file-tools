@@ -13,21 +13,7 @@ class TM1CubeFile(TM1BinaryFile):
         super().__init__(path)
 
 
-class TM1ControlCubeFile(TM1CubeFile):
-    """
-    A class representation of a tm1 cube file
-    """
-
-    def __init__(self, path):
-
-        super().__init__(path)
-
-    def is_control_object(self):
-
-        return True
-
-
-class TM1AttributeCubeFile(TM1ControlCubeFile):
+class TM1AttributeCubeFile(TM1CubeFile):
     """
     A class representation of a tm1 attribute cube file
     """
@@ -39,7 +25,7 @@ class TM1AttributeCubeFile(TM1ControlCubeFile):
         super().__init__(path)
 
 
-class TM1CellSecurityCubeFile(TM1ControlCubeFile):
+class TM1CellSecurityCubeFile(TM1CubeFile):
     """
     A class representation of a tm1 cell security cube file
     """
@@ -51,7 +37,7 @@ class TM1CellSecurityCubeFile(TM1ControlCubeFile):
         super().__init__(path)
 
 
-class TM1PicklistCubeFile(TM1ControlCubeFile):
+class TM1PicklistCubeFile(TM1CubeFile):
     """
     A class representation of a tm1 picklist cube file
     """
