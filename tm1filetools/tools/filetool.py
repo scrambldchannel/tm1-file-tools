@@ -98,6 +98,14 @@ class TM1FileTool:
             a for a in self.get_attr_cubes() if a.strip_prefix().lower() not in [d.stem.lower() for d in self.dim_files]
         ]
 
+    def get_orphan_views(self):
+
+        return [v for v in self.view_files if v.cube.lower() not in [c.stem for c in self.cube_files]]
+
+    def get_orphan_subsets(self):
+
+        return [s for s in self.sub_files if s.dimension.lower() not in [d.stem.lower() for d in self.dim_files]]
+
     def _find_dims(self):
         """
         Returns a list of all dim file objects

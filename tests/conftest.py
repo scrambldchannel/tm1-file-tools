@@ -13,6 +13,8 @@ sub_files = ["platypus", "donkey"]
 view_files = ["mouse", "squirrel"]
 dim_attributes = ["koala", "kangaroo"]
 cub_attributes = ["koala", "humphrey"]
+sub_folders = ["cat", "koala"]
+view_folders = ["cat", "koala"]
 
 
 @pytest.fixture(scope="function")
@@ -123,38 +125,45 @@ def test_folder(tmp_path_factory):
         f.touch()
 
     # create dir for subsets
-    subs_dir = d / f"cat{TM1SubsetFile.folder_suffix}"
-    subs_dir.mkdir()
-    # create dir for subsets
+
     user_dir = d / "Alex"
     user_dir.mkdir()
-    user_subs_dir = user_dir / f"cat{TM1SubsetFile.folder_suffix}"
-    user_subs_dir.mkdir()
 
-    for s in sub_files:
+    for sf in sub_folders:
 
-        f = subs_dir / f"{s}.sub"
-        f.touch()
+        subs_dir = d / f"{sf}{TM1SubsetFile.folder_suffix}"
+        subs_dir.mkdir()
+        # create dir for subsets
 
-        f = user_subs_dir / f"{s}.sub"
-        f.touch()
+        user_subs_dir = user_dir / f"{sf}{TM1SubsetFile.folder_suffix}"
+        user_subs_dir.mkdir()
 
-    # create dir for views
-    views_dir = d / f"cat{TM1ViewFile.folder_suffix}"
-    views_dir.mkdir()
+        for s in sub_files:
+
+            f = subs_dir / f"{s}.sub"
+            f.touch()
+
+            f = user_subs_dir / f"{s}.sub"
+            f.touch()
+
     # create dir for private views
     user_dir = d / "Chimpy"
     user_dir.mkdir()
-    user_views_dir = user_dir / f"cat{TM1ViewFile.folder_suffix}"
-    user_views_dir.mkdir()
 
-    for v in view_files:
+    for vf in view_folders:
+        # create dir for views
+        views_dir = d / f"{vf}{TM1ViewFile.folder_suffix}"
+        views_dir.mkdir()
+        user_views_dir = user_dir / f"{vf}{TM1ViewFile.folder_suffix}"
+        user_views_dir.mkdir()
 
-        f = views_dir / f"{v}.vue"
-        f.touch()
+        for v in view_files:
 
-        f = user_views_dir / f"{v}.vue"
-        f.touch()
+            f = views_dir / f"{v}.vue"
+            f.touch()
+
+            f = user_views_dir / f"{v}.vue"
+            f.touch()
 
     for da in dim_attributes:
 
