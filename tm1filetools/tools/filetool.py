@@ -80,6 +80,10 @@ class TM1FileTool:
             if d.name.lower().find(d.attribute_prefix.lower()) == 0
         ]
 
+    def get_orphan_rules(self):
+
+        return [r for r in self.rules_files if r.stem.lower() not in [c.stem for c in self.cube_files]]
+
     def _find_dims(self):
         """
         Returns a list of all dim file objects
