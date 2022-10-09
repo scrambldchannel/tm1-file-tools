@@ -7,6 +7,7 @@ from .binary.cube import (  # noqa
 )
 from .binary.dimension import TM1AttributeDimensionFile, TM1DimensionFile  # noqa
 from .binary.feeders import TM1FeedersFile  # noqa
+from .text.blb import TM1BLBFile  # noqa
 from .text.cfg import TM1CfgFile  # noqa
 from .text.cma import TM1CMAFile  # noqa
 from .text.log import TM1ChangeLogFile, TM1LogFile, TM1ProcessErorrLogFile  # noqa
