@@ -165,7 +165,7 @@ class TM1FileTool:
 
     def get_orphan_rules(self):
 
-        return [r for r in self.rules_files if r.stem.lower() not in [c.stem for c in self.cube_files]]
+        return [r for r in self.rules_files if r.stem.lower() not in [c.stem.lower() for c in self.cube_files]]
 
     def get_orphan_attr_dims(self):
 
@@ -183,7 +183,7 @@ class TM1FileTool:
 
     def get_orphan_views(self):
 
-        return [v for v in self.view_files if v.cube.lower() not in [c.stem for c in self.cube_files]]
+        return [v for v in self.view_files if v.cube.lower() not in [c.stem.lower() for c in self.cube_files]]
 
     def get_orphan_subsets(self):
 
@@ -191,7 +191,7 @@ class TM1FileTool:
 
     def get_orphan_feeders(self):
 
-        return [f for f in self.feeders_files if f.stem.lower() not in [c.stem for c in self.cube_files]]
+        return [f for f in self.feeders_files if f.stem.lower() not in [c.stem.lower() for c in self.cube_files]]
 
     def _scan_all(self):
 
