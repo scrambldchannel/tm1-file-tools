@@ -21,7 +21,7 @@ class TM1CfgFile(TM1TextFile):
         super().__init__(path)
 
         self.config = configparser.ConfigParser()
-        self.config.read(path)
+        self.config.read(path, encoding=self.encoding)
 
     def get_parameter(self, param: str) -> str:
 
