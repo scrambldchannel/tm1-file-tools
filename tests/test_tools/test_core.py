@@ -37,11 +37,26 @@ def test_get_data_path_no_cfg(empty_folder):
     assert ft.data_path == empty_folder
 
 
+def test_get_log_path_no_cfg(empty_folder):
+
+    # if config file not found, should just be the original path
+    ft = TM1FileTool(path=empty_folder)
+
+    assert ft.log_path == empty_folder
+
+
 def test_get_data_path_invalid_cfg(invalid_config_folder):
 
     ft = TM1FileTool(path=invalid_config_folder)
 
     assert ft.data_path == invalid_config_folder
+
+
+def test_get_log_path_invalid_cfg(invalid_config_folder):
+
+    ft = TM1FileTool(path=invalid_config_folder)
+
+    assert ft.log_path == invalid_config_folder
 
 
 def test_get_data_path_local(abs_config_folder, rel_config_folder):
@@ -61,12 +76,37 @@ def test_get_data_path_local(abs_config_folder, rel_config_folder):
     assert not ft.data_path.is_absolute()
 
 
+def test_get_log_path_local(abs_config_folder, rel_config_folder):
+
+    # the constructor requires a concrete path
+    # which I can't find a way to instantiate cross platform
+    if not sys.platform.startswith("win"):
+        pytest.skip("skipping windows-only tests")
+
+    # an absolute path is only going to get returned running locally
+    ft = TM1FileTool(path=abs_config_folder, local=True)
+
+    assert ft.log_path.is_absolute()
+
+    ft = TM1FileTool(path=rel_config_folder, local=True)
+
+    assert not ft.log_path.is_absolute()
+
+
 def test_get_data_path_rel(rel_config_folder):
 
     ft = TM1FileTool(path=rel_config_folder)
 
     assert ft.data_path.is_absolute()
     assert ft.data_path.exists()
+
+
+def test_get_log_path_rel(rel_config_folder):
+
+    ft = TM1FileTool(path=rel_config_folder)
+
+    assert ft.log_path.is_absolute()
+    assert ft.log_path.exists()
 
 
 def test_find_files_by_suffix(test_folder):
@@ -191,3 +231,16 @@ def test_non_tm1_files(test_folder):
     ft.re_scan()
 
     assert all(f.name != "cat.cub.bak" for f in ft.non_tm1_files)
+
+
+def test_find_logs(rel_config_folder):
+
+    ft = TM1FileTool(rel_config_folder)
+
+    assert any(log.stem == "tm1s" for log in ft.log_files)
+    assert all(log.stem != "dog" for log in ft.log_files)
+
+    logs = ft._find_logs()
+
+    assert any(log.stem == "tm1server" for log in logs)
+    assert all(log.stem != "cat" for log in logs)

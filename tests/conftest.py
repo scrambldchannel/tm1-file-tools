@@ -18,6 +18,8 @@ view_folders = ["cat", "koala"]
 feeders_files = ["cat", "possum"]
 process_files = ["dingo", "wombat", "}fraggle"]
 junk_files = ["cat.cub.bak", "no_extension", "zzzBackup12.zip"]
+# should also add in a TI process error log
+log_files = ["tm1s", "tm1server"]
 
 
 @pytest.fixture(scope="function")
@@ -53,10 +55,9 @@ def abs_config_folder(tmp_path_factory):
 
     f = d / "tm1s.cfg"
 
-    # still don't think this is working...
-
     cfg = r"""[TM1S]
     DataBaseDirectory = c:\TM1\data
+    LoggingDirectory = c:\TM1\logs
     """
 
     f.write_text(cfg)
@@ -80,13 +81,22 @@ def rel_config_folder(tmp_path_factory):
 
     cfg = r"""[TM1S]
     DataBaseDirectory = .\data
+    LoggingDirectory = .\logs
+
     """
 
     f.write_text(cfg)
 
-    # also create the data dir
+    # also create the directories
     data_dir = d / "data"
     data_dir.mkdir()
+
+    log_dir = d / "logs"
+    log_dir.mkdir()
+
+    for log in log_files:
+        f = log_dir / f"{log}.log"
+        f.touch()
 
     return d
 
