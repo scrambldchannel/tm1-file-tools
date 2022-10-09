@@ -5,6 +5,7 @@ from .binary.cube import (  # noqa
     TM1PicklistCubeFile,
 )
 from .binary.dimension import TM1AttributeDimensionFile, TM1DimensionFile  # noqa
+from .binary.feeders import TM1FeedersFile  # noqa
 from .text.cfg import TM1CfgFile  # noqa
 from .text.cma import TM1CMAFile  # noqa
 from .text.log import TM1LogFile  # noqa

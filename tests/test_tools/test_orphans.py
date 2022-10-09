@@ -54,5 +54,16 @@ def test_orphan_views(test_folder):
 
     assert len(orphans) > 0
 
-    # assert "koala" not in [o.dimension.lower() for o in orphans]
-    # assert "cat" in [o.dimension.lower() for o in orphans]
+    assert "cat" not in [o.cube.lower() for o in orphans]
+    assert "koala" in [o.cube.lower() for o in orphans]
+
+
+def test_orphan_feeders(test_folder):
+
+    ft = TM1FileTool(test_folder)
+
+    orphans = ft.get_orphan_feeders()
+
+    assert len(orphans) > 0
+    assert "cat" not in [o.stem for o in orphans]
+    assert "possum" in [o.stem for o in orphans]

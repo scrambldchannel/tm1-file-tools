@@ -144,3 +144,16 @@ def test_find_views(test_folder):
 
     assert any(r.stem == "mouse" for r in views)
     assert all(r.stem != "dragon" for r in views)
+
+
+def test_find_feeders(test_folder):
+
+    ft = TM1FileTool(test_folder)
+
+    assert any(r.stem == "cat" for r in ft.feeders_files)
+    assert all(r.stem != "dragon" for r in ft.feeders_files)
+
+    feeders = ft._find_feeders()
+
+    assert any(r.stem == "cat" for r in feeders)
+    assert all(r.stem != "dragon" for r in feeders)
