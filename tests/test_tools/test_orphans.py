@@ -7,5 +7,28 @@ def test_orphan_rules(test_folder):
 
     orphans = ft.get_orphan_rules()
 
+    assert len(orphans) > 0
     assert "foo" not in [o.stem for o in orphans]
     assert "giraffe" in [o.stem for o in orphans]
+
+
+def test_orphan_attr_dims(test_folder):
+
+    ft = TM1FileTool(test_folder)
+
+    orphans = ft.get_orphan_attr_dims()
+
+    assert len(orphans) > 0
+    assert "koala" not in [o.strip_prefix() for o in orphans]
+    assert "kangaroo" in [o.strip_prefix() for o in orphans]
+
+
+def test_orphan_attr_cubes(test_folder):
+
+    ft = TM1FileTool(test_folder)
+
+    orphans = ft.get_orphan_attr_cubes()
+
+    assert len(orphans) > 0
+    assert "foo" not in [o.strip_prefix() for o in orphans]
+    assert "humphrey" in [o.strip_prefix() for o in orphans]

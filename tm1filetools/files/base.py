@@ -46,6 +46,10 @@ class TM1File:
         # Maybe there's a better way to handle this but let's just update the attribute
         self.stem = self._path.stem
 
+    def strip_prefix(self):
+
+        return self.stem.removeprefix(self.prefix)
+
 
 class NonTM1File(TM1File):
 
