@@ -7,6 +7,7 @@ from tm1filetools.files import (
     TM1AttributeCubeFile,
     TM1AttributeDimensionFile,
     TM1CfgFile,
+    TM1ChangeLogFile,
     TM1CMAFile,
     TM1CubeFile,
     TM1DimensionFile,
@@ -48,7 +49,7 @@ class TM1FileTool:
         self.config_file = self._find_config_file()
 
         # if we do have a config file, attempt to derive paths to logs, data etc
-        self.data_path = self._get_data_path_from_cfg()
+        self.data_path, self.log_path = self._get_paths_from_cfg()
 
         # scan for all file types
         self._scan_all()
@@ -203,7 +204,7 @@ class TM1FileTool:
         self.non_tm1_files = self._find_non_tm1()
         self.process_files = self._find_processes()
         # disabling this for now, need to handle potential different path
-        # self.log_files = self._find_logs()
+        self.log_files = self._find_logs()
 
     def _find_dims(self):
         """
@@ -251,8 +252,19 @@ class TM1FileTool:
         return [TM1CMAFile(r) for r in self._find_files(TM1CMAFile.suffix, recursive=True)]
 
     def _find_logs(self):
-        # this needs work, need to think about how to handle separate log file
-        return [TM1LogFile(log) for log in self._find_files(TM1LogFile.suffix)]
+
+        # logs may be in a different path so search with the glob func
+        # We should also be careful of the tm1s.log file as we may fail to get a lock on it
+
+        logs = []
+        for log in self._case_insensitive_glob(self.log_path, f"*.{TM1LogFile.suffix}"):
+            # if we think this is the tm1s.log file, use the derived class that avoids trying to open it
+            if log.stem.lower() == "tm1s":
+                logs.append(TM1ChangeLogFile(log))
+            else:
+                logs.append(TM1LogFile(log))
+
+        return logs
 
     def _find_non_tm1(self, recursive: bool = False):
 
@@ -289,36 +301,35 @@ class TM1FileTool:
 
         return None
 
-    def _get_data_path_from_cfg(self):
+    def _get_paths_from_cfg(self):
 
+        # if we can't find a valid config file, use the init path for data and logs
         if not self.config_file:
-            return self._path
+            return self._path, self._path
 
-        # need to read the data directory from the config file
-        # which may be relative or absolute
-        # a further complexity might be that the code is running on a different
-        # OS to one where this tm1s.cfg file comes from...
-        # for now, I'm going to assume this is a windows path
-
+        # read the params from the config file and see if a concrete path can be derived
         data_dir = self.config_file.get_parameter("DataBaseDirectory")
+        log_dir = self.config_file.get_parameter("LoggingDirectory")
 
-        if data_dir:
-            # Note, this is the 90% case
-            # I can't find any details on how this parameter might look
-            # with TM1 running on *nix, nor do I have much understanding
-            pure_path = PureWindowsPath(data_dir)
+        return self._derive_path(data_dir), self._derive_path(log_dir)
+
+    def _derive_path(self, dir: str):
+
+        if dir:
+
+            pure_path = PureWindowsPath(dir)
 
             if pure_path.is_absolute():
 
                 if self._local:
                     return WindowsPath(pure_path)
-                # there are ways we could make an educated guess here but it's probably
-                # more trouble than it's worth
+
+                # We can't do much with an absolute path when running on a separate machine
                 return None
+
             else:
                 # thanks to the magic of pathlib, this seems to work cross platform :)
                 # note, I've made it an absolute path, not sure this is strictly necessary
-                # It does make writing a test a bit easier
                 return Path.joinpath(self._path, pure_path).resolve()
 
         return self._path
