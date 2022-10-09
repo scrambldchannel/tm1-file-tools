@@ -12,6 +12,18 @@ def test_orphan_rules(test_folder):
     assert "giraffe" in [o.stem for o in orphans]
 
 
+def test_orphan_rules_mixed_case(test_folder):
+
+    ft = TM1FileTool(test_folder)
+
+    orphans = ft.get_orphan_rules()
+
+    print([o.stem for o in orphans])
+    assert "}statsforserver" not in [o.stem for o in orphans]
+    assert "TIGER" not in [o.stem for o in orphans]
+    assert "giraffe" in [o.stem for o in orphans]
+
+
 def test_orphan_attr_dims(test_folder):
 
     ft = TM1FileTool(test_folder)

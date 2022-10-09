@@ -5,8 +5,8 @@ from tm1filetools.files.binary.dimension import TM1AttributeDimensionFile
 from tm1filetools.files.text.subset import TM1SubsetFile
 from tm1filetools.files.text.view import TM1ViewFile
 
-cub_files = ["cat", "dog"]
-rux_files = ["dog", "giraffe"]
+cub_files = ["cat", "dog", "tiger", "}StatsForServer"]
+rux_files = ["dog", "giraffe", "TIGER", "}statsforserver"]
 dim_files = ["koala", "possum"]
 blb_files = ["emu", "unicorn"]
 sub_files = ["platypus", "donkey", "}dolphin"]
