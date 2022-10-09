@@ -10,12 +10,13 @@ from tm1filetools.files import (
     TM1CMAFile,
     TM1CubeFile,
     TM1DimensionFile,
+    TM1FeedersFile,
     TM1LogFile,
+    TM1ProcessFile,
     TM1RulesFile,
     TM1SubsetFile,
     TM1ViewFile,
 )
-from tm1filetools.files.binary.feeders import TM1FeedersFile
 
 
 class TM1FileTool:
@@ -28,6 +29,7 @@ class TM1FileTool:
         TM1CfgFile.suffix,
         TM1CubeFile.suffix,
         TM1DimensionFile.suffix,
+        TM1ProcessFile.suffix,
         TM1RulesFile.suffix,
         TM1SubsetFile.suffix,
         TM1ViewFile.suffix,
@@ -135,6 +137,18 @@ class TM1FileTool:
 
         return [d for d in self.dim_files if d.is_control]
 
+    def get_control_processes(self):
+
+        return [p for p in self.process_files if p.is_control]
+
+    def get_control_views(self):
+
+        return [v for v in self.view_files if v.is_control]
+
+    def get_control_subsets(self):
+
+        return [s for s in self.sub_files if s.is_control]
+
     def get_attr_cubes(self):
 
         return [TM1AttributeCubeFile(c._path) for c in self.cube_files if c.name.find(c.attribute_prefix) == 0]
@@ -187,6 +201,7 @@ class TM1FileTool:
         self.sub_files = self._find_subs()
         self.feeders_files = self._find_feeders()
         self.non_tm1_files = self._find_non_tm1()
+        self.process_files = self._find_processes()
         # disabling this for now, need to handle potential different path
         # self.log_files = self._find_logs()
 
@@ -208,6 +223,10 @@ class TM1FileTool:
     def _find_feeders(self):
 
         return [TM1FeedersFile(f) for f in self._find_files(TM1FeedersFile.suffix)]
+
+    def _find_processes(self):
+
+        return [TM1ProcessFile(f) for f in self._find_files(TM1ProcessFile.suffix)]
 
     def _find_subs(self):
 
@@ -245,7 +264,11 @@ class TM1FileTool:
         files = [NonTM1File(f) for f in self._find_files(suffix="*", recursive=recursive)]
 
         for f in files:
+            # this will remove other random files with these suffixes
+            # e.g. other random cfg files
+            # so not perfect
             if f.suffix.lower() in self.suffixes:
+
                 files.remove(f)
 
         return files

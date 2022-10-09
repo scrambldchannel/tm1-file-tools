@@ -9,13 +9,14 @@ cub_files = ["cat", "dog"]
 rux_files = ["dog", "giraffe"]
 dim_files = ["koala", "possum"]
 blb_files = ["emu", "unicorn"]
-sub_files = ["platypus", "donkey"]
-view_files = ["mouse", "squirrel"]
+sub_files = ["platypus", "donkey", "}dolphin"]
+view_files = ["mouse", "squirrel", "}shark"]
 dim_attributes = ["koala", "kangaroo"]
 cub_attributes = ["koala", "humphrey"]
 sub_folders = ["cat", "koala"]
 view_folders = ["cat", "koala"]
 feeders_files = ["cat", "possum"]
+process_files = ["dingo", "wombat", "}fraggle"]
 junk_files = ["cat.cub.bak", "no_extension", "zzzBackup12.zip"]
 
 
@@ -189,6 +190,11 @@ def test_folder(tmp_path_factory):
     for j in junk_files:
 
         f = d / j
+        f.touch()
+
+    for p in process_files:
+
+        f = d / f"{p}.pro"
         f.touch()
 
     # return the path

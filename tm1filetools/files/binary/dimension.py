@@ -13,21 +13,7 @@ class TM1DimensionFile(TM1BinaryFile):
         super().__init__(path)
 
 
-class TM1ControlDimensionFile(TM1DimensionFile):
-    """
-    A class representation of a tm1 control dimension dim file
-    """
-
-    def __init__(self, path):
-
-        super().__init__(path)
-
-    def is_control_object(self):
-
-        return True
-
-
-class TM1AttributeDimensionFile(TM1ControlDimensionFile):
+class TM1AttributeDimensionFile(TM1DimensionFile):
     """
     A class representation of a tm1 dimension attribute dim file
     """

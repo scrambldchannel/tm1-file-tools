@@ -64,3 +64,35 @@ def test_get_attr_dims(test_folder):
     assert any(d.stem == f"{TM1AttributeDimensionFile.prefix}kangaroo" for d in dims)
     assert all(d.stem != f"{TM1AttributeDimensionFile.prefix}vampire" for d in dims)
     assert all(d.stem != "kangaroo" for d in dims)
+
+
+def test_get_control_processes(test_folder):
+
+    ft = TM1FileTool(test_folder)
+
+    procs = ft.get_control_processes()
+
+    assert any(p.stem == "}fraggle" for p in procs)
+    assert all(p.stem != "dingo" for p in procs)
+
+
+def test_get_control_views(test_folder):
+
+    ft = TM1FileTool(test_folder)
+
+    views = ft.get_control_views()
+
+    assert any(v.stem == "}shark" for v in views)
+    assert all(v.stem != "squirrel" for v in views)
+    assert all(v.stem != "donkey" for v in views)
+
+
+def test_get_control_subs(test_folder):
+
+    ft = TM1FileTool(test_folder)
+
+    subs = ft.get_control_subsets()
+
+    assert any(s.stem == "}dolphin" for s in subs)
+    assert all(s.stem != "squirrel" for s in subs)
+    assert all(s.stem != "donkey" for s in subs)
