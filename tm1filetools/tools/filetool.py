@@ -13,6 +13,7 @@ from tm1filetools.files import (
     TM1SubsetFile,
     TM1ViewFile,
 )
+from tm1filetools.files.binary.feeders import TM1FeedersFile
 
 
 class TM1FileTool:
@@ -51,6 +52,7 @@ class TM1FileTool:
         self.cma_files = self._find_cmas()
         self.view_files = self._find_views()
         self.sub_files = self._find_subs()
+        self.feeders_files = self._find_feeders()
 
     def get_model_cubes(self):
 
@@ -106,6 +108,10 @@ class TM1FileTool:
 
         return [s for s in self.sub_files if s.dimension.lower() not in [d.stem.lower() for d in self.dim_files]]
 
+    def get_orphan_feeders(self):
+
+        return [f for f in self.feeders_files if f.stem.lower() not in [c.stem for c in self.cube_files]]
+
     def _find_dims(self):
         """
         Returns a list of all dim file objects
@@ -120,6 +126,10 @@ class TM1FileTool:
     def _find_rules(self):
 
         return [TM1RulesFile(r) for r in self._find_files(TM1RulesFile.suffix)]
+
+    def _find_feeders(self):
+
+        return [TM1FeedersFile(f) for f in self._find_files(TM1FeedersFile.suffix)]
 
     def _find_subs(self):
 

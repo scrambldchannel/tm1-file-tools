@@ -15,6 +15,7 @@ dim_attributes = ["koala", "kangaroo"]
 cub_attributes = ["koala", "humphrey"]
 sub_folders = ["cat", "koala"]
 view_folders = ["cat", "koala"]
+feeders_files = ["cat", "possum"]
 
 
 @pytest.fixture(scope="function")
@@ -122,6 +123,11 @@ def test_folder(tmp_path_factory):
     for b in blb_files:
 
         f = d / f"{b}.blb"
+        f.touch()
+
+    for fd in feeders_files:
+
+        f = d / f"{fd}.feeders"
         f.touch()
 
     # create dir for subsets
