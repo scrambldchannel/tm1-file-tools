@@ -13,6 +13,7 @@ from tm1filetools.files import (
     TM1DimensionFile,
     TM1FeedersFile,
     TM1LogFile,
+    TM1ProcessErorrLogFile,
     TM1ProcessFile,
     TM1RulesFile,
     TM1SubsetFile,
@@ -261,6 +262,8 @@ class TM1FileTool:
             # if we think this is the tm1s.log file, use the derived class that avoids trying to open it
             if log.stem.lower() == "tm1s":
                 logs.append(TM1ChangeLogFile(log))
+            elif log.stem.lower().startswith(TM1ProcessErorrLogFile.prefix.lower()):
+                logs.append(TM1ProcessErorrLogFile)
             else:
                 logs.append(TM1LogFile(log))
 
