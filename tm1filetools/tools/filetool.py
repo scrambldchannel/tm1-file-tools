@@ -3,12 +3,14 @@ from pathlib import Path, PureWindowsPath, WindowsPath
 
 # from tm1filetools.files.base import TM1File
 from tm1filetools.files import (
+    NonTM1File,
     TM1AttributeCubeFile,
     TM1AttributeDimensionFile,
     TM1CfgFile,
     TM1CMAFile,
     TM1CubeFile,
     TM1DimensionFile,
+    TM1LogFile,
     TM1RulesFile,
     TM1SubsetFile,
     TM1ViewFile,
@@ -30,6 +32,7 @@ class TM1FileTool:
         TM1SubsetFile.suffix,
         TM1ViewFile.suffix,
         TM1CMAFile.suffix,
+        TM1FeedersFile.suffix,
     ]
 
     def __init__(self, path: Path, local: bool = False):
@@ -183,6 +186,9 @@ class TM1FileTool:
         self.view_files = self._find_views()
         self.sub_files = self._find_subs()
         self.feeders_files = self._find_feeders()
+        self.non_tm1_files = self._find_non_tm1()
+        # disabling this for now, need to handle potential different path
+        # self.log_files = self._find_logs()
 
     def _find_dims(self):
         """
@@ -225,7 +231,29 @@ class TM1FileTool:
 
         return [TM1CMAFile(r) for r in self._find_files(TM1CMAFile.suffix, recursive=True)]
 
-    def _find_files(self, suffix: str, recursive: bool = False, prefix: str = ""):
+    def _find_logs(self):
+        # this needs work, need to think about how to handle separate log file
+        return [TM1LogFile(log) for log in self._find_files(TM1LogFile.suffix)]
+
+    def _find_non_tm1(self, recursive: bool = False):
+
+        # I wasn't quite sure what functionality I wanted here but decided
+        # a generic method that could be applied recursively or not to
+        # a specific path might work best (although the naming is a bit confusing)
+        # Using this recursively might perform poorly
+
+        files = [NonTM1File(f) for f in self._find_files(suffix="*", recursive=recursive)]
+
+        for f in files:
+            if f.suffix.lower() in self.suffixes:
+                files.remove(f)
+
+        return files
+
+    def _find_files(self, suffix: str, recursive: bool = False, prefix: str = "", path: Path = None):
+
+        if path:
+            return self._case_insensitive_glob(path, f"{prefix}*.{suffix}", recursive=recursive)
 
         return self._case_insensitive_glob(self.data_path, f"{prefix}*.{suffix}", recursive=recursive)
 
