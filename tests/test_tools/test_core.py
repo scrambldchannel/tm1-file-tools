@@ -124,36 +124,53 @@ def test_find_subs(test_folder):
 
     ft = TM1FileTool(test_folder)
 
-    assert any(r.stem == "platypus" for r in ft.sub_files)
-    assert all(r.stem != "womble" for r in ft.sub_files)
+    assert any(s.stem == "platypus" for s in ft.sub_files)
+    assert all(s.stem != "womble" for s in ft.sub_files)
 
     subs = ft._find_subs()
 
-    assert any(r.stem == "platypus" for r in subs)
-    assert all(r.stem != "womble" for r in subs)
+    assert any(s.stem == "platypus" for s in subs)
+    assert all(s.stem != "womble" for s in subs)
 
 
 def test_find_views(test_folder):
 
     ft = TM1FileTool(test_folder)
 
-    assert any(r.stem == "mouse" for r in ft.view_files)
-    assert all(r.stem != "dragon" for r in ft.view_files)
+    assert any(v.stem == "mouse" for v in ft.view_files)
+    assert all(v.stem != "dragon" for v in ft.view_files)
 
     views = ft._find_views()
 
-    assert any(r.stem == "mouse" for r in views)
-    assert all(r.stem != "dragon" for r in views)
+    assert any(v.stem == "mouse" for v in views)
+    assert all(v.stem != "dragon" for v in views)
 
 
 def test_find_feeders(test_folder):
 
     ft = TM1FileTool(test_folder)
 
-    assert any(r.stem == "cat" for r in ft.feeders_files)
-    assert all(r.stem != "dragon" for r in ft.feeders_files)
+    assert any(f.stem == "cat" for f in ft.feeders_files)
+    assert all(f.stem != "dragon" for f in ft.feeders_files)
 
     feeders = ft._find_feeders()
 
-    assert any(r.stem == "cat" for r in feeders)
-    assert all(r.stem != "dragon" for r in feeders)
+    assert any(f.stem == "cat" for f in feeders)
+    assert all(f.stem != "dragon" for f in feeders)
+
+
+def test_re_scan(test_folder):
+
+    ft = TM1FileTool(test_folder)
+
+    assert any(f.stem == "cat" for f in ft.feeders_files)
+
+    for f in ft.feeders_files:
+        if f.stem == "cat":
+            f.delete()
+
+    assert any(f.stem == "cat" for f in ft.feeders_files)
+
+    ft.re_scan()
+
+    assert all(f.stem != "cat" for f in ft.feeders_files)

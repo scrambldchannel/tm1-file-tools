@@ -45,14 +45,12 @@ class TM1FileTool:
         # if we do have a config file, attempt to derive paths to logs, data etc
         self.data_path = self._get_data_path_from_cfg()
 
-        # maybe this can all be abstracted to a single scan folder function?
-        self.dim_files = self._find_dims()
-        self.cube_files = self._find_cubes()
-        self.rules_files = self._find_rules()
-        self.cma_files = self._find_cmas()
-        self.view_files = self._find_views()
-        self.sub_files = self._find_subs()
-        self.feeders_files = self._find_feeders()
+        # scan for all file types
+        self._scan_all()
+
+    def re_scan(self):
+
+        self._scan_all()
 
     def get_model_cubes(self):
 
@@ -111,6 +109,16 @@ class TM1FileTool:
     def get_orphan_feeders(self):
 
         return [f for f in self.feeders_files if f.stem.lower() not in [c.stem for c in self.cube_files]]
+
+    def _scan_all(self):
+
+        self.dim_files = self._find_dims()
+        self.cube_files = self._find_cubes()
+        self.rules_files = self._find_rules()
+        self.cma_files = self._find_cmas()
+        self.view_files = self._find_views()
+        self.sub_files = self._find_subs()
+        self.feeders_files = self._find_feeders()
 
     def _find_dims(self):
         """
