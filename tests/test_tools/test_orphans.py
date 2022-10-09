@@ -1,47 +1,34 @@
-# import pytest
-
-# from tm1filetools.tools.filetool import TM1FileTool
+from tm1filetools.tools.filetool import TM1FileTool
 
 
-# def test_orphan_ruxes(tm1_file_tool_test):
+def test_orphan_rules(test_folder):
 
-#     orphans = tm1_file_tool_test.get_orphan_ruxes()
+    ft = TM1FileTool(test_folder)
 
-#     assert orphans.count("foo") == 0
-#     assert orphans.count("giraffe") == 1
+    orphans = ft.get_orphan_rules()
 
-
-# def test_orphan_attr_dims(tm1_file_tool_test, tm1_file_tool_test_mixed_case):
-
-#     orphans = tm1_file_tool_test.get_orphan_attr_dims()
-
-#     assert len(orphans) > 0
-#     assert orphans.count("koala") == 0
-#     assert orphans.count("kangaroo") == 1
-
-#     # orphans = tm1_file_tool_test_mixed_case.get_orphan_attr_dims()
-
-#     # assert len(orphans) > 0
-
-#     # assert orphans.count(f"{TM1FileTool.attr_prefix}koala") == 0
-
-#     # assert orphans.count(f"{TM1FileTool.attr_prefix}kangaroo") == 1
+    assert len(orphans) > 0
+    assert "foo" not in [o.stem for o in orphans]
+    assert "giraffe" in [o.stem for o in orphans]
 
 
-# # def test_orphan_attr_cube(artifact_files):
+def test_orphan_attr_dims(test_folder):
 
-# #     orphans = get_orphan_attribute_cube_files(artifact_files, strip_prefix=True)
+    ft = TM1FileTool(test_folder)
 
-# #     assert len(orphans) > 0
+    orphans = ft.get_orphan_attr_dims()
 
-# #     assert orphans.count("foo") == 0
+    assert len(orphans) > 0
+    assert "koala" not in [o.strip_prefix() for o in orphans]
+    assert "kangaroo" in [o.strip_prefix() for o in orphans]
 
-# #     assert orphans.count("humphrey") == 1
 
-# #     orphans = get_orphan_attribute_cube_files(artifact_files)
+def test_orphan_attr_cubes(test_folder):
 
-# #     assert len(orphans) > 0
+    ft = TM1FileTool(test_folder)
 
-# #     assert orphans.count(TM1FileTool.attr_prefix + "foo") == 0
+    orphans = ft.get_orphan_attr_cubes()
 
-# #     assert orphans.count(TM1FileTool.attr_prefix + "humphrey") == 1
+    assert len(orphans) > 0
+    assert "foo" not in [o.strip_prefix() for o in orphans]
+    assert "humphrey" in [o.strip_prefix() for o in orphans]
