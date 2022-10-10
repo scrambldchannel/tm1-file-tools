@@ -95,14 +95,14 @@ class TM1FileTool:
         for b in self._blb_files:
             b.delete()
 
-        self.blb_files = self._find_blbs()
+        self._find_blbs()
 
     def delete_orphan_rules(self):
 
         for r in self.get_orphan_rules():
             r.delete()
 
-        self._rules_files = self._find_rules()
+        self._find_rules()
 
     def delete_orphan_attr_dims(self):
 
@@ -123,14 +123,14 @@ class TM1FileTool:
         for v in self.get_orphan_views():
             v.delete()
 
-        self._view_files = self._find_views()
+        self._find_views()
 
     def delete_orphan_subs(self):
 
         for s in self.get_orphan_subsets():
             s.delete()
 
-        self._sub_files = self._find_subs()
+        self._find_subs()
 
     def delete_orphan_feeders(self):
 
