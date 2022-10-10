@@ -52,9 +52,10 @@ class TM1FileTool:
         self.config_file = self._find_config_file()
 
         # if we do have a config file, attempt to derive paths to logs, data etc
-        self.data_path, self.log_path = self._get_paths_from_cfg()
+        self._data_path, self._log_path = self._get_paths_from_cfg()
 
         # scan for all file types
+        # this we want to replace for performance sakes
         self._scan_all()
 
     def re_scan(self):
@@ -75,10 +76,10 @@ class TM1FileTool:
 
     def delete_all_feeders(self):
 
-        for fd in self.feeders_files:
+        for fd in self._feeders_files:
             fd.delete()
 
-        self.feeders_files = self._find_feeders()
+        self._find_feeders()
 
     def delete_all_orphans(self):
 
@@ -91,7 +92,7 @@ class TM1FileTool:
 
     def delete_all_blbs(self):
 
-        for b in self.blb_files:
+        for b in self._blb_files:
             b.delete()
 
         self.blb_files = self._find_blbs()
@@ -101,126 +102,128 @@ class TM1FileTool:
         for r in self.get_orphan_rules():
             r.delete()
 
-        self.rules_files = self._find_rules()
+        self._rules_files = self._find_rules()
 
     def delete_orphan_attr_dims(self):
 
         for d in self.get_orphan_attr_dims():
             d.delete()
 
-        self.dim_files = self._find_dims()
+        self._dim_files = self._find_dims()
 
     def delete_orphan_attr_cubes(self):
 
         for c in self.get_orphan_attr_cubes():
             c.delete()
 
-        self.cube_files = self._find_cubes()
+        self._cube_files = self._find_cubes()
 
     def delete_orphan_views(self):
 
         for v in self.get_orphan_views():
             v.delete()
 
-        self.view_files = self._find_views()
+        self._view_files = self._find_views()
 
     def delete_orphan_subsets(self):
 
         for s in self.get_orphan_subsets():
             s.delete()
 
-        self.sub_files = self._find_subs()
+        self._sub_files = self._find_subs()
 
     def delete_orphan_feeders(self):
 
         for f in self.get_orphan_feeders():
             f.delete()
 
-        self.feeders_files = self._find_feeders()
+        self._find_feeders()
 
     def get_model_cubes(self):
 
-        return [c for c in self.cube_files if not c.is_control]
+        return [c for c in self._cube_files if not c.is_control]
 
     def get_model_dimensions(self):
 
-        return [d for d in self.dim_files if not d.is_control]
+        return [d for d in self._dim_files if not d.is_control]
 
     def get_control_cubes(self):
 
-        return [c for c in self.cube_files if c.is_control]
+        return [c for c in self._cube_files if c.is_control]
 
     def get_control_dimensions(self):
 
-        return [d for d in self.dim_files if d.is_control]
+        return [d for d in self._dim_files if d.is_control]
 
     def get_control_processes(self):
 
-        return [p for p in self.process_files if p.is_control]
+        return [p for p in self._proc_files if p.is_control]
 
     def get_control_views(self):
 
-        return [v for v in self.view_files if v.is_control]
+        return [v for v in self._view_files if v.is_control]
 
     def get_control_subsets(self):
 
-        return [s for s in self.sub_files if s.is_control]
+        return [s for s in self._sub_files if s.is_control]
 
     def get_attr_cubes(self):
 
-        return [TM1AttributeCubeFile(c._path) for c in self.cube_files if c.name.find(c.attribute_prefix) == 0]
+        return [TM1AttributeCubeFile(c._path) for c in self._cube_files if c.name.find(c.attribute_prefix) == 0]
 
     def get_attr_dimensions(self):
 
         return [
             TM1AttributeDimensionFile(d._path)
-            for d in self.dim_files
+            for d in self._dim_files
             if d.name.lower().find(d.attribute_prefix.lower()) == 0
         ]
 
     def get_orphan_rules(self):
 
-        return [r for r in self.rules_files if r.stem.lower() not in [c.stem.lower() for c in self.cube_files]]
+        return [r for r in self._rules_files if r.stem.lower() not in [c.stem.lower() for c in self._cube_files]]
 
     def get_orphan_attr_dims(self):
 
         return [
             a
             for a in self.get_attr_dimensions()
-            if a.strip_prefix().lower() not in [d.stem.lower() for d in self.dim_files]
+            if a.strip_prefix().lower() not in [d.stem.lower() for d in self._dim_files]
         ]
 
     def get_orphan_attr_cubes(self):
 
         return [
-            a for a in self.get_attr_cubes() if a.strip_prefix().lower() not in [d.stem.lower() for d in self.dim_files]
+            a
+            for a in self.get_attr_cubes()
+            if a.strip_prefix().lower() not in [d.stem.lower() for d in self._dim_files]
         ]
 
     def get_orphan_views(self):
 
-        return [v for v in self.view_files if v.cube.lower() not in [c.stem.lower() for c in self.cube_files]]
+        return [v for v in self._view_files if v.cube.lower() not in [c.stem.lower() for c in self._cube_files]]
 
     def get_orphan_subsets(self):
 
-        return [s for s in self.sub_files if s.dimension.lower() not in [d.stem.lower() for d in self.dim_files]]
+        return [s for s in self._sub_files if s.dimension.lower() not in [d.stem.lower() for d in self._dim_files]]
 
     def get_orphan_feeders(self):
 
-        return [f for f in self.feeders_files if f.stem.lower() not in [c.stem.lower() for c in self.cube_files]]
+        return [f for f in self._feeders_files if f.stem.lower() not in [c.stem.lower() for c in self._cube_files]]
 
     def _scan_all(self):
 
-        self.dim_files = self._find_dims()
-        self.cube_files = self._find_cubes()
-        self.rules_files = self._find_rules()
-        self.cma_files = self._find_cmas()
-        self.view_files = self._find_views()
-        self.sub_files = self._find_subs()
-        self.feeders_files = self._find_feeders()
-        self.non_tm1_files = self._find_non_tm1()
-        self.process_files = self._find_processes()
-        self.log_files = self._find_logs()
-        self.blb_files = self._find_blbs()
+        self._dim_files = self._find_dims()
+        self._cube_files = self._find_cubes()
+        self._rules_files = self._find_rules()
+        self._cma_files = self._find_cmas()
+        self._view_files = self._find_views()
+        self._sub_files = self._find_subs()
+        self._find_feeders()
+        self._non_tm1_files = self._find_non_tm1()
+        self._proc_files = self._find_processes()
+        self._log_files = self._find_logs()
+        self._find_blbs()
 
     def _find_dims(self):
         """
@@ -239,7 +242,7 @@ class TM1FileTool:
 
     def _find_feeders(self):
 
-        return [TM1FeedersFile(f) for f in self._find_files(TM1FeedersFile.suffix)]
+        self._feeders_files = [TM1FeedersFile(f) for f in self._find_files(TM1FeedersFile.suffix)]
 
     def _find_processes(self):
 
@@ -272,7 +275,7 @@ class TM1FileTool:
         Returns a list of all blb file objects
         """
 
-        return [TM1BLBFile(b) for b in self._find_files(TM1BLBFile.suffix)]
+        self._blb_files = [TM1BLBFile(b) for b in self._find_files(TM1BLBFile.suffix)]
 
     def _find_logs(self):
 
@@ -280,7 +283,7 @@ class TM1FileTool:
         # We should also be careful of the tm1s.log file as we may fail to get a lock on it
 
         logs = []
-        for log in self._case_insensitive_glob(self.log_path, f"*.{TM1LogFile.suffix}"):
+        for log in self._case_insensitive_glob(self._log_path, f"*.{TM1LogFile.suffix}"):
             # if we think this is the tm1s.log file, use the derived class that avoids trying to open it
             if log.stem.lower() == "tm1s":
                 logs.append(TM1ChangeLogFile(log))
@@ -315,7 +318,7 @@ class TM1FileTool:
         if path:
             return self._case_insensitive_glob(path, f"{prefix}*.{suffix}", recursive=recursive)
 
-        return self._case_insensitive_glob(self.data_path, f"{prefix}*.{suffix}", recursive=recursive)
+        return self._case_insensitive_glob(self._data_path, f"{prefix}*.{suffix}", recursive=recursive)
 
     def _find_config_file(self):
 
