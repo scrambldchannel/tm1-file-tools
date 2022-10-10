@@ -45,12 +45,12 @@ def test_get_owner_name(test_folder):
 
 def test_get_public_views_path(test_folder):
 
-    f = TM1ViewFile(Path.joinpath(test_folder, f"cat{TM1ViewFile.folder_suffix}", "squirrel.vue"))
+    f = TM1ViewFile(Path.joinpath(test_folder, f"cat{TM1ViewFile.folder_suffix}", "squirrel.VUE"))
 
     assert f._get_public_path() == Path.joinpath(test_folder, f"cat{TM1ViewFile.folder_suffix}")
 
     f = TM1ViewFile(
-        Path.joinpath(test_folder, "Chimpy", f"cat{TM1ViewFile.folder_suffix}", "squirrel.vue"), public=False
+        Path.joinpath(test_folder, "Chimpy", f"cat{TM1ViewFile.folder_suffix}", "squirrel.VUE"), public=False
     )
 
     new_path = f._get_public_path()
@@ -61,16 +61,16 @@ def test_get_public_views_path(test_folder):
 def test_move_to_public(test_folder):
 
     f = TM1ViewFile(
-        Path.joinpath(test_folder, "Chimpy", f"cat{TM1ViewFile.folder_suffix}", "squirrel.vue"), public=False
+        Path.joinpath(test_folder, "Chimpy", f"cat{TM1ViewFile.folder_suffix}", "squirrel.VUE"), public=False
     )
 
     f.move_to_public()
 
     assert f._get_owner_name() is None
-    assert f._path == Path.joinpath(test_folder, f"cat{TM1ViewFile.folder_suffix}", "squirrel.vue")
+    assert f._path == Path.joinpath(test_folder, f"cat{TM1ViewFile.folder_suffix}", "squirrel.VUE")
 
-    f = TM1ViewFile(Path.joinpath(test_folder, f"cat{TM1ViewFile.folder_suffix}", "squirrel.vue"))
+    f = TM1ViewFile(Path.joinpath(test_folder, f"cat{TM1ViewFile.folder_suffix}", "squirrel.VUE"))
 
     assert f._get_owner_name() is None
-    assert f._path == Path.joinpath(test_folder, f"cat{TM1ViewFile.folder_suffix}", "squirrel.vue")
+    assert f._path == Path.joinpath(test_folder, f"cat{TM1ViewFile.folder_suffix}", "squirrel.VUE")
     assert f.public

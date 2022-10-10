@@ -189,7 +189,7 @@ def test_find_views(test_folder):
 def test_find_feeders(test_folder):
 
     ft = TM1FileTool(test_folder)
-
+    print(ft.feeders_files)
     assert any(f.stem == "cat" for f in ft.feeders_files)
     assert all(f.stem != "dragon" for f in ft.feeders_files)
 

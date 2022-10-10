@@ -3,23 +3,9 @@ from pathlib import Path
 from tm1filetools.files import TM1RulesFile
 
 
-def test_get_cube_path(test_folder):
+def test_init(test_folder):
 
-    f = TM1RulesFile(Path.joinpath(test_folder, "dog.rux"))
+    f = TM1RulesFile(Path.joinpath(test_folder, "dog.ruX"))
 
-    assert f._get_cube_path() == Path.joinpath(test_folder, "dog.cub")
-
-    f = TM1RulesFile(Path.joinpath(test_folder, "giraffe.rux"))
-
-    assert f._get_cube_path() == Path.joinpath(test_folder, "giraffe.cub")
-
-
-def test_is_orphan(test_folder):
-
-    f = TM1RulesFile(Path.joinpath(test_folder, "dog.rux"))
-
-    assert not f.is_orphan()
-
-    f = TM1RulesFile(Path.joinpath(test_folder, "giraffe.rux"))
-
-    assert f.is_orphan()
+    assert f.stem == "dog"
+    assert f.suffix == "ruX"

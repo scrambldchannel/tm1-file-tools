@@ -79,10 +79,8 @@ def test_is_tm1_file(test_folder):
     assert f.is_tm1_file
 
 
-def test_get_suffix_permutations(test_folder):
+def test_get_suffix_permutations():
 
-    f = TM1File(Path.joinpath(test_folder, "dog.ruX"))
-
-    permutations = f._get_suffix_permutations()
+    permutations = TM1File._get_suffix_permutations("rux")
 
     assert set(permutations) == set(["rux", "Rux", "RUx", "RUX", "rUx", "RuX", "rUX", "ruX"])

@@ -47,13 +47,20 @@ class TM1File:
         # Maybe there's a better way to handle this but let's just update the attribute
         self.stem = self._path.stem
 
+    def rename_suffix_to_lower(self):
+
+        # a way to standardise all file extensions to lower case
+        new_path = Path.joinpath(self._path.parent, f"{self._stem}.{self._path.suffix.lower()}")
+        self._path = self._path.rename(new_path)
+
     def strip_prefix(self):
 
         return self.stem.removeprefix(self.prefix)
 
-    def _get_suffix_permutations(self):
+    @staticmethod
+    def _get_suffix_permutations(suffix: str):
 
-        lu_sequence = ((c.lower(), c.upper()) for c in self.suffix)
+        lu_sequence = ((c.lower(), c.upper()) for c in suffix)
         return ["".join(x) for x in itertools.product(*lu_sequence)]
 
 
