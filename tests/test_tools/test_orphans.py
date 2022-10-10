@@ -10,6 +10,9 @@ def test_orphan_rules(test_folder):
     assert len(orphans) > 0
     assert "foo" not in [o.stem for o in orphans]
     assert "giraffe" in [o.stem for o in orphans]
+    # mixed case
+    assert "}statsforserver" not in [o.stem for o in orphans]
+    assert "TIGER" not in [o.stem for o in orphans]
 
 
 def test_orphan_attr_dims(test_folder):
@@ -20,6 +23,18 @@ def test_orphan_attr_dims(test_folder):
 
     assert len(orphans) > 0
     assert "koala" not in [o.strip_prefix() for o in orphans]
+    assert "MAGPIE" not in [o.strip_prefix() for o in orphans]
+    assert "kangaroo" in [o.strip_prefix() for o in orphans]
+
+
+def test_orphan_attr_dims_mixed_case(test_folder):
+
+    ft = TM1FileTool(test_folder)
+
+    orphans = ft.get_orphan_attr_dims()
+
+    assert len(orphans) > 0
+    assert "MAGPIE" not in [o.strip_prefix() for o in orphans]
     assert "kangaroo" in [o.strip_prefix() for o in orphans]
 
 

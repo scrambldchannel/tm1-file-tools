@@ -17,6 +17,7 @@ class TM1ViewFile(TM1UserFile):
 
         super().__init__(path)
 
+        # does this assumption hold true or do vue files sometimes get nested further?
         self.cube = self._get_object_name()
         self.public = public
         self.owner = self._get_owner_name()
