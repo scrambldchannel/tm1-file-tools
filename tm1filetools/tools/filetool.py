@@ -67,6 +67,12 @@ class TM1FileTool:
 
         self._scan_all()
 
+    def rename(self, file_object, new_name: str):
+
+        file_object.rename(new_name)
+
+        self._scan_all()
+
     def delete_all_feeders(self):
 
         for fd in self.feeders_files:
