@@ -46,3 +46,14 @@ def test_delete_all_feeders(test_folder):
     ft.delete_all_feeders()
 
     assert len(ft.feeders_files) == 0
+
+
+def test_delete_all_blbs(test_folder):
+
+    ft = TM1FileTool(test_folder)
+
+    assert len(ft.blb_files) > 0
+
+    ft.delete_all_blbs()
+
+    assert len(ft.blb_files) == 0

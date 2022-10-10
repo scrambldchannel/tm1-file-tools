@@ -6,6 +6,7 @@ from tm1filetools.files import (
     NonTM1File,
     TM1AttributeCubeFile,
     TM1AttributeDimensionFile,
+    TM1BLBFile,
     TM1CfgFile,
     TM1ChangeLogFile,
     TM1CMAFile,
@@ -28,6 +29,7 @@ class TM1FileTool:
     """
 
     suffixes = [
+        TM1BLBFile.suffix,
         TM1CfgFile.suffix,
         TM1CubeFile.suffix,
         TM1DimensionFile.suffix,
@@ -80,6 +82,13 @@ class TM1FileTool:
         self.delete_orphan_views()
         self.delete_orphan_subsets()
         self.delete_orphan_feeders()
+
+    def delete_all_blbs(self):
+
+        for b in self.blb_files:
+            b.delete()
+
+        self.blb_files = self._find_blbs()
 
     def delete_orphan_rules(self):
 
@@ -204,8 +213,8 @@ class TM1FileTool:
         self.feeders_files = self._find_feeders()
         self.non_tm1_files = self._find_non_tm1()
         self.process_files = self._find_processes()
-        # disabling this for now, need to handle potential different path
         self.log_files = self._find_logs()
+        self.blb_files = self._find_blbs()
 
     def _find_dims(self):
         """
@@ -251,6 +260,13 @@ class TM1FileTool:
     def _find_cmas(self):
 
         return [TM1CMAFile(r) for r in self._find_files(TM1CMAFile.suffix, recursive=True)]
+
+    def _find_blbs(self):
+        """
+        Returns a list of all blb file objects
+        """
+
+        return [TM1BLBFile(b) for b in self._find_files(TM1BLBFile.suffix)]
 
     def _find_logs(self):
 
