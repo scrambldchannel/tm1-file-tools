@@ -1,3 +1,4 @@
+import itertools
 from pathlib import Path
 
 
@@ -49,6 +50,11 @@ class TM1File:
     def strip_prefix(self):
 
         return self.stem.removeprefix(self.prefix)
+
+    def _get_suffix_permutations(self):
+
+        lu_sequence = ((c.lower(), c.upper()) for c in self.suffix)
+        return ["".join(x) for x in itertools.product(*lu_sequence)]
 
 
 class NonTM1File(TM1File):
