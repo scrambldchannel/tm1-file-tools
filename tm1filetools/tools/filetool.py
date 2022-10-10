@@ -350,7 +350,7 @@ class TM1FileTool:
                     return WindowsPath(pure_path)
 
                 # We can't do much with an absolute path when running on a separate machine
-                return None
+                return self._path
 
             else:
                 # thanks to the magic of pathlib, this seems to work cross platform :)
