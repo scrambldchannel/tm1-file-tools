@@ -109,14 +109,14 @@ class TM1FileTool:
         for d in self.get_orphan_attr_dims():
             d.delete()
 
-        self._dim_files = self._find_dims()
+        self._find_dims()
 
     def delete_orphan_attr_cubes(self):
 
         for c in self.get_orphan_attr_cubes():
             c.delete()
 
-        self._cube_files = self._find_cubes()
+        self._find_cubes()
 
     def delete_orphan_views(self):
 
@@ -173,8 +173,6 @@ class TM1FileTool:
 
     def get_attr_dims(self):
 
-        print(self._dim_files)
-
         return [
             TM1AttributeDimensionFile(d._path)
             for d in self._dim_files
@@ -214,7 +212,7 @@ class TM1FileTool:
     def _scan_all(self):
 
         self._find_dims()
-        self._cube_files = self._find_cubes()
+        self._find_cubes()
         self._rules_files = self._find_rules()
         self._cma_files = self._find_cmas()
         self._view_files = self._find_views()
@@ -234,7 +232,7 @@ class TM1FileTool:
 
     def _find_cubes(self):
 
-        return [TM1CubeFile(c) for c in self._find_files(TM1CubeFile.suffix)]
+        self._cube_files = [TM1CubeFile(c) for c in self._find_files(TM1CubeFile.suffix)]
 
     def _find_rules(self):
 

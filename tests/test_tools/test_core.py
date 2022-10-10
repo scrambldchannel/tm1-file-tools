@@ -38,11 +38,6 @@ def test_find_cubes(test_folder):
     assert any(c.stem == "cat" for c in ft._cube_files)
     assert all(c.stem != "unicorn" for c in ft._cube_files)
 
-    cubes = ft._find_cubes()
-
-    assert any(c.stem == "cat" for c in cubes)
-    assert all(c.stem != "unicorn" for c in cubes)
-
 
 def test_find_rules(test_folder):
 
