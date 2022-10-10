@@ -8,7 +8,7 @@ def test_get_model_dims(test_folder):
 
     ft = TM1FileTool(test_folder)
 
-    dims = ft.get_model_dimensions()
+    dims = ft.get_model_dims()
 
     assert any(d.stem == "koala" for d in dims)
     assert all(d.stem != f"{TM1AttributeDimensionFile.prefix}koala" for d in dims)
@@ -18,7 +18,7 @@ def test_get_control_dims(test_folder):
 
     ft = TM1FileTool(test_folder)
 
-    dims = ft.get_control_dimensions()
+    dims = ft.get_control_dims()
 
     assert any(d.stem == f"{TM1AttributeDimensionFile.prefix}koala" for d in dims)
     assert all(d.stem != "koala" for d in dims)
@@ -59,7 +59,7 @@ def test_get_attr_dims(test_folder):
 
     ft = TM1FileTool(test_folder)
 
-    dims = ft.get_attr_dimensions()
+    dims = ft.get_attr_dims()
 
     assert any(d.stem == f"{TM1AttributeDimensionFile.prefix}kangaroo" for d in dims)
     assert all(d.stem != f"{TM1AttributeDimensionFile.prefix}vampire" for d in dims)
@@ -70,7 +70,7 @@ def test_get_control_processes(test_folder):
 
     ft = TM1FileTool(test_folder)
 
-    procs = ft.get_control_processes()
+    procs = ft.get_control_procs()
 
     assert any(p.stem == "}fraggle" for p in procs)
     assert all(p.stem != "dingo" for p in procs)
@@ -91,7 +91,7 @@ def test_get_control_subs(test_folder):
 
     ft = TM1FileTool(test_folder)
 
-    subs = ft.get_control_subsets()
+    subs = ft.get_control_subs()
 
     assert any(s.stem == "}dolphin" for s in subs)
     assert all(s.stem != "squirrel" for s in subs)

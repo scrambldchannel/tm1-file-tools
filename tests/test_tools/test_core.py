@@ -31,11 +31,6 @@ def test_find_dims(test_folder):
     assert any(d.stem == "koala" for d in ft._dim_files)
     assert all(d.stem != "bunyip" for d in ft._dim_files)
 
-    dims = ft._find_dims()
-
-    assert any(d.stem == "koala" for d in dims)
-    assert all(d.stem != "bunyip" for d in dims)
-
 
 def test_find_cubes(test_folder):
     ft = TM1FileTool(test_folder)
