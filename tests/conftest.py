@@ -5,21 +5,21 @@ from tm1filetools.files.binary.dimension import TM1AttributeDimensionFile
 from tm1filetools.files.text.subset import TM1SubsetFile
 from tm1filetools.files.text.view import TM1ViewFile
 
-cub_files = ["cat", "dog", "tiger", "}StatsForServer"]
-rux_files = ["dog", "giraffe", "TIGER", "}statsforserver"]
-dim_files = ["koala", "possum", "Magpie"]
-blb_files = ["emu", "unicorn"]
-sub_files = ["platypus", "donkey", "}dolphin"]
-view_files = ["mouse", "squirrel", "}shark"]
-dim_attributes = ["koala", "kangaroo", "magPie"]
-cub_attributes = ["koala", "humphrey", "MAGPIE"]
+cub_files = ["cat.cub", "dog.CUB"]
+rux_files = ["dog.ruX", "giraffe.rux"]
+dim_files = ["koala.DIM", "possum.dim"]
+blb_files = ["emu.blb", "unicorn.blb"]
+sub_files = ["platypus.sub", "donkey.SUB", "}dolphin.suB"]
+view_files = ["mouse.vue", "squirrel.VUE", "}shark.vue"]
+dim_attributes = ["koala.dim", "kangaroo.dim"]
+cub_attributes = ["koala.cub", "humphrey.CUB"]
 sub_folders = ["cat", "koala"]
 view_folders = ["cat", "koala"]
-feeders_files = ["cat", "possum"]
-process_files = ["dingo", "wombat", "}fraggle"]
+feeders_files = ["cat.feeders", "possum.FEEDERS"]
+process_files = ["dingo.PRO", "wombat.pro", "}fraggle.pRO"]
 junk_files = ["cat.cub.bak", "no_extension", "zzzBackup12.zip"]
 # should also add in a TI process error log
-log_files = ["tm1s", "tm1server"]
+log_files = ["tm1s.log", "tm1server.LOG"]
 
 
 @pytest.fixture(scope="function")
@@ -95,7 +95,7 @@ def rel_config_folder(tmp_path_factory):
     log_dir.mkdir()
 
     for log in log_files:
-        f = log_dir / f"{log}.log"
+        f = log_dir / f"{log}"
         f.touch()
 
     return d
@@ -119,27 +119,27 @@ def test_folder(tmp_path_factory):
 
     for c in cub_files:
 
-        f = d / f"{c}.cub"
+        f = d / f"{c}"
         f.touch()
 
     for r in rux_files:
 
-        f = d / f"{r}.rux"
+        f = d / f"{r}"
         f.touch()
 
     for df in dim_files:
 
-        f = d / f"{df}.dim"
+        f = d / f"{df}"
         f.touch()
 
     for b in blb_files:
 
-        f = d / f"{b}.blb"
+        f = d / f"{b}"
         f.touch()
 
     for fd in feeders_files:
 
-        f = d / f"{fd}.feeders"
+        f = d / f"{fd}"
         f.touch()
 
     # create dir for subsets
@@ -158,10 +158,10 @@ def test_folder(tmp_path_factory):
 
         for s in sub_files:
 
-            f = subs_dir / f"{s}.sub"
+            f = subs_dir / f"{s}"
             f.touch()
 
-            f = user_subs_dir / f"{s}.sub"
+            f = user_subs_dir / f"{s}"
             f.touch()
 
     # create dir for private views
@@ -177,24 +177,24 @@ def test_folder(tmp_path_factory):
 
         for v in view_files:
 
-            f = views_dir / f"{v}.vue"
+            f = views_dir / f"{v}"
             f.touch()
 
-            f = user_views_dir / f"{v}.vue"
+            f = user_views_dir / f"{v}"
             f.touch()
 
     for da in dim_attributes:
 
         da = TM1AttributeDimensionFile.prefix + da
 
-        f = d / f"{da}.dim"
+        f = d / f"{da}"
         f.touch()
 
     for ca in cub_attributes:
 
         ca = TM1AttributeCubeFile.prefix + ca
 
-        f = d / f"{ca}.cub"
+        f = d / f"{ca}"
         f.touch()
 
     for j in junk_files:
@@ -204,7 +204,7 @@ def test_folder(tmp_path_factory):
 
     for p in process_files:
 
-        f = d / f"{p}.pro"
+        f = d / f"{p}"
         f.touch()
 
     # return the path
