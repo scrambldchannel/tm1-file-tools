@@ -1,8 +1,8 @@
 from setuptools import find_packages, setup
 
 setup(
-    name="TM1FileUtils",
-    version="0.1.3",
+    name="tm1fileutils",
+    version="0.1.4",
     description="Tools for working with files created by a TM1 database",
     py_modules=["tm1-file-utils"],
     install_requires=["chardet"],
