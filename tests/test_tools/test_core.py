@@ -46,11 +46,6 @@ def test_find_rules(test_folder):
     assert any(r.stem == "dog" for r in ft._rules_files)
     assert all(r.stem != "basilisk" for r in ft._rules_files)
 
-    rules = ft._find_rules()
-
-    assert any(r.stem == "dog" for r in rules)
-    assert all(r.stem != "basilisk" for r in rules)
-
 
 def test_find_subs(test_folder):
 
@@ -59,11 +54,6 @@ def test_find_subs(test_folder):
     assert any(s.stem == "platypus" for s in ft._sub_files)
     assert all(s.stem != "womble" for s in ft._sub_files)
 
-    subs = ft._find_subs()
-
-    assert any(s.stem == "platypus" for s in subs)
-    assert all(s.stem != "womble" for s in subs)
-
 
 def test_find_views(test_folder):
 
@@ -71,11 +61,6 @@ def test_find_views(test_folder):
 
     assert any(v.stem == "mouse" for v in ft._view_files)
     assert all(v.stem != "dragon" for v in ft._view_files)
-
-    views = ft._find_views()
-
-    assert any(v.stem == "mouse" for v in views)
-    assert all(v.stem != "dragon" for v in views)
 
 
 def test_find_feeders(test_folder):
@@ -125,8 +110,3 @@ def test_find_logs(rel_config_folder):
 
     assert any(log.stem == "tm1s" for log in ft._log_files)
     assert all(log.stem != "dog" for log in ft._log_files)
-
-    logs = ft._find_logs()
-
-    assert any(log.stem == "tm1server" for log in logs)
-    assert all(log.stem != "cat" for log in logs)

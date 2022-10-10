@@ -213,14 +213,14 @@ class TM1FileTool:
 
         self._find_dims()
         self._find_cubes()
-        self._rules_files = self._find_rules()
-        self._cma_files = self._find_cmas()
-        self._view_files = self._find_views()
-        self._sub_files = self._find_subs()
+        self._find_rules()
+        self._find_cmas()
+        self._find_views()
+        self._find_subs()
         self._find_feeders()
-        self._non_tm1_files = self._find_non_tm1()
-        self._proc_files = self._find_processes()
-        self._log_files = self._find_logs()
+        self._find_non_tm1()
+        self._find_procs()
+        self._find_logs()
         self._find_blbs()
 
     def _find_dims(self):
@@ -236,19 +236,19 @@ class TM1FileTool:
 
     def _find_rules(self):
 
-        return [TM1RulesFile(r) for r in self._find_files(TM1RulesFile.suffix)]
+        self._rules_files = [TM1RulesFile(r) for r in self._find_files(TM1RulesFile.suffix)]
 
     def _find_feeders(self):
 
         self._feeders_files = [TM1FeedersFile(f) for f in self._find_files(TM1FeedersFile.suffix)]
 
-    def _find_processes(self):
+    def _find_procs(self):
 
-        return [TM1ProcessFile(f) for f in self._find_files(TM1ProcessFile.suffix)]
+        self._proc_files = [TM1ProcessFile(f) for f in self._find_files(TM1ProcessFile.suffix)]
 
     def _find_subs(self):
 
-        return [
+        self._sub_files = [
             TM1SubsetFile(
                 s,
             )
@@ -257,7 +257,7 @@ class TM1FileTool:
 
     def _find_views(self):
 
-        return [
+        self._view_files = [
             TM1ViewFile(
                 v,
             )
@@ -266,7 +266,7 @@ class TM1FileTool:
 
     def _find_cmas(self):
 
-        return [TM1CMAFile(r) for r in self._find_files(TM1CMAFile.suffix, recursive=True)]
+        self._cma_files = [TM1CMAFile(r) for r in self._find_files(TM1CMAFile.suffix, recursive=True)]
 
     def _find_blbs(self):
         """
@@ -290,7 +290,7 @@ class TM1FileTool:
             else:
                 logs.append(TM1LogFile(log))
 
-        return logs
+        self._log_files = logs
 
     def _find_non_tm1(self, recursive: bool = False):
 
@@ -309,7 +309,7 @@ class TM1FileTool:
 
                 files.remove(f)
 
-        return files
+        self._non_tm1_files = files
 
     def _find_files(self, suffix: str, recursive: bool = False, prefix: str = "", path: Path = None):
 

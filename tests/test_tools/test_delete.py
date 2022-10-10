@@ -1,4 +1,4 @@
-# import pytest
+import pytest
 
 from tm1filetools.tools import TM1FileTool
 
@@ -16,7 +16,7 @@ def test_delete(test_folder):
     assert all(f.stem.lower() != fd.stem.lower() for f in ft._feeders_files)
 
 
-# @pytest.mark.xfail
+@pytest.mark.xfail
 def test_delete_all_orphans(test_folder):
 
     ft = TM1FileTool(test_folder)
