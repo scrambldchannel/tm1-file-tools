@@ -90,8 +90,9 @@ def test_get_log_path_local(abs_config_folder, rel_config_folder):
     assert ft.log_path.is_absolute()
 
     ft = TM1FileTool(path=rel_config_folder, local=True)
-
-    assert not ft.log_path.is_absolute()
+    assert ft.log_path.exists
+    assert ft.log_path.root == "\\"
+    assert ft.log_path.stem == "logs"
 
 
 def test_get_data_path_rel(rel_config_folder):
