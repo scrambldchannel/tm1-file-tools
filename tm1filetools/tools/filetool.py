@@ -160,6 +160,66 @@ class TM1FileTool:
 
         return self._cma_files
 
+    # specific control object getters
+
+    def get_attr_dims(self):
+
+        return [
+            TM1AttributeDimensionFile(d._path)
+            for d in self.get_dims(control=True)
+            if d.name.lower().find(d.attribute_prefix.lower()) == 0
+        ]
+
+    def get_attr_cubes(self):
+
+        return [
+            TM1AttributeCubeFile(c._path) for c in self.get_cubes(control=True) if c.name.find(c.attribute_prefix) == 0
+        ]
+
+    # orphan getters
+
+    def get_orphan_rules(self):
+
+        return [r for r in self.get_rules() if r.stem.lower() not in [c.stem.lower() for c in self.get_cubes()]]
+
+    def get_orphan_attr_dims(self):
+
+        return [
+            a for a in self.get_attr_dims() if a.strip_prefix().lower() not in [d.stem.lower() for d in self.get_dims()]
+        ]
+
+    def get_orphan_attr_cubes(self):
+
+        return [
+            a
+            for a in self.get_attr_cubes()
+            if a.strip_prefix().lower() not in [d.stem.lower() for d in self.get_dims(control=True)]
+        ]
+
+    def get_orphan_subs(self):
+
+        return [
+            s
+            for s in self.get_subs(control=True)
+            if s.dimension.lower() not in [d.stem.lower() for d in self.get_dims(control=True)]
+        ]
+
+    def get_orphan_views(self):
+
+        return [
+            v
+            for v in self.get_views(control=True)
+            if v.cube.lower() not in [c.stem.lower() for c in self.get_cubes(control=True)]
+        ]
+
+    def get_orphan_feeders(self):
+
+        return [
+            f
+            for f in self.get_feeders(control=True)
+            if f.stem.lower() not in [c.stem.lower() for c in self.get_cubes(control=True)]
+        ]
+
     # generic operations on objects
 
     def delete(self, file_object):
@@ -175,6 +235,8 @@ class TM1FileTool:
 
         # potentially slow
         self.find_all()
+
+    # bulk deletes for relevant objects
 
     def delete_all_feeders(self):
 
@@ -229,7 +291,7 @@ class TM1FileTool:
 
     def delete_orphan_subs(self):
 
-        for s in self.get_orphan_subsets():
+        for s in self.get_orphan_subs():
             s.delete()
 
         self._find_subs()
@@ -240,62 +302,6 @@ class TM1FileTool:
             f.delete()
 
         self._find_feeders()
-
-    def get_attr_cubes(self):
-
-        return [
-            TM1AttributeCubeFile(c._path) for c in self.get_cubes(control=True) if c.name.find(c.attribute_prefix) == 0
-        ]
-
-    def get_attr_dims(self):
-
-        return [
-            TM1AttributeDimensionFile(d._path)
-            for d in self.get_dims(control=True)
-            if d.name.lower().find(d.attribute_prefix.lower()) == 0
-        ]
-
-    def get_orphan_rules(self):
-
-        return [r for r in self.get_rules() if r.stem.lower() not in [c.stem.lower() for c in self.get_cubes()]]
-
-    def get_orphan_attr_dims(self):
-
-        return [
-            a for a in self.get_attr_dims() if a.strip_prefix().lower() not in [d.stem.lower() for d in self.get_dims()]
-        ]
-
-    def get_orphan_attr_cubes(self):
-
-        return [
-            a
-            for a in self.get_attr_cubes()
-            if a.strip_prefix().lower() not in [d.stem.lower() for d in self.get_dims(control=True)]
-        ]
-
-    def get_orphan_views(self):
-
-        return [
-            v
-            for v in self.get_views(control=True)
-            if v.cube.lower() not in [c.stem.lower() for c in self.get_cubes(control=True)]
-        ]
-
-    def get_orphan_subsets(self):
-
-        return [
-            s
-            for s in self.get_subs(control=True)
-            if s.dimension.lower() not in [d.stem.lower() for d in self.get_dims(control=True)]
-        ]
-
-    def get_orphan_feeders(self):
-
-        return [
-            f
-            for f in self.get_feeders(control=True)
-            if f.stem.lower() not in [c.stem.lower() for c in self.get_cubes(control=True)]
-        ]
 
     # finders for different file types
 

@@ -23,7 +23,7 @@ def test_delete_all_orphans(test_folder):
     assert len(ft.get_orphan_attr_cubes()) > 0
     assert len(ft.get_orphan_feeders()) > 0
     assert len(ft.get_orphan_views()) > 0
-    assert len(ft.get_orphan_subsets()) > 0
+    assert len(ft.get_orphan_subs()) > 0
 
     ft.delete_all_orphans()
 
@@ -32,7 +32,7 @@ def test_delete_all_orphans(test_folder):
     assert len(ft.get_orphan_attr_cubes()) == 0
     assert len(ft.get_orphan_feeders()) == 0
     assert len(ft.get_orphan_views()) == 0
-    assert len(ft.get_orphan_subsets()) == 0
+    assert len(ft.get_orphan_subs()) == 0
 
 
 def test_delete_all_feeders(test_folder):

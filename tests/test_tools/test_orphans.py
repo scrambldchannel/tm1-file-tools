@@ -42,7 +42,7 @@ def test_orphan_subsets(test_folder):
 
     ft = TM1FileTool(test_folder)
 
-    orphans = ft.get_orphan_subsets()
+    orphans = ft.get_orphan_subs()
 
     assert len(orphans) > 0
 
