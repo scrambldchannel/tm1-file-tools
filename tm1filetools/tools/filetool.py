@@ -194,7 +194,7 @@ class TM1FileTool:
 
     def delete_all_blbs(self):
 
-        for b in self._blb_files:
+        for b in self.get_blbs(control=True):
             b.delete()
 
         self._find_blbs()

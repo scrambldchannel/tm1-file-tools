@@ -55,3 +55,18 @@ def test_delete_all_blbs(test_folder):
     ft.delete_all_blbs()
 
     assert len(ft.get_blbs()) == 0
+
+    ft.delete_all_blbs()
+
+    assert len(ft.get_blbs()) == 0
+
+
+def test_delete_all_pre_get(test_folder):
+
+    # ensure each delete method will run a "find" first
+
+    ft = TM1FileTool(test_folder)
+
+    ft.delete_all_blbs()
+    ft.delete_all_orphans()
+    ft.delete_all_feeders()
