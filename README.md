@@ -16,12 +16,26 @@ A Python package that simplifies working with files associated with a TM1 server
 
 ## Installation
 
-If you want to try it out, you can install directly from this repo. I'll think about publishing it to PyPi once it's considered a bit more stable.
 
 ```sh
-pip install git+https://github.com/scrambldchannel/tm1-file-tools.git
+pip install tm1filetools
 ```
 
-## Testing
+## Example Usage
 
-`python -m pytest tests`
+```python
+from pathlib import Path
+from tm1filetools import TM1FileTool
+
+path = Path("./data")
+
+ft = TM1FileTool(path)
+
+orphans = ft.get_orphan_rules()
+
+...
+
+ft.delete_all_blbs()
+
+...
+```
