@@ -1,7 +1,5 @@
-# simplify API in files/__init.py__ ?
 from pathlib import Path, PureWindowsPath, WindowsPath
 
-# from tm1filetools.files.base import TM1File
 from tm1filetools.files import (
     NonTM1File,
     TM1AttributeCubeFile,
