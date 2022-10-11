@@ -5,21 +5,22 @@ from tm1filetools.files.binary.dimension import TM1AttributeDimensionFile
 from tm1filetools.files.text.subset import TM1SubsetFile
 from tm1filetools.files.text.view import TM1ViewFile
 
-cub_files = ["cat.cub", "dog.CUB"]
-rux_files = ["dog.ruX", "giraffe.rux"]
 dim_files = ["koala.DIM", "possum.dim"]
-blb_files = ["emu.blb", "unicorn.blb"]
-sub_files = ["platypus.sub", "donkey.SUB", "}dolphin.suB"]
-view_files = ["mouse.vue", "squirrel.VUE", "}shark.vue"]
 dim_attributes = ["koala.dim", "kangaroo.dim"]
+cub_files = ["cat.cub", "dog.CUB"]
 cub_attributes = ["koala.cub", "humphrey.CUB"]
+rux_files = ["dog.ruX", "giraffe.rux"]
+process_files = ["dingo.PRO", "wombat.pro", "}fraggle.pRO"]
+sub_files = ["platypus.sub", "donkey.SUB", "}dolphin.suB"]
 sub_folders = ["cat", "koala"]
+view_files = ["mouse.vue", "squirrel.VUE", "}shark.vue"]
 view_folders = ["cat", "koala"]
 feeders_files = ["cat.feeders", "possum.FEEDERS"]
-process_files = ["dingo.PRO", "wombat.pro", "}fraggle.pRO"]
-junk_files = ["cat.cub.bak", "no_extension", "zzzBackup12.zip"]
 # should also add in a TI process error log
 log_files = ["tm1s.log", "tm1server.LOG"]
+blb_files = ["emu.blb", "unicorn.blb"]
+cma_files = ["bunyip.CMA", "troll.cma"]
+junk_files = ["cat.cub.bak", "no_extension", "zzzBackup12.zip"]
 
 
 @pytest.fixture(scope="function")
@@ -137,6 +138,11 @@ def test_folder(tmp_path_factory):
         f = d / f"{b}"
         f.touch()
 
+    for c in cma_files:
+
+        f = d / f"{c}"
+        f.touch()
+
     for fd in feeders_files:
 
         f = d / f"{fd}"
@@ -205,6 +211,11 @@ def test_folder(tmp_path_factory):
     for p in process_files:
 
         f = d / f"{p}"
+        f.touch()
+
+    for lg in log_files:
+
+        f = d / f"{lg}"
         f.touch()
 
     # return the path

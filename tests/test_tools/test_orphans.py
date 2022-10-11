@@ -21,19 +21,8 @@ def test_orphan_attr_dims(test_folder):
 
     orphans = ft.get_orphan_attr_dims()
 
-    assert len(orphans) > 0
+    assert orphans
     assert "koala" not in [o.strip_prefix() for o in orphans]
-    assert "MAGPIE" not in [o.strip_prefix() for o in orphans]
-    assert "kangaroo" in [o.strip_prefix() for o in orphans]
-
-
-def test_orphan_attr_dims_mixed_case(test_folder):
-
-    ft = TM1FileTool(test_folder)
-
-    orphans = ft.get_orphan_attr_dims()
-
-    assert len(orphans) > 0
     assert "MAGPIE" not in [o.strip_prefix() for o in orphans]
     assert "kangaroo" in [o.strip_prefix() for o in orphans]
 
@@ -53,7 +42,7 @@ def test_orphan_subsets(test_folder):
 
     ft = TM1FileTool(test_folder)
 
-    orphans = ft.get_orphan_subsets()
+    orphans = ft.get_orphan_subs()
 
     assert len(orphans) > 0
 
