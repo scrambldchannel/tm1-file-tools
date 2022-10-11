@@ -3,7 +3,7 @@ name: isort
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    paths: ["tm1filetools/**/*", "tests/**/*"]
+    paths: ["src/**/*", "tests/**/*"]
 
 jobs:
   isort:

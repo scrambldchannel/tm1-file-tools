@@ -3,7 +3,7 @@ name: black
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    paths: ["setup.py", "tm1filetools/**/*", "tests/**/*"]
+    paths: ["src/**/*", "tests/**/*"]
 
 jobs:
   black:
