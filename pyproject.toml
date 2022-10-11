@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "tm1filetools"
-version = "0.2.0"
+version = "0.3.0"
 authors = [
   { name="Alexander Sutcliffe", email="sutcliffe.alex@gmail.com" },
 ]
