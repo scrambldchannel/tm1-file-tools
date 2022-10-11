@@ -84,3 +84,10 @@ def test_get_suffix_permutations():
     permutations = TM1File._get_suffix_permutations("rux")
 
     assert set(permutations) == set(["rux", "Rux", "RUx", "RUX", "rUx", "RuX", "rUX", "ruX"])
+
+
+def test_str(test_folder):
+
+    f = TM1File(Path.joinpath(test_folder, "cat.cub"))
+
+    assert f.__str__() == "TM1File (cat.cub)"

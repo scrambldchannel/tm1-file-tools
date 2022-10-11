@@ -19,6 +19,10 @@ class TM1File:
         self.is_control = self._is_control_object()
         self.suffix = self._get_suffix()
 
+    def __str__(self):
+
+        return f"{self.__class__.__name__} ({self.name})"
+
     def exists(self):
 
         return self._path.exists()
