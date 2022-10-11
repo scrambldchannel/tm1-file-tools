@@ -13,5 +13,10 @@ setup(
     url="http://github.com/scrambldchannel/tm1-file-utils",
     packages=find_packages(),
     keywords="tm1",
-    classifiers=["Development Status :: 3 - Alpha"],
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Developers",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3.9",
+    ],
 )
