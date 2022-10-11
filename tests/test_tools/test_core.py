@@ -24,57 +24,13 @@ def test_find_files_by_suffix(test_folder):
     assert not exes
 
 
-def test_find_dims(test_folder):
+def test_find_all(test_folder):
+
+    # this could be tested much more thoroughly!
 
     ft = TM1FileTool(test_folder)
 
-    assert any(d.stem == "koala" for d in ft._dim_files)
-    assert all(d.stem != "bunyip" for d in ft._dim_files)
-
-
-def test_find_cubes(test_folder):
-    ft = TM1FileTool(test_folder)
-
-    assert any(c.stem == "cat" for c in ft._cube_files)
-    assert all(c.stem != "unicorn" for c in ft._cube_files)
-
-
-def test_find_rules(test_folder):
-
-    ft = TM1FileTool(test_folder)
-
-    assert any(r.stem == "dog" for r in ft._rules_files)
-    assert all(r.stem != "basilisk" for r in ft._rules_files)
-
-
-def test_find_subs(test_folder):
-
-    ft = TM1FileTool(test_folder)
-
-    assert any(s.stem == "platypus" for s in ft._sub_files)
-    assert all(s.stem != "womble" for s in ft._sub_files)
-
-
-def test_find_views(test_folder):
-
-    ft = TM1FileTool(test_folder)
-
-    assert any(v.stem == "mouse" for v in ft._view_files)
-    assert all(v.stem != "dragon" for v in ft._view_files)
-
-
-def test_find_feeders(test_folder):
-
-    ft = TM1FileTool(test_folder)
-    assert any(f.stem == "cat" for f in ft._feeders_files)
-    assert all(f.stem != "dragon" for f in ft._feeders_files)
-
-
-def test_re_scan(test_folder):
-
-    ft = TM1FileTool(test_folder)
-
-    assert any(f.stem == "cat" for f in ft._feeders_files)
+    assert any(f.stem == "cat" for f in ft.get_feeders())
 
     for f in ft._feeders_files:
         if f.stem == "cat":
@@ -82,31 +38,6 @@ def test_re_scan(test_folder):
 
     assert any(f.stem == "cat" for f in ft._feeders_files)
 
-    ft.re_scan()
+    ft.find_all()
 
     assert all(f.stem != "cat" for f in ft._feeders_files)
-
-
-def test_non_tm1_files(test_folder):
-
-    ft = TM1FileTool(test_folder)
-
-    assert any(f.name == "cat.cub.bak" for f in ft._non_tm1_files)
-
-    for f in ft._non_tm1_files:
-        if f.name == "cat.cub.bak":
-            f.delete()
-
-    assert any(f.name == "cat.cub.bak" for f in ft._non_tm1_files)
-
-    ft.re_scan()
-
-    assert all(f.name != "cat.cub.bak" for f in ft._non_tm1_files)
-
-
-def test_find_logs(rel_config_folder):
-
-    ft = TM1FileTool(rel_config_folder)
-
-    assert any(log.stem == "tm1s" for log in ft._log_files)
-    assert all(log.stem != "dog" for log in ft._log_files)
