@@ -1,4 +1,5 @@
 from pathlib import Path, PureWindowsPath, WindowsPath
+from typing import List, Optional
 
 from tm1filetools.files import (
     NonTM1File,
@@ -45,9 +46,9 @@ class TM1FileTool:
 
         # local means the code is running on the machine the folder exists
         # this means that an absolute path in the cfg file can be used
-        self._local = local
+        self._local: bool = local
 
-        self.config_file = self._find_config_file()
+        self.config_file: Optional[TM1CfgFile] = self._find_config_file()
 
         # if we do have a config file, attempt to derive paths to logs, data etc
         self._data_path, self._log_path = self._get_paths_from_cfg()
@@ -55,25 +56,27 @@ class TM1FileTool:
         # Fetch lists of files on demand
 
         # core model files
-        self._dim_files = None
-        self._cube_files = None
+        self._dim_files: Optional[list] = None
+        self._cube_files: Optional[list] = None
         # core code files
-        self._rules_files = None
-        self._proc_files = None
+        self._rules_files: Optional[list] = None
+        self._proc_files: Optional[list] = None
         # other model files
-        self._sub_files = None
-        self._view_files = None
-        self._feeders_files = None
+        self._sub_files: Optional[list] = None
+        self._view_files: Optional[list] = None
+        self._feeders_files: Optional[list] = None
         # logs
-        self._log_files = None
+        self._log_files: Optional[list] = None
         # other cruft
-        self._cma_files = None
-        self._blb_files = None
-        self._non_tm1_files = None
+        self._cma_files: Optional[list] = None
+        self._blb_files: Optional[list] = None
+        self._non_tm1_files: Optional[list] = None
 
     def find_all(self):
+        """
+        Do a full scan of the dir(s) and populate all lists of files
+        """
 
-        # can be time consuming
         self._find_dims()
         self._find_cubes()
         self._find_rules()
@@ -88,70 +91,151 @@ class TM1FileTool:
 
     # getters for all file types
 
-    def get_dims(self, model: bool = True, control: bool = False):
+    def get_dims(self, model: bool = True, control: bool = False) -> List[TM1DimensionFile]:
+        """Returns list of all dimension files
 
+        Args:
+            model: Return model dims (i.e. not prefixed with "}")
+            control: Return control dims (i.e. prefixed with "}")
+
+        Returns:
+            List of dimension files
+        """
         if self._dim_files is None:
             self._find_dims()
 
         return self._filter_model_and_or_control(self._dim_files, model=model, control=control)
 
-    def get_cubes(self, model: bool = True, control: bool = False):
+    def get_cubes(self, model: bool = True, control: bool = False) -> List[TM1CubeFile]:
+        """Returns list of all cube files
+
+        Args:
+            model: Return model cubes (i.e. not prefixed with "}")
+            control: Return control cubes (i.e. prefixed with "}")
+
+        Returns:
+            List of cube files
+        """
 
         if self._cube_files is None:
             self._find_cubes()
 
         return self._filter_model_and_or_control(self._cube_files, model=model, control=control)
 
-    def get_rules(self, model: bool = True, control: bool = False):
+    def get_rules(self, model: bool = True, control: bool = False) -> List[TM1RulesFile]:
+        """Returns list of all cube rules files
+
+        Args:
+            model: Return model cube rules (i.e. not prefixed with "}")
+            control: Return control cube rules (i.e. prefixed with "}")
+
+        Returns:
+            List of cube rules files
+        """
 
         if self._rules_files is None:
             self._find_rules()
 
         return self._filter_model_and_or_control(self._rules_files, model=model, control=control)
 
-    def get_procs(self, model: bool = True, control: bool = False):
+    def get_procs(self, model: bool = True, control: bool = False) -> List[TM1ProcessFile]:
+        """Returns list of all TI process files
+
+        Args:
+            model: Return model procs (i.e. not prefixed with "}")
+            control: Return control procs (i.e. prefixed with "}")
+
+        Returns:
+            List of proc files
+        """
 
         if self._proc_files is None:
             self._find_procs()
 
         return self._filter_model_and_or_control(self._proc_files, model=model, control=control)
 
-    def get_subs(self, model: bool = True, control: bool = False):
+    def get_subs(self, model: bool = True, control: bool = False) -> List[TM1SubsetFile]:
+        """Returns list of all dimension subset files
+
+        Args:
+            model: Return model subsets (i.e. not prefixed with "}")
+            control: Return control subsets (i.e. prefixed with "}")
+
+        Returns:
+            List of subset files
+        """
 
         if self._sub_files is None:
             self._find_subs()
 
         return self._filter_model_and_or_control(self._sub_files, model=model, control=control)
 
-    def get_views(self, model: bool = True, control: bool = False):
+    def get_views(self, model: bool = True, control: bool = False) -> List[TM1ViewFile]:
+        """Returns list of all cube view files
+
+        Args:
+            model: Return model cube views (i.e. not prefixed with "}")
+            control: Return control cube views (i.e. prefixed with "}")
+
+        Returns:
+            List of cube view files
+        """
 
         if self._view_files is None:
             self._find_views()
 
         return self._filter_model_and_or_control(self._view_files, model=model, control=control)
 
-    def get_feeders(self, model: bool = True, control: bool = False):
+    def get_feeders(self, model: bool = True, control: bool = False) -> List[TM1FeedersFile]:
+        """Returns list of all cube feeder files
+
+        Args:
+            model: Return model cube feeders (i.e. not prefixed with "}")
+            control: Return control cube feeders (i.e. prefixed with "}")
+
+        Returns:
+            List of cube feeder files
+        """
 
         if self._feeders_files is None:
             self._find_feeders()
 
         return self._filter_model_and_or_control(self._feeders_files, model=model, control=control)
 
-    def get_logs(self):
+    def get_logs(self) -> List[TM1LogFile]:
+        """Returns list of all log files
+
+        Returns:
+            List of log files
+        """
 
         if self._log_files is None:
             self._find_logs()
 
         return self._log_files
 
-    def get_blbs(self, model: bool = True, control: bool = False):
+    def get_blbs(self, model: bool = True, control: bool = False) -> List[TM1BLBFile]:
+        """Returns list of all blb files
+
+        Args:
+            model: Return model blbs (i.e. not prefixed with "}")
+            control: Return control blbs (i.e. prefixed with "}")
+
+        Returns:
+            List of blb files
+        """
 
         if self._blb_files is None:
             self._find_blbs()
 
         return self._filter_model_and_or_control(self._blb_files, model=model, control=control)
 
-    def get_cmas(self):
+    def get_cmas(self) -> List[TM1CMAFile]:
+        """Returns list of all cma files
+
+        Returns:
+            List of cma files
+        """
 
         if self._cma_files is None:
             self._find_cmas()
@@ -160,7 +244,12 @@ class TM1FileTool:
 
     # specific control object getters
 
-    def get_attr_dims(self):
+    def get_attr_dims(self) -> List[TM1AttributeDimensionFile]:
+        """Returns list of all attribute dim files
+
+        Returns:
+            List of attribute dim files
+        """
 
         return [
             TM1AttributeDimensionFile(d._path)
@@ -168,7 +257,12 @@ class TM1FileTool:
             if d.name.lower().find(d.attribute_prefix.lower()) == 0
         ]
 
-    def get_attr_cubes(self):
+    def get_attr_cubes(self) -> List[TM1AttributeCubeFile]:
+        """Returns list of all attribute cube files
+
+        Returns:
+            List of attribute cube files
+        """
 
         return [
             TM1AttributeCubeFile(c._path) for c in self.get_cubes(control=True) if c.name.find(c.attribute_prefix) == 0
