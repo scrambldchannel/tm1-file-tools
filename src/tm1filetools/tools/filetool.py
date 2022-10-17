@@ -19,6 +19,7 @@ from tm1filetools.files import (
     TM1SubsetFile,
     TM1ViewFile,
 )
+from tm1filetools.files.base import TM1File
 
 
 class TM1FileTool:
@@ -270,17 +271,32 @@ class TM1FileTool:
 
     # orphan getters
 
-    def get_orphan_rules(self):
+    def get_orphan_rules(self) -> List[TM1RulesFile]:
+        """Returns list of rules files that don't have corresponding cube files
+
+        Returns:
+            List of rules files
+        """
 
         return [r for r in self.get_rules() if r.stem.lower() not in [c.stem.lower() for c in self.get_cubes()]]
 
-    def get_orphan_attr_dims(self):
+    def get_orphan_attr_dims(self) -> List[TM1DimensionFile]:
+        """Returns list of attribute dim files that don't have corresponding dim files
+
+        Returns:
+            List of dim files
+        """
 
         return [
             a for a in self.get_attr_dims() if a.strip_prefix().lower() not in [d.stem.lower() for d in self.get_dims()]
         ]
 
-    def get_orphan_attr_cubes(self):
+    def get_orphan_attr_cubes(self) -> List[TM1CubeFile]:
+        """Returns list of attribute cube files that don't have corresponding dim files
+
+        Returns:
+            List of cube files
+        """
 
         return [
             a
@@ -288,7 +304,12 @@ class TM1FileTool:
             if a.strip_prefix().lower() not in [d.stem.lower() for d in self.get_dims(control=True)]
         ]
 
-    def get_orphan_subs(self):
+    def get_orphan_subs(self) -> List[TM1SubsetFile]:
+        """Returns list of subset files that don't have corresponding dim files
+
+        Returns:
+            List of subset files
+        """
 
         return [
             s
@@ -296,7 +317,12 @@ class TM1FileTool:
             if s.dimension.lower() not in [d.stem.lower() for d in self.get_dims(control=True)]
         ]
 
-    def get_orphan_views(self):
+    def get_orphan_views(self) -> List[TM1ViewFile]:
+        """Returns list of view files that don't have corresponding cube files
+
+        Returns:
+            List of view files
+        """
 
         return [
             v
@@ -304,7 +330,12 @@ class TM1FileTool:
             if v.cube.lower() not in [c.stem.lower() for c in self.get_cubes(control=True)]
         ]
 
-    def get_orphan_feeders(self):
+    def get_orphan_feeders(self) -> List[TM1FeedersFile]:
+        """Returns list of feeder files that don't have corresponding cube files
+
+        Returns:
+            List of feeder files
+        """
 
         return [
             f
@@ -314,14 +345,26 @@ class TM1FileTool:
 
     # generic operations on objects
 
-    def delete(self, file_object):
+    def delete(self, file_object: TM1File) -> None:
+        """Deletes the file specified and updates properties of the file tool object
+
+        Args:
+            file_object: Instance of a file object to delete
+
+        """
 
         file_object.delete()
 
         # potentially slow
         self.find_all()
 
-    def rename(self, file_object, new_name: str):
+    def rename(self, file_object, new_name: str) -> None:
+        """Renames the file specified and updates properties of the file tool object
+
+        Args:
+            file_object: Instance of a file object to rename
+            new_name: New name for stem of file object
+        """
 
         file_object.rename(new_name)
 
@@ -330,14 +373,26 @@ class TM1FileTool:
 
     # bulk deletes for relevant objects
 
-    def delete_all_feeders(self):
+    def delete_all_feeders(self) -> None:
+        """Deletes all feeder files"""
 
         for fd in self.get_feeders():
             fd.delete()
 
         self._find_feeders()
 
-    def delete_all_orphans(self):
+    def delete_all_blbs(self) -> None:
+        """Deletes all blb files"""
+
+        for b in self.get_blbs(control=True):
+            b.delete()
+
+        self._find_blbs()
+
+    # bulk deletes for orphans
+
+    def delete_all_orphans(self) -> None:
+        """Deletes all orphan files (rules, attribute dims etc)"""
 
         self.delete_orphan_rules()
         self.delete_orphan_attr_dims()
@@ -346,49 +401,48 @@ class TM1FileTool:
         self.delete_orphan_subs()
         self.delete_orphan_feeders()
 
-    def delete_all_blbs(self):
-
-        for b in self.get_blbs(control=True):
-            b.delete()
-
-        self._find_blbs()
-
-    def delete_orphan_rules(self):
+    def delete_orphan_rules(self) -> None:
+        """Deletes all orphan rules files"""
 
         for r in self.get_orphan_rules():
             r.delete()
 
         self._find_rules()
 
-    def delete_orphan_attr_dims(self):
+    def delete_orphan_attr_dims(self) -> None:
+        """Deletes all orphan attribute dim files"""
 
         for d in self.get_orphan_attr_dims():
             d.delete()
 
         self._find_dims()
 
-    def delete_orphan_attr_cubes(self):
+    def delete_orphan_attr_cubes(self) -> None:
+        """Deletes all orphan attribute cube files"""
 
         for c in self.get_orphan_attr_cubes():
             c.delete()
 
         self._find_cubes()
 
-    def delete_orphan_views(self):
+    def delete_orphan_views(self) -> None:
+        """Deletes all orphan attribute view files"""
 
         for v in self.get_orphan_views():
             v.delete()
 
         self._find_views()
 
-    def delete_orphan_subs(self):
+    def delete_orphan_subs(self) -> None:
+        """Deletes all orphan attribute subset files"""
 
         for s in self.get_orphan_subs():
             s.delete()
 
         self._find_subs()
 
-    def delete_orphan_feeders(self):
+    def delete_orphan_feeders(self) -> None:
+        """Deletes all orphan feeder files"""
 
         for f in self.get_orphan_feeders():
             f.delete()
