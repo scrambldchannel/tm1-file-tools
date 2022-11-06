@@ -1,6 +1,10 @@
 tm1filetools.files package
 ==========================
 
+.. automodule:: tm1filetools.files
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 .. toctree::
    :maxdepth: 2
