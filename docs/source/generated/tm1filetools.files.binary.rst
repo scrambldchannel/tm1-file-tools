@@ -1,6 +1,10 @@
 tm1filetools.files.binary package
 =================================
 
+.. automodule:: tm1filetools.files.binary
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 tm1filetools.files.binary.binary module
 ---------------------------------------

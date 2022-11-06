@@ -1,3 +1,4 @@
+"""Classes representing different TM1 file types."""
 from .base import NonTM1File  # noqa
 from .binary.cube import (  # noqa
     TM1AttributeCubeFile,

@@ -2,6 +2,11 @@ tm1filetools.files.text package
 ===============================
 
 
+.. automodule:: tm1filetools.files.text
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tm1filetools.files.text.blb module
 ----------------------------------
 
