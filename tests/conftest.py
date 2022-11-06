@@ -11,6 +11,7 @@ cub_files = ["cat.cub", "dog.CUB"]
 cub_attributes = ["koala.cub", "humphrey.CUB"]
 rux_files = ["dog.ruX", "giraffe.rux"]
 process_files = ["dingo.PRO", "wombat.pro", "}fraggle.pRO"]
+cho_files = ["quokka.cho", "black_SNAKE.cho", "}brown_snake.cHO"]
 sub_files = ["platypus.sub", "donkey.SUB", "}dolphin.suB"]
 sub_folders = ["cat", "koala"]
 view_files = ["mouse.vue", "squirrel.VUE", "}shark.vue"]
@@ -211,6 +212,11 @@ def test_folder(tmp_path_factory):
     for p in process_files:
 
         f = d / f"{p}"
+        f.touch()
+
+    for c in cho_files:
+
+        f = d / f"{c}"
         f.touch()
 
     for lg in log_files:
