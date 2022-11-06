@@ -1,6 +1,6 @@
 
-Quickstart
-==========
+Getting Started
+===============
 
 Installation
 ------------
