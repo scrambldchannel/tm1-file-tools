@@ -16,7 +16,6 @@ release = "0.3.2"
 
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinx.ext.autosummary",
     "sphinx_rtd_theme",
 ]
 github_project_url = "https://github.com/scrambldchannel/tm1-file-tools"
