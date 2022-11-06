@@ -16,8 +16,8 @@ release = "0.3.2"
 
 extensions = [
     "sphinx.ext.autodoc",
-    # 'sphinxcontrib_github_alt',
-    # 'pydata_sphinx_theme',
+    "sphinx.ext.autosummary",
+    "sphinx_rtd_theme",
 ]
 github_project_url = "https://github.com/scrambldchannel/tm1-file-tools"
 
@@ -28,7 +28,7 @@ exclude_patterns = []
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-# html_theme = "pydata_sphinx_theme"
+html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
 
 # The name of the Pygments (syntax highlighting) style to use.
