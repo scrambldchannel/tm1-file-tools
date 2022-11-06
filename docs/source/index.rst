@@ -18,7 +18,8 @@ directory without a dependency on a running TM1 Server.
    :maxdepth: 2
    :caption: Contents:
 
-
+   quickstart
+   history
 
 Indices and tables
 ==================
