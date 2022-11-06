@@ -30,16 +30,10 @@ What it doesn’t do
    `TM1py <https://github.com/cubewise-code/tm1py>`__ for that)
 
 .. toctree::
-   :maxdepth: 6
+   :maxdepth: 2
    :caption: Contents:
 
    quickstart
    generated/tm1filetools
    history
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   indexes
