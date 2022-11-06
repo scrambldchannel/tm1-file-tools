@@ -9,6 +9,7 @@ from .binary.dimension import TM1AttributeDimensionFile, TM1DimensionFile  # noq
 from .binary.feeders import TM1FeedersFile  # noqa
 from .text.blb import TM1BLBFile  # noqa
 from .text.cfg import TM1CfgFile  # noqa
+from .text.chore import TM1ChoreFile  # noqa
 from .text.cma import TM1CMAFile  # noqa
 from .text.log import TM1ChangeLogFile, TM1LogFile, TM1ProcessErorrLogFile  # noqa
 from .text.process import TM1ProcessFile  # noqa

@@ -106,6 +106,27 @@ def test_get_control_views(test_folder):
     assert all(v.stem != "donkey" for v in views)
 
 
+def test_get_model_chores(test_folder):
+
+    ft = TM1FileTool(test_folder)
+
+    chores = ft.get_chores()
+
+    assert any(c.stem == "quokka" for c in chores)
+    assert all(c.stem != "brown_snake" for c in chores)
+
+
+def test_get_control_chores(test_folder):
+
+    ft = TM1FileTool(test_folder)
+
+    chores = ft.get_chores(model=False, control=True)
+
+    assert any(c.stem == "}brown_snake" for c in chores)
+    assert all(c.stem != "quokka" for c in chores)
+    assert all(c.stem != "donkey" for c in chores)
+
+
 def test_get_logs(test_folder):
 
     ft = TM1FileTool(test_folder)

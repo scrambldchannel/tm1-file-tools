@@ -8,6 +8,7 @@ from tm1filetools.files import (
     TM1BLBFile,
     TM1CfgFile,
     TM1ChangeLogFile,
+    TM1ChoreFile,
     TM1CMAFile,
     TM1CubeFile,
     TM1DimensionFile,
@@ -34,6 +35,7 @@ class TM1FileTool:
         TM1CubeFile.suffix,
         TM1DimensionFile.suffix,
         TM1ProcessFile.suffix,
+        TM1ChoreFile.suffix,
         TM1RulesFile.suffix,
         TM1SubsetFile.suffix,
         TM1ViewFile.suffix,
@@ -66,6 +68,7 @@ class TM1FileTool:
         self._sub_files: Optional[list] = None
         self._view_files: Optional[list] = None
         self._feeders_files: Optional[list] = None
+        self._chore_files: Optional[list] = None
         # logs
         self._log_files: Optional[list] = None
         # other cruft
@@ -88,6 +91,7 @@ class TM1FileTool:
         self._find_logs()
         self._find_cmas()
         self._find_blbs()
+        self._find_chores()
         self._find_non_tm1()
 
     # getters for all file types
@@ -202,6 +206,22 @@ class TM1FileTool:
             self._find_feeders()
 
         return self._filter_model_and_or_control(self._feeders_files, model=model, control=control)
+
+    def get_chores(self, model: bool = True, control: bool = False) -> List[TM1ChoreFile]:
+        """Returns list of all chore files
+
+        Args:
+            model: Return model chores (i.e. not prefixed with "}")
+            control: Return control chores (i.e. prefixed with "}")
+
+        Returns:
+            List of chore files
+        """
+
+        if self._chore_files is None:
+            self._find_chores()
+
+        return self._filter_model_and_or_control(self._chore_files, model=model, control=control)
 
     def get_logs(self) -> List[TM1LogFile]:
         """Returns list of all log files
@@ -491,6 +511,10 @@ class TM1FileTool:
     def _find_feeders(self):
 
         self._feeders_files = [TM1FeedersFile(f) for f in self._find_files(TM1FeedersFile.suffix)]
+
+    def _find_chores(self):
+
+        self._chore_files = [TM1ChoreFile(f) for f in self._find_files(TM1ChoreFile.suffix)]
 
     def _find_cmas(self):
 

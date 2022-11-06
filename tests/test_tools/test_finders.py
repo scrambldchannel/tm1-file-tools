@@ -71,6 +71,16 @@ def test_find_feeders(test_folder):
     assert all(f.stem != "dragon" for f in ft._feeders_files)
 
 
+def test_find_chores(test_folder):
+
+    ft = TM1FileTool(test_folder)
+
+    ft._find_chores()
+
+    assert any(f.stem == "quokka" for f in ft._chore_files)
+    assert all(f.stem != "brown_snake" for f in ft._chore_files)
+
+
 def test_find_logs(test_folder):
 
     ft = TM1FileTool(test_folder)
