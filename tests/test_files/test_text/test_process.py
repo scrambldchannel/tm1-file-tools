@@ -48,3 +48,17 @@ def test_to_json(json_dumps_folder):
     assert json_out["Name"] == "new process"
 
     assert json_out["Name"] == json_expected["Name"]
+
+
+def test_parse_single_int():
+
+    line = "601,100"
+
+    assert TM1ProcessFile._parse_single_int(line) == 100
+
+
+def test_parse_single_str():
+
+    line = '602,"my zany process"'
+
+    assert TM1ProcessFile._parse_single_string(line) == "my zany process"

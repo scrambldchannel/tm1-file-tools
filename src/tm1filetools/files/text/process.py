@@ -73,3 +73,27 @@ class TM1ProcessFile(TM1TextFile):
         }
 
         return json.dumps(json_dump, sort_keys=sort_keys, indent=4)
+
+    @staticmethod
+    def _parse_single_int(line: str) -> int:
+        """
+        Read a line containing a single int and return the value only
+        """
+
+        delimiter = ","
+
+        return int(line.split(delimiter)[1])
+
+    @staticmethod
+    def _parse_single_string(line: str) -> str:
+        """
+        Read a line containing a code and a single string and return the value only
+        """
+
+        delimiter = ","
+        quote_character = '"'
+
+        # This gives you the entire string with the code removed
+        # it might have been easier to just strip the first four characters ;)
+
+        return str.join("", line.split(delimiter)[1:]).strip(quote_character)
