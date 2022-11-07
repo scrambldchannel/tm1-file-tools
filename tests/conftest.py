@@ -226,3 +226,47 @@ def test_folder(tmp_path_factory):
 
     # return the path
     return d
+
+
+@pytest.fixture(scope="function")
+def login_config_folder(tmp_path_factory):
+    """
+    Create a folder with with a sample login config file
+    """
+
+    d = tmp_path_factory.mktemp("login")
+
+    f = d / "good_login.ini"
+
+    cfg = r"""[local]
+    address = 192.168.0.111
+    port = 18081
+    user = admin
+    password = apple
+    """
+
+    f.write_text(cfg)
+
+    f = d / "bad_login.ini"
+
+    cfg = r"""[local]
+    address = 192.168.0.111
+    user = admin
+    password = apple
+    """
+
+    f.write_text(cfg)
+
+    f = d / "messy_login.ini"
+
+    cfg = r"""[messy]
+    address = 192.168.0.111
+    port = 18081
+    user = admin
+    password = apple
+    irrelevant = koala
+    """
+
+    f.write_text(cfg)
+
+    return d

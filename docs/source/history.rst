@@ -1,6 +1,12 @@
 Release history
 ===============
 
+Version 0.3.3
+-------------
+
+- Added experimental support for login credentials saved as config files
+- Better docs
+
 Version 0.3.2
 -------------
 
