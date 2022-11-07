@@ -61,28 +61,23 @@ class TM1ProcessFile(TM1TextFile):
         return json.dumps(json_dump, sort_keys=sort_keys, indent=4)
 
     @staticmethod
-    def _parse_single_int(line: str) -> int:
+    def _parse_single_int(value: str) -> int:
         """
-        Read a line containing a single int and return the value only
+        Read a value string containing a single int and return the value only
         """
 
-        delimiter = ","
-
-        return int(line.split(delimiter)[1])
+        # kind of a pointless
+        return int(value)
 
     @staticmethod
-    def _parse_single_string(line: str) -> str:
+    def _parse_single_string(value: str, quote_character: str) -> str:
         """
-        Read a line containing a code and a single string and return the value only
+        Read a value string containing a single string and return the value without quotes
         """
 
-        delimiter = ","
-        quote_character = '"'
+        # need to make this portable
 
-        # This gives you the entire string with the code removed
-        # it might have been easier to just strip the first four characters ;)
-
-        return str.join("", line.split(delimiter)[1:]).strip(quote_character)
+        return value.strip(quote_character)
 
     def _get_multiline_block(self, linecode):
         """
@@ -107,5 +102,6 @@ class TM1ProcessFile(TM1TextFile):
             lines.append(line)
 
         # here it would be interesting to know if the correct number of lines were found
+        lines_correct = value = len(lines) + 1
 
-        return value, lines
+        return value, lines, lines_correct

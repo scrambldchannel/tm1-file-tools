@@ -68,16 +68,26 @@ def test_to_json(json_dumps_folder):
 
 def test_parse_single_int():
 
-    line = "601,100"
+    value = 100
 
-    assert TM1ProcessFile._parse_single_int(line) == 100
+    assert TM1ProcessFile._parse_single_int(value) == 100
 
 
 def test_parse_single_str():
 
-    line = '602,"my zany process"'
+    value = '"my zany process"'
 
-    assert TM1ProcessFile._parse_single_string(line) == "my zany process"
+    quote = '"'
+
+    assert TM1ProcessFile._parse_single_string(value=value, quote_character=quote) == "my zany process"
+
+    value = '"my, zany process"'
+
+    assert TM1ProcessFile._parse_single_string(value=value, quote_character=quote) == "my, zany process"
+
+    value = '"my, zany process"'
+
+    assert TM1ProcessFile._parse_single_string(value=value, quote_character=quote) == "my, zany process"
 
 
 def test_get_multiline_block(json_dumps_folder):
@@ -85,6 +95,6 @@ def test_get_multiline_block(json_dumps_folder):
     # create pro object from the file
     pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
 
-    number_of_lines, lines = pro._get_multiline_block(linecode=560)
+    number_of_lines, lines, lines_correct = pro._get_multiline_block(linecode=560)
 
     assert number_of_lines
