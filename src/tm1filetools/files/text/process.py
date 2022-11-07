@@ -17,26 +17,6 @@ class TM1ProcessFile(TM1TextFile):
     delimiter = ","
     quote_character = '"'
 
-    # line codes - see https://gist.github.com/scrambldchannel/9955cb731f80616c706f2d5a81b82c2a
-    _linecode_lookup = {
-        "601": {
-            "Code": "601",
-            "Descriptions": "version",
-            "Java Api Name": "ProcessFileVersionNumber",
-            "Multilines": False,
-            "Multiline with keys": False,
-            "Type": "Numeric",
-        },
-        "602": {
-            "Code": "601",
-            "Descriptions": "",
-            "Java Api Name": "ProcessName",
-            "Multilines": False,
-            "Multiline with keys": False,
-            "Type": "Single String",
-        },
-    }
-
     def __init__(self, path: Path):
 
         super().__init__(path)
@@ -53,20 +33,26 @@ class TM1ProcessFile(TM1TextFile):
     def _get_line_by_code(self, linecode: int):
 
         # Are lines ever duplicated?
+        lines = self.readlines()
 
-        # just need to remember how to read a file line by line here
-        for line in self.readlines():
+        for index, line in enumerate(lines):
 
             code = line[0:3]
 
             if code == str(linecode):
+                print(line)
+                value = str.join("", line[4:]).strip(self.quote_character)
+                return (line, code, value, index)
 
-                line = str.join("", line[4:]).strip(self.quote_character)
-                return (code, line)
+    def _get_line_by_index(self, index: int):
+
+        lines = self.readlines()
+
+        return lines[index]
 
     def to_json(self, sort_keys: bool = True):
 
-        _, name = self._get_line_by_code(602)
+        line, _, name, _ = self._get_line_by_code(602)
 
         json_dump = {
             "Name": name,
@@ -97,3 +83,29 @@ class TM1ProcessFile(TM1TextFile):
         # it might have been easier to just strip the first four characters ;)
 
         return str.join("", line.split(delimiter)[1:]).strip(quote_character)
+
+    def _get_multiline_block(self, linecode):
+        """
+        Read the int value from the submitted line and return the following n lines
+
+        e.g. sensible values are:
+        - 560 (ProcessParametersNames)
+        - 572 (ProcessPrologProcedure)
+        - 575 (ProcessEpilogProcedure)
+        - etc ...
+
+        See [gist](https://gist.github.com/scrambldchannel/9955cb731f80616c706f2d5a81b82c2a)
+
+        """
+
+        line, _, value, index = self._get_line_by_code(linecode)
+
+        lines = []
+        for i in range(index, index + int(value)):
+
+            line = self._get_line_by_index(i)
+            lines.append(line)
+
+        # here it would be interesting to know if the correct number of lines were found
+
+        return value, lines

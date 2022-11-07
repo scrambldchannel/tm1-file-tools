@@ -20,13 +20,29 @@ def test_get_line_by_code(test_folder):
 
     p.write(
         r"""601,100
-602,my zany process
+602,"my zany process"
         """
     )
 
-    assert p._get_line_by_code(linecode=601)[0] == "601", "100"
+    # line, code, value, index
+    assert p._get_line_by_code(linecode=601) == ("601,100", "601", "100", 0)
+    # assert p._get_line_by_code(linecode=602) == ("602", "my zany process", 1)
 
-    assert p._get_line_by_code(linecode=602)[0] == "602", "my zany process"
+
+def test_get_line_by_index(test_folder):
+
+    p = TM1ProcessFile(Path.joinpath(test_folder, "copy data from my cube.pro"))
+
+    # build up this file and read some basic line codes
+
+    p.write(
+        r"""601,100
+602,"my zany process"
+        """
+    )
+
+    assert p._get_line_by_index(index=0) == "601,100"
+    assert p._get_line_by_index(index=1) == '602,"my zany process"'
 
 
 def test_to_json(json_dumps_folder):
@@ -62,3 +78,13 @@ def test_parse_single_str():
     line = '602,"my zany process"'
 
     assert TM1ProcessFile._parse_single_string(line) == "my zany process"
+
+
+def test_get_multiline_block(json_dumps_folder):
+
+    # create pro object from the file
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
+
+    number_of_lines, lines = pro._get_multiline_block(linecode=560)
+
+    assert number_of_lines
