@@ -17,6 +17,12 @@ class TM1ProcessFile(TM1TextFile):
     delimiter = ","
     quote_character = '"'
 
+    # three line auto generated code where code tabs are empty
+    empty_code_tab = """
+    #****Begin: Generated Statements***
+    #****End: Generated Statements****
+    """
+
     def __init__(self, path: Path):
 
         super().__init__(path)
@@ -26,9 +32,35 @@ class TM1ProcessFile(TM1TextFile):
         self.data = None
         self.epilog = None
 
-    # Attempt some simple parsing
+        # Attempt some simple parsing
+        # https://gist.github.com/scrambldchannel/9955cb731f80616c706f2d5a81b82c2a
 
-    # https://gist.github.com/scrambldchannel/9955cb731f80616c706f2d5a81b82c2a
+    def _get_prolog_codeblock(self, to_json: bool = False):
+
+        linecode = 572
+
+        if to_json:
+            return self._codeblock_to_json_str(self._get_multiline_block(linecode))
+
+        return self._get_multiline_block(linecode)
+
+    def _get_metadata_codeblock(self, to_json: bool = False):
+
+        linecode = 573
+
+        return self._get_multiline_block(linecode)
+
+    def _get_data_codeblock(self, to_json: bool = False):
+
+        linecode = 574
+
+        return self._get_multiline_block(linecode)
+
+    def _get_epilog_codeblock(self, to_json: bool = False):
+
+        linecode = 575
+
+        return self._get_multiline_block(linecode)
 
     def _get_line_by_code(self, linecode: int):
 
@@ -40,7 +72,6 @@ class TM1ProcessFile(TM1TextFile):
             code = line[0:3]
 
             if code == str(linecode):
-                print(line)
                 value = str.join("", line[4:]).strip(self.quote_character)
                 return (line, code, value, index)
 
@@ -95,13 +126,35 @@ class TM1ProcessFile(TM1TextFile):
 
         line, _, value, index = self._get_line_by_code(linecode)
 
+        # janky
+        value = self._parse_single_int(value)
+
         lines = []
-        for i in range(index, index + int(value)):
+
+        for i in range(index + 1, index + value + 1):
 
             line = self._get_line_by_index(i)
             lines.append(line)
 
-        # here it would be interesting to know if the correct number of lines were found
-        lines_correct = value = len(lines) + 1
+        if value == len(lines):
+            lines_correct = True
+        else:
+            lines_correct = False
 
         return value, lines, lines_correct
+
+    @staticmethod
+    def _codeline_strip_whitespace(line: str) -> str:
+        return line.rstrip()
+
+    @staticmethod
+    def _codeblock_to_json_str(lines: list[str]) -> str:
+
+        # how portable is this?
+        newline = "\r\n"
+
+        json_str: str = ""
+        for line in lines:
+            json_str = json_str + line + newline
+
+        return json_str.removesuffix(newline)

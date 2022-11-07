@@ -277,8 +277,6 @@ def login_config_folder(tmp_path_factory):
 @pytest.fixture(scope="function")
 def json_dumps_folder():
 
-    print(Path.cwd())
-
     path = Path.joinpath(Path.cwd(), "tests", "test_files", "artifacts")
 
     return path
