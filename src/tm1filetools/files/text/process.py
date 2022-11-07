@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from .text import TM1TextFile
@@ -12,6 +13,10 @@ class TM1ProcessFile(TM1TextFile):
 
     suffix = "pro"
 
+    # this might need to be localised
+    delimiter = ","
+    quote_character = '"'
+
     # line codes - see https://gist.github.com/scrambldchannel/9955cb731f80616c706f2d5a81b82c2a
     _linecode_lookup = {
         "601": {
@@ -20,6 +25,7 @@ class TM1ProcessFile(TM1TextFile):
             "Java Api Name": "ProcessFileVersionNumber",
             "Multilines": False,
             "Multiline with keys": False,
+            "Type": "Numeric",
         },
         "602": {
             "Code": "601",
@@ -27,6 +33,7 @@ class TM1ProcessFile(TM1TextFile):
             "Java Api Name": "ProcessName",
             "Multilines": False,
             "Multiline with keys": False,
+            "Type": "Single String",
         },
     }
 
@@ -43,16 +50,26 @@ class TM1ProcessFile(TM1TextFile):
 
     # https://gist.github.com/scrambldchannel/9955cb731f80616c706f2d5a81b82c2a
 
-    def _find_line_by_code(self, linecode: int):
+    def _get_line_by_code(self, linecode: int):
 
-        lines = []
+        # Are lines ever duplicated?
+
         # just need to remember how to read a file line by line here
         for line in self.readlines():
 
             code = line[0:3]
 
-            if code == linecode:
+            if code == str(linecode):
 
-                lines.append(line)
+                line = str.join("", line[4:]).strip(self.quote_character)
+                return (code, line)
 
-        return lines
+    def to_json(self, sort_keys: bool = True):
+
+        _, name = self._get_line_by_code(602)
+
+        json_dump = {
+            "Name": name,
+        }
+
+        return json.dumps(json_dump, sort_keys=sort_keys, indent=4)
