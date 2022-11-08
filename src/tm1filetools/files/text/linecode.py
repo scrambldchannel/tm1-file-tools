@@ -65,7 +65,13 @@ class TM1LinecodeFile(TM1TextFile):
 
         _, value = line.split(cls.code_delimiter)
 
-        return int(value)
+        # in some cases, we may have nothing there, rather than a 0
+        # e.g. the mdx line of a static subset
+
+        if value:
+            return int(value)
+        else:
+            return 0
 
     @classmethod
     def _parse_single_string(cls, line: str) -> str:

@@ -32,6 +32,12 @@ class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
 
         """
 
-        mdx_idx = self._get_line_index_by_code(275) + 1
+        mdx_chars = self._parse_single_int(self._get_line_by_code(275))
 
-        return self._get_line_by_index(mdx_idx)
+        if mdx_chars > 0:
+
+            mdx_idx = self._get_line_index_by_code(275) + 1
+
+            return self._get_line_by_index(mdx_idx)
+
+        return None

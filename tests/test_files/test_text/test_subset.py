@@ -99,6 +99,8 @@ def test_multi_static_subset(json_dumps_folder):
 
     assert sub
 
+    assert sub._get_mdx() is None
+
     with open(Path.joinpath(json_dumps_folder, "subsets", f"{subset}.json"), "r") as f:
         expected_json_str = f.read()
 
