@@ -20,6 +20,8 @@ class TM1ProcessFile(TM1TextFile):
     # three line auto generated code where code tabs are empty
     _code_block_prefix_lines = ["", "#****Begin: Generated Statements***", "#****End: Generated Statements****"]
 
+    _datasource_type_mapping = {"CHARACTERDELIMITED": "ASCII"}
+
     def __init__(self, path: Path):
 
         super().__init__(path)
@@ -141,6 +143,57 @@ class TM1ProcessFile(TM1TextFile):
 
         return params
 
+    def _get_datasource(self) -> dict:
+
+        # What does the json look like with no datasource?
+        datasource = {}
+
+        # need to come up with a mapping for all types
+        datasource_type = self._parse_single_string(self._get_line_by_code(562))
+        datasource_type_json = self._datasource_type_mapping[datasource_type]
+        datasource["Type"] = datasource_type_json
+        # I'm going to assume the delimiter type is always "Character" when source type is ASCII
+        # obviously need to map other types if necessary
+        if datasource_type_json == "ASCII":
+            datasource["asciiDelimiterType"] = "Character"
+
+        datasource["asciiDecimalSeparator"] = self._parse_single_string(self._get_line_by_code(588))
+        datasource["asciiDelimiterChar"] = self._parse_single_string(self._get_line_by_code(567))
+
+        datasource["asciiHeaderRecords"] = self._parse_single_int(self._get_line_by_code(569))
+        datasource["asciiQuoteCharacter"] = self._parse_single_string(self._get_line_by_code(568))
+        datasource["asciiThousandSeparator"] = self._parse_single_string(self._get_line_by_code(589))
+        datasource["dataSourceNameForClient"] = self._parse_single_string(self._get_line_by_code(585))
+        datasource["dataSourceNameForServer"] = self._parse_single_string(self._get_line_by_code(586))
+
+        return datasource
+        # this needs to be refactored
+        # idx_datatype = self._get_line_index_by_code(561)
+        # idx_default = self._get_line_index_by_code(590)
+        # idx_hint = self._get_line_index_by_code(637)
+
+        # names = self._get_multiline_block(linecode=560)
+
+        # for idx, name in enumerate(names):
+
+        #     # these are single ints on the line
+        #     datatype = int(self._get_line_by_index(idx_datatype + idx + 1))
+
+        #     hint = self._get_key_value_pair_string(self._get_line_by_index(idx_hint + idx + 1))["value"]
+
+        #     default = self._get_key_value_pair_string(self._get_line_by_index(idx_default + idx + 1))["value"]
+
+        #     params.append(
+        #         {
+        #             "Name": name,
+        #             "Prompt": hint,
+        #             "Type": datatype,
+        #             "Value": default,
+        #         }
+        #     )
+
+        # return params
+
     def _parse_single_int(self, line: str) -> int:
         """
         Read a line with a code and a single int value and return the value only
@@ -160,6 +213,10 @@ class TM1ProcessFile(TM1TextFile):
         chunks = line.split(self.delimiter)
 
         value = str.join(",", chunks[1:])
+
+        # hack for getting the delimiter - will need to be done better
+        if value == '""""':
+            return '"'
 
         return value.strip(self.quote_character)
 

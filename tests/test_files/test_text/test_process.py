@@ -221,3 +221,28 @@ def test_epilog_code_block(json_dumps_folder):
     assert lines[1] == pro._code_block_prefix_lines[1]
     assert lines[2] == pro._code_block_prefix_lines[2]
     assert len(lines) == 21
+
+
+def test_get_datasource(json_dumps_folder):
+
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
+
+    datasource = pro._get_datasource()
+
+    assert datasource
+
+    assert datasource["Type"] == "ASCII"
+
+    assert (
+        datasource["dataSourceNameForClient"]
+        == "C:\\Users\\alexander.sutcliffe\\git\\planning_v2\\imports\\cCurrency_20221104.csv"  # noqa
+    )
+    assert datasource["dataSourceNameForServer"] == "..\\imports\\cCurrency_20221104.csv"
+
+    assert datasource["asciiDecimalSeparator"] == "."
+    assert datasource["asciiDelimiterChar"] == ","
+    assert datasource["asciiDelimiterType"] == "Character"
+
+    assert datasource["asciiHeaderRecords"] == 0
+    assert datasource["asciiQuoteCharacter"] == '"'
+    assert datasource["asciiThousandSeparator"] == ","
