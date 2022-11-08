@@ -41,3 +41,33 @@ class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
             return self._get_line_by_index(mdx_idx)
 
         return None
+
+    def _get_name_from_file(self):
+
+        return self._parse_single_string(self._get_line_by_code(284))
+
+    def _to_json(self):
+        """Read file and return a json representation
+
+        Returns:
+            A dict containing the json
+
+        """
+
+        json_dump = {}
+
+        name = self._get_name_from_file()
+
+        json_dump["Name"] = name
+
+        # if the file contains an mdx expression, add it
+        if self._get_mdx():
+            json_dump["Expression"] = self._get_mdx()
+
+        # derive "Hierarchy@odata.bind" string
+
+        # hierarchy_odata = self._get_hierarchy_odata()
+
+        # json_dump["Hierarchy@odata.bind"] = hierarchy_odata
+
+        return json_dump

@@ -1,5 +1,7 @@
-# import json
+import json
 from pathlib import Path
+
+import pytest
 
 from tm1filetools.files import TM1SubsetFile
 
@@ -119,3 +121,24 @@ def test_mdx_subset(json_dumps_folder):
         expected_json_str = f.read()
 
     assert expected_json_str
+
+    expected_json = json.loads(expected_json_str)
+
+    json_out = sub._to_json()
+
+    assert json_out["Expression"] == sub._get_mdx()
+
+    assert json_out["Name"] == subset
+
+    assert json_out["Name"] == expected_json["Name"]
+    assert json_out["Expression"] == expected_json["Expression"]
+
+
+@pytest.mark.skip("Not yet working")
+def test_get_hierarchy_odata(json_dumps_folder):
+
+    subset = "test.tm1filetools.mdx_subset"
+
+    sub = TM1SubsetFile(Path.joinpath(json_dumps_folder, "subsets", f"{subset}.sub"))
+
+    expected_string = "Dimensions('}Processes')/Hierarchies('}Processes')"  # noqa
