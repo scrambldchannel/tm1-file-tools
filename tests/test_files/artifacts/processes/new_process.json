@@ -1,0 +1,85 @@
+{
+    "DataProcedure": "\r\n#****Begin: Generated Statements***\r\n#****End: Generated Statements****\r\n\r\n\r\n# Normall this filtering would be done in SQL\r\n\r\n# skip months before 2020\r\n\r\nIf(Numbr(vPeriod) < 202001);\r\n  ItemSkip;\r\nEndIf;\r\n\r\n# Skip irrelevant months if a specific period specified\r\n\r\nif(pPeriod @<> 'All' & vPeriod @<> pPeriod);\r\n ItemSkip;\r\nEndIf;\r\n\r\n# skip other versions\r\nIf(vVersion @<> pVersion);\r\n  ItemSkip;\r\nEndIf;\r\n\r\n# skip other scenarios\r\nIf(vScenario @<> pScenario);\r\n  ItemSkip;\r\nEndIf;\r\n\r\n\r\n# Else write to the correct cell in the new cube\r\n\r\nsRepCCY = 'EUR';\r\nsLocCCY = Subst(vCurrency, 1, 3);\r\n\r\nCellPutN(vRate, sCube,  pVersion, 'Baseline', 'Working', vPeriod, sRepCCY, sLocCCY, 'Rate');\r\n",
+    "DataSource": {
+        "Type": "ASCII",
+        "asciiDecimalSeparator": ".",
+        "asciiDelimiterChar": ",",
+        "asciiDelimiterType": "Character",
+        "asciiHeaderRecords": 0,
+        "asciiQuoteCharacter": "\"",
+        "asciiThousandSeparator": ",",
+        "dataSourceNameForClient": "C:\\Users\\alexander.sutcliffe\\git\\planning_v2\\imports\\cCurrency_20221104.csv",
+        "dataSourceNameForServer": "..\\imports\\cCurrency_20221104.csv"
+    },
+    "EpilogProcedure": "\r\n#****Begin: Generated Statements***\r\n#****End: Generated Statements****\r\n\r\n# populate any necessary attributes\r\n\r\n#####  LOGGING\r\n\r\nnMinorErrors = PrologMinorErrorCount + MetadataMinorErrorCount + DataMinorErrorCount;\r\nIf(nMinorErrors > 0);\r\n  sStatus =NumberToString(nMinorErrors) |  ' Minor Error(s)';\r\nElse;\r\n  sStatus = 'Completed';\r\nEndIf;\r\n\r\n# Write to log\r\n\r\nExecuteProcess('process.logging.end', 'pProcess', sProcName, 'pStatus', sStatus);\r\n\r\n##### END LOGGING\r\n",
+    "HasSecurityAccess": false,
+    "MetadataProcedure": "\r\n#****Begin: Generated Statements***\r\n#****End: Generated Statements****",
+    "Name": "new process",
+    "Parameters": [
+        {
+            "Name": "pPeriod",
+            "Prompt": "",
+            "Type": "String",
+            "Value": "All"
+        },
+        {
+            "Name": "pVersion",
+            "Prompt": "",
+            "Type": "String",
+            "Value": "23_BP"
+        },
+        {
+            "Name": "pScenario",
+            "Prompt": "",
+            "Type": "String",
+            "Value": "real case"
+        }
+    ],
+    "PrologProcedure": "\r\n#****Begin: Generated Statements***\r\n#****End: Generated Statements****\r\n\r\n#####  LOGGING\r\nNumericGlobalVariable('MetadataMinorErrorCount');\r\nNumericGlobalVariable('PrologMinorErrorCount');\r\nNumericGlobalVariable('DataMinorErrorCount');\r\nsProcName = GetPRocessName();\r\n# This line needs to be changed for each process\r\nsParams = '';  \r\nExecuteProcess('process_logging.start', 'pProcess', sProcName , 'pParams', sParams);\r\n#####  END LOGGING\r\n\r\n\r\nsCube = 'FX Rates';\r\n\r\n\r\n\r\nif(pPeriod @<> 'All');\r\n  sFilter =  'Version| ' | pVersion |  '& Scenario| Baseline & Publication | Working & Period |' | pPeriod;  \r\nElse;\r\n  sFilter =  'Version| ' | pVersion |  '& Scenario| Baseline & Publication | Working';  \r\nEndIf;\r\n\r\n\r\n\r\nExecuteProcess( \r\n  '}bedrock.cube.data.clear',\r\n  'pLogOutput', 1,\r\n  'pStrictErrorHandling', 1,\r\n  'pCube', sCube,\r\n   'pView', '', \r\n   'pFilter', '',\r\n   'pFilterParallel', '',\r\n   'pParallelThreads', 0,\r\n   'pDimDelim', '&',\r\n   'pEleStartDelim', '|', \r\n   'pEleDelim', '+', \r\n   'pSuppressConsolStrings', 0, \r\n   'pCubeLogging', 0,\r\n   'pTemp', 1,\r\n   'pSandbox', '',\r\n   'pSubN', 0\r\n);\r\n\r\n\r\n",
+    "UIData": "CubeAction=1511\fDataAction=1503\fCubeLogChanges=0\f",
+    "Variables": [
+        {
+            "EndByte": 0,
+            "Name": "vPeriod",
+            "Position": 2,
+            "StartByte": 0,
+            "Type": "String"
+        },
+        {
+            "EndByte": 0,
+            "Name": "vScenario",
+            "Position": 3,
+            "StartByte": 0,
+            "Type": "String"
+        },
+        {
+            "EndByte": 0,
+            "Name": "vCurrency",
+            "Position": 4,
+            "StartByte": 0,
+            "Type": "String"
+        },
+        {
+            "EndByte": 0,
+            "Name": "vVersion",
+            "Position": 5,
+            "StartByte": 0,
+            "Type": "String"
+        },
+        {
+            "EndByte": 0,
+            "Name": "vRate",
+            "Position": 6,
+            "StartByte": 0,
+            "Type": "Numeric"
+        }
+    ],
+    "VariablesUIData": [
+        "IgnoredInputVarName=vOldCubeName\fVarType=32\fColType=1165\f",
+        "VarType=32\fColType=827\f",
+        "VarType=32\fColType=827\f",
+        "VarType=32\fColType=827\f",
+        "VarType=32\fColType=827\f",
+        "VarType=33\fColType=827\f"
+    ]
+}
