@@ -23,6 +23,10 @@ class TM1TextFile(TM1File):
         with open(self._path, "r") as f:
             return f.read()
 
+    def readlines(self):
+        with open(self._path, "r") as f:
+            return [line.rstrip() for line in f]
+
     def write(self, text):
         with open(self._path, "w") as f:
             f.write(text)

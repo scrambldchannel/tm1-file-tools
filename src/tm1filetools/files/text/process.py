@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from .text import TM1TextFile
+from .linecode import TM1LinecodeFile
 
 
-class TM1ProcessFile(TM1TextFile):
+class TM1ProcessFile(TM1LinecodeFile):
     """
     A class representation of a tm1 TI process file
 
