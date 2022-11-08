@@ -48,7 +48,7 @@ class TM1ProcessFile(TM1LinecodeFile):
 
         return self._get_multiline_block(linecode)
 
-    def to_json(self, sort_keys: bool = True):
+    def _to_json(self, sort_keys: bool = True):
 
         name = self._parse_single_string(self._get_line_by_code(602))
 

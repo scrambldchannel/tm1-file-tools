@@ -17,7 +17,7 @@ def test_to_json(json_dumps_folder):
     # create pro object from the file
     pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
 
-    json_out_str = pro.to_json()
+    json_out_str = pro._to_json()
 
     with open(Path.joinpath(json_dumps_folder, "processes", "new_process.json"), "r") as f:
         expected_json_str = f.read()
