@@ -45,7 +45,7 @@ def test_get_line_by_index(test_folder):
     assert p._get_line_by_index(index=1) == '602,"my zany process"'
 
 
-def test_parse_single_int(json_dumps_folder):
+def test_parse_single_int():
 
     # pro = TM1LinecodeFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
 
@@ -57,7 +57,7 @@ def test_parse_single_int(json_dumps_folder):
     assert TM1LinecodeFile._parse_single_int(line) == 48
 
 
-def test_parse_single_str(json_dumps_folder):
+def test_parse_single_str():
 
     line = '602,"my zany process"'
 
@@ -70,6 +70,20 @@ def test_parse_single_str(json_dumps_folder):
     line = '602,"my, zany process"'
 
     assert TM1LinecodeFile._parse_single_string(line=line) == "my, zany process"
+
+
+def test_parse_key_value_pair_str():
+
+    line = 'pPeriod,"All"'
+
+    assert TM1LinecodeFile._get_key_value_pair_string(line=line) == {"key": "pPeriod", "value": "All"}
+
+
+def test_parse_key_value_pair_int():
+
+    line = "pLogging,1"
+
+    assert TM1LinecodeFile._get_key_value_pair_int(line=line) == {"key": "pLogging", "value": 1}
 
 
 def test_get_multiline_block(json_dumps_folder):
