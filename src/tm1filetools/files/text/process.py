@@ -24,14 +24,6 @@ class TM1ProcessFile(TM1TextFile):
 
         super().__init__(path)
 
-        # self.prolog = None
-        # self.metadata = None
-        # self.data = None
-        # self.epilog = None
-
-        # Attempt some simple parsing
-        # https://gist.github.com/scrambldchannel/9955cb731f80616c706f2d5a81b82c2a
-
     def _get_prolog_codeblock(self):
 
         linecode = 572
@@ -63,10 +55,10 @@ class TM1ProcessFile(TM1TextFile):
 
         for index, line in enumerate(lines):
 
-            code = line[0:3]
+            code = line.split(self.delimiter)[0]
 
             if code == str(linecode):
-                value = str.join("", line[4:]).strip(self.quote_character)
+                value = str.join("", line[len(str(linecode)) + 1 :]).strip(self.quote_character)  # noqa
                 return (line, code, value, index)
 
     def _get_line_by_index(self, index: int):
@@ -89,15 +81,58 @@ class TM1ProcessFile(TM1TextFile):
         data = self._codeblock_to_json_str(data)
         epilog = self._codeblock_to_json_str(epilog)
 
+        _, _, security_access, _ = self._get_line_by_code(1217)
+        security_access = security_access == 1
+
+        parameters = self._get_parameters()
+
         json_dump = {
             "Name": name,
             "PrologProcedure": prolog,
             "MetadataProcedure": metadata,
             "DataProcedure": data,
             "EpilogProcedure": epilog,
+            "HasSecurityAccess": security_access,
+            "Parameters": parameters,
         }
 
         return json.dumps(json_dump, sort_keys=sort_keys, indent=4)
+
+    def _get_parameters(self) -> list:
+
+        # What does the json look like with no params?
+        params = []
+
+        # param names are from 560
+        # param datatypes are from 561
+        # param default values are from 590
+        # param hints are from 637
+
+        # this needs to be refactored
+        _, _, _, idx_datatype = self._get_line_by_code(561)
+        _, _, _, idx_default = self._get_line_by_code(590)
+        _, _, _, idx_hint = self._get_line_by_code(637)
+
+        _, names, _ = self._get_multiline_block(linecode=560)
+
+        for idx, name in enumerate(names):
+
+            datatype = self._parse_single_int(self._get_line_by_index(idx_datatype + idx + 1))
+
+            hint = self._get_key_value_pair_string(self._get_line_by_index(idx_hint + idx + 1))["value"]
+
+            default = self._get_key_value_pair_string(self._get_line_by_index(idx_default + idx + 1))["value"]
+
+            params.append(
+                {
+                    "Name": name,
+                    "Prompt": hint,
+                    "Type": datatype,
+                    "Value": default,
+                }
+            )
+
+        return params
 
     @staticmethod
     def _parse_single_int(value: str) -> int:
@@ -117,6 +152,24 @@ class TM1ProcessFile(TM1TextFile):
         # need to make this portable
 
         return value.strip(quote_character)
+
+    def _get_key_value_pair_string(self, line: str):
+
+        # e.g. 'pPeriod,"All"'
+
+        key = line.split(self.delimiter)[0]
+        value = str.join("", line.split(self.delimiter)[1:]).strip(self.quote_character)
+
+        return {"key": key, "value": value}
+
+    def _get_key_value_pair_int(self, line: str, quote_character: str):
+
+        # e.g. 'pLogging,0'
+
+        key = line.split(self.delimiter)[0]
+        value = int(line.split(self.delimiter)[1])
+
+        return {"key": key, "value": value}
 
     def _get_multiline_block(self, linecode):
         """

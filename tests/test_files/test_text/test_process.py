@@ -64,12 +64,30 @@ def test_to_json(json_dumps_folder):
     json_out = json.loads(json_out_str)
 
     assert json_out["Name"] == "new process"
-
     assert json_out["Name"] == json_expected["Name"]
 
     assert json_out["PrologProcedure"][0] == "\r"
-
     assert json_out["PrologProcedure"][0] == json_expected["PrologProcedure"][0]
+    assert json_out["PrologProcedure"][5] == json_expected["PrologProcedure"][5]
+    assert json_out["PrologProcedure"][12] == json_expected["PrologProcedure"][12]
+
+    assert json_out["MetadataProcedure"] == json_expected["MetadataProcedure"]
+    assert json_out["DataProcedure"] == json_expected["DataProcedure"]
+    assert json_out["EpilogProcedure"] == json_expected["EpilogProcedure"]
+
+    assert json_out["HasSecurityAccess"] is False
+    assert json_out["HasSecurityAccess"] == json_expected["HasSecurityAccess"]
+
+    assert json_out["Parameters"][0]["Name"] == "pPeriod"
+    assert json_out["Parameters"][1]["Name"] == "pVersion"
+    assert json_out["Parameters"][2]["Name"] == "pScenario"
+
+    assert json_out["Parameters"][0]["Type"] == 2
+    assert json_out["Parameters"][1]["Type"] == 2
+    assert json_out["Parameters"][2]["Type"] == 2
+
+    assert json_out["Parameters"][0]["Value"] == "All"
+    assert json_out["Parameters"][0]["Prompt"] == ""
 
 
 def test_parse_single_int():
@@ -122,6 +140,7 @@ def test_codeblock_to_json(json_dumps_folder):
 
     number_of_lines, lines, lines_correct = pro._get_multiline_block(linecode=572)
 
+    assert number_of_lines == 48
     assert lines_correct
     assert lines[0] == ""
     assert len(lines) == 48
