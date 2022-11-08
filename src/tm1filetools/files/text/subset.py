@@ -1,9 +1,10 @@
 from pathlib import Path
 
+from .linecode import TM1LinecodeFile
 from .user_owned import TM1UserFile
 
 
-class TM1SubsetFile(TM1UserFile):
+class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
     """
     A class representation of a tm1 subset file
 
