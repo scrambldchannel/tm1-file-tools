@@ -13,10 +13,6 @@ class TM1ProcessFile(TM1LinecodeFile):
 
     suffix = "pro"
 
-    # this might need to be localised
-    delimiter = ","
-    quote_character = '"'
-
     # three line auto generated code where code tabs are empty
     _code_block_prefix_lines = ["", "#****Begin: Generated Statements***", "#****End: Generated Statements****"]
 

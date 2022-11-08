@@ -83,21 +83,23 @@ class TM1LinecodeFile(TM1TextFile):
 
         return value.strip(cls.code_quote)
 
-    def _get_key_value_pair_string(self, line: str):
+    @classmethod
+    def _get_key_value_pair_string(cls, line: str):
 
         # e.g. 'pPeriod,"All"'
 
-        key = line.split(self.code_delimiter)[0]
-        value = str.join("", line.split(self.delimiter)[1:]).strip(self.quote_character)
+        key = line.split(cls.code_delimiter)[0]
+        value = str.join("", line.split(cls.code_delimiter)[1:]).strip(cls.code_quote)
 
         return {"key": key, "value": value}
 
-    def _get_key_value_pair_int(self, line: str):
+    @classmethod
+    def _get_key_value_pair_int(cls, line: str):
 
         # e.g. 'pLogging,0'
 
-        key = line.split(self.delimiter)[0]
-        value = int(line.split(self.delimiter)[1])
+        key = line.split(cls.code_delimiter)[0]
+        value = int(line.split(cls.code_delimiter)[1])
 
         return {"key": key, "value": value}
 
