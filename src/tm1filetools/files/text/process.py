@@ -18,7 +18,7 @@ class TM1ProcessFile(TM1TextFile):
     quote_character = '"'
 
     # three line auto generated code where code tabs are empty
-    empty_code_tab_lines = ["", "#****Begin: Generated Statements***", "#****End: Generated Statements****"]
+    _code_block_prefix_lines = ["", "#****Begin: Generated Statements***", "#****End: Generated Statements****"]
 
     def __init__(self, path: Path):
 
@@ -53,13 +53,24 @@ class TM1ProcessFile(TM1TextFile):
         # Are lines ever duplicated?
         lines = self.readlines()
 
+        for line in lines:
+
+            code = line.split(self.delimiter)[0]
+
+            if code == str(linecode):
+                return line
+
+    def _get_line_index_by_code(self, linecode: int):
+
+        # Are lines ever duplicated?
+        lines = self.readlines()
+
         for index, line in enumerate(lines):
 
             code = line.split(self.delimiter)[0]
 
             if code == str(linecode):
-                value = str.join("", line[len(str(linecode)) + 1 :]).strip(self.quote_character)  # noqa
-                return (line, code, value, index)
+                return index
 
     def _get_line_by_index(self, index: int):
 
@@ -69,19 +80,14 @@ class TM1ProcessFile(TM1TextFile):
 
     def to_json(self, sort_keys: bool = True):
 
-        line, _, name, _ = self._get_line_by_code(602)
+        name = self._parse_single_string(self._get_line_by_code(602))
 
-        _, prolog, _ = self._get_prolog_codeblock()
-        _, metadata, _ = self._get_metadata_codeblock()
-        _, data, _ = self._get_data_codeblock()
-        _, epilog, _ = self._get_epilog_codeblock()
+        prolog = self._codeblock_to_json_str(self._get_prolog_codeblock())
+        metadata = self._codeblock_to_json_str(self._get_metadata_codeblock())
+        data = self._codeblock_to_json_str(self._get_data_codeblock())
+        epilog = self._codeblock_to_json_str(self._get_epilog_codeblock())
 
-        prolog = self._codeblock_to_json_str(prolog)
-        metadata = self._codeblock_to_json_str(metadata)
-        data = self._codeblock_to_json_str(data)
-        epilog = self._codeblock_to_json_str(epilog)
-
-        _, _, security_access, _ = self._get_line_by_code(1217)
+        security_access = self._parse_single_int(self._get_line_by_code(1217))
         security_access = security_access == 1
 
         parameters = self._get_parameters()
@@ -109,15 +115,16 @@ class TM1ProcessFile(TM1TextFile):
         # param hints are from 637
 
         # this needs to be refactored
-        _, _, _, idx_datatype = self._get_line_by_code(561)
-        _, _, _, idx_default = self._get_line_by_code(590)
-        _, _, _, idx_hint = self._get_line_by_code(637)
+        idx_datatype = self._get_line_index_by_code(561)
+        idx_default = self._get_line_index_by_code(590)
+        idx_hint = self._get_line_index_by_code(637)
 
-        _, names, _ = self._get_multiline_block(linecode=560)
+        names = self._get_multiline_block(linecode=560)
 
         for idx, name in enumerate(names):
 
-            datatype = self._parse_single_int(self._get_line_by_index(idx_datatype + idx + 1))
+            # these are single ints on the line
+            datatype = int(self._get_line_by_index(idx_datatype + idx + 1))
 
             hint = self._get_key_value_pair_string(self._get_line_by_index(idx_hint + idx + 1))["value"]
 
@@ -134,24 +141,27 @@ class TM1ProcessFile(TM1TextFile):
 
         return params
 
-    @staticmethod
-    def _parse_single_int(value: str) -> int:
+    def _parse_single_int(self, line: str) -> int:
         """
-        Read a value string containing a single int and return the value only
+        Read a line with a code and a single int value and return the value only
         """
 
-        # kind of a pointless
+        _, value = line.split(self.delimiter)
+
         return int(value)
 
-    @staticmethod
-    def _parse_single_string(value: str, quote_character: str) -> str:
+    def _parse_single_string(self, line: str) -> str:
         """
         Read a value string containing a single string and return the value without quotes
         """
 
         # need to make this portable
 
-        return value.strip(quote_character)
+        chunks = line.split(self.delimiter)
+
+        value = str.join(",", chunks[1:])
+
+        return value.strip(self.quote_character)
 
     def _get_key_value_pair_string(self, line: str):
 
@@ -185,24 +195,23 @@ class TM1ProcessFile(TM1TextFile):
 
         """
 
-        line, _, value, index = self._get_line_by_code(linecode)
+        # get the index and the line for this code
+        index = self._get_line_index_by_code(linecode)
+        line = self._get_line_by_code(linecode)
 
-        # janky
-        value = self._parse_single_int(value)
+        # parse the line to get the number of lines
+        number_of_lines = self._parse_single_int(line)
 
         lines = []
 
-        for i in range(index + 1, index + value + 1):
+        # loop over the next n lines
+        index = index + 1
+        for i in range(index, index + number_of_lines):
 
             line = self._get_line_by_index(i)
             lines.append(line)
 
-        if value == len(lines):
-            lines_correct = True
-        else:
-            lines_correct = False
-
-        return value, lines, lines_correct
+        return lines
 
     @staticmethod
     def _codeline_strip_whitespace(line: str) -> str:

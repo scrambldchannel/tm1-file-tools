@@ -3,8 +3,6 @@ from pathlib import Path
 
 from tm1filetools.files import TM1ProcessFile
 
-# import pytest
-
 
 def test_init(test_folder):
 
@@ -27,8 +25,8 @@ def test_get_line_by_code(test_folder):
     )
 
     # line, code, value, index
-    assert p._get_line_by_code(linecode=601) == ("601,100", "601", "100", 0)
-    assert p._get_line_by_code(linecode=602) == ('602,"my zany process"', "602", "my zany process", 1)
+    assert p._get_line_by_code(linecode=601) == "601,100"
+    assert p._get_line_by_code(linecode=602) == '602,"my zany process"'
 
 
 def test_get_line_by_index(test_folder):
@@ -66,7 +64,6 @@ def test_to_json(json_dumps_folder):
     assert json_out["Name"] == "new process"
     assert json_out["Name"] == json_expected["Name"]
 
-    assert json_out["PrologProcedure"][0] == "\r"
     assert json_out["PrologProcedure"][0] == json_expected["PrologProcedure"][0]
     assert json_out["PrologProcedure"][5] == json_expected["PrologProcedure"][5]
     assert json_out["PrologProcedure"][12] == json_expected["PrologProcedure"][12]
@@ -90,28 +87,32 @@ def test_to_json(json_dumps_folder):
     assert json_out["Parameters"][0]["Prompt"] == ""
 
 
-def test_parse_single_int():
+def test_parse_single_int(json_dumps_folder):
 
-    value = 100
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
 
-    assert TM1ProcessFile._parse_single_int(value) == 100
+    line = pro._get_line_by_code(601)
+    assert pro._parse_single_int(line) == 100
+
+    line = pro._get_line_by_code(572)
+    assert pro._parse_single_int(line) == 48
 
 
-def test_parse_single_str():
+def test_parse_single_str(json_dumps_folder):
 
-    value = '"my zany process"'
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
 
-    quote = '"'
+    line = '602,"my zany process"'
 
-    assert TM1ProcessFile._parse_single_string(value=value, quote_character=quote) == "my zany process"
+    assert pro._parse_single_string(line=line) == "my zany process"
 
-    value = '"my, zany process"'
+    line = '602,"my, zany process"'
 
-    assert TM1ProcessFile._parse_single_string(value=value, quote_character=quote) == "my, zany process"
+    assert pro._parse_single_string(line=line) == "my, zany process"
 
-    value = '"my, zany process"'
+    line = '602,"my, zany process"'
 
-    assert TM1ProcessFile._parse_single_string(value=value, quote_character=quote) == "my, zany process"
+    assert pro._parse_single_string(line=line) == "my, zany process"
 
 
 def test_get_multiline_block(json_dumps_folder):
@@ -119,11 +120,10 @@ def test_get_multiline_block(json_dumps_folder):
     # create pro object from the file
     pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
 
-    number_of_lines, lines, lines_correct = pro._get_multiline_block(linecode=572)
+    lines = pro._get_multiline_block(linecode=572)
 
     # lines should be correct here
-    assert lines_correct
-    assert number_of_lines == 48
+    assert len(lines) == 48
 
     assert lines[0] == ""
     assert lines[2] == "#****End: Generated Statements****"
@@ -131,17 +131,15 @@ def test_get_multiline_block(json_dumps_folder):
     # check indent
     assert lines[40] == "   'pCubeLogging', 0,"
 
-    assert lines[number_of_lines - 1] == ""
+    assert lines[-1] == ""
 
 
 def test_codeblock_to_json(json_dumps_folder):
 
     pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
 
-    number_of_lines, lines, lines_correct = pro._get_multiline_block(linecode=572)
+    lines = pro._get_multiline_block(linecode=572)
 
-    assert number_of_lines == 48
-    assert lines_correct
     assert lines[0] == ""
     assert len(lines) == 48
 
@@ -182,47 +180,44 @@ def test_codeblock_to_json(json_dumps_folder):
 def test_prolog_code_block(json_dumps_folder):
     pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
 
-    number_of_lines, lines, lines_correct = pro._get_prolog_codeblock()
+    lines = pro._get_prolog_codeblock()
 
-    assert number_of_lines == 48
-    assert lines_correct
-    assert lines[0] == ""
     assert len(lines) == 48
+    assert lines[0] == pro._code_block_prefix_lines[0]
+    assert lines[1] == pro._code_block_prefix_lines[1]
+    assert lines[2] == pro._code_block_prefix_lines[2]
 
 
 def test_metadata_code_block(json_dumps_folder):
     pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
 
-    number_of_lines, lines, lines_correct = pro._get_metadata_codeblock()
+    lines = pro._get_metadata_codeblock()
 
-    assert number_of_lines == 3
-    assert lines_correct
     assert len(lines) == 3
 
-    assert lines[0] == pro.empty_code_tab_lines[0]
-    assert lines[1] == pro.empty_code_tab_lines[1]
-    assert lines[2] == pro.empty_code_tab_lines[2]
-
-    # assert pro._codeblock_to_json_str(lines) == pro.empty_code_tab
+    assert lines[0] == pro._code_block_prefix_lines[0]
+    assert lines[1] == pro._code_block_prefix_lines[1]
+    assert lines[2] == pro._code_block_prefix_lines[2]
 
 
 def test_data_code_block(json_dumps_folder):
     pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
 
-    number_of_lines, lines, lines_correct = pro._get_data_codeblock()
+    lines = pro._get_data_codeblock()
 
-    assert number_of_lines == 37
-    assert lines_correct
-    assert lines[0] == ""
+    assert lines[0] == pro._code_block_prefix_lines[0]
+    assert lines[1] == pro._code_block_prefix_lines[1]
+    assert lines[2] == pro._code_block_prefix_lines[2]
+
     assert len(lines) == 37
 
 
 def test_epilog_code_block(json_dumps_folder):
     pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
 
-    number_of_lines, lines, lines_correct = pro._get_epilog_codeblock()
+    lines = pro._get_epilog_codeblock()
 
-    assert number_of_lines == 21
-    assert lines_correct
-    assert lines[0] == ""
+    assert lines[0] == pro._code_block_prefix_lines[0]
+    assert lines[1] == pro._code_block_prefix_lines[1]
+    assert lines[2] == pro._code_block_prefix_lines[2]
     assert len(lines) == 21
