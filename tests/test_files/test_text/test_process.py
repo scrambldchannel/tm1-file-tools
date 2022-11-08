@@ -174,8 +174,11 @@ def test_metadata_code_block(json_dumps_folder):
 
     assert number_of_lines == 3
     assert lines_correct
-    assert lines[0] == ""
     assert len(lines) == 3
+
+    assert lines[0] == pro.empty_code_tab_lines[0]
+    assert lines[1] == pro.empty_code_tab_lines[1]
+    assert lines[2] == pro.empty_code_tab_lines[2]
 
     # assert pro._codeblock_to_json_str(lines) == pro.empty_code_tab
 

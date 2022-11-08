@@ -18,10 +18,7 @@ class TM1ProcessFile(TM1TextFile):
     quote_character = '"'
 
     # three line auto generated code where code tabs are empty
-    empty_code_tab = """
-    #****Begin: Generated Statements***
-    #****End: Generated Statements****
-    """
+    empty_code_tab_lines = ["", "#****Begin: Generated Statements***", "#****End: Generated Statements****"]
 
     def __init__(self, path: Path):
 
@@ -35,28 +32,25 @@ class TM1ProcessFile(TM1TextFile):
         # Attempt some simple parsing
         # https://gist.github.com/scrambldchannel/9955cb731f80616c706f2d5a81b82c2a
 
-    def _get_prolog_codeblock(self, to_json: bool = False):
+    def _get_prolog_codeblock(self):
 
         linecode = 572
 
-        if to_json:
-            return self._codeblock_to_json_str(self._get_multiline_block(linecode))
-
         return self._get_multiline_block(linecode)
 
-    def _get_metadata_codeblock(self, to_json: bool = False):
+    def _get_metadata_codeblock(self):
 
         linecode = 573
 
         return self._get_multiline_block(linecode)
 
-    def _get_data_codeblock(self, to_json: bool = False):
+    def _get_data_codeblock(self):
 
         linecode = 574
 
         return self._get_multiline_block(linecode)
 
-    def _get_epilog_codeblock(self, to_json: bool = False):
+    def _get_epilog_codeblock(self):
 
         linecode = 575
 
