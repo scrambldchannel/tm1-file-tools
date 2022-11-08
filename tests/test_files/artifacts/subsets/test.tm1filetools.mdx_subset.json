@@ -1,0 +1,5 @@
+{
+    "Name": "test.tm1filetools.mdx_subset",
+    "Hierarchy@odata.bind": "Dimensions('}Processes')/Hierarchies('}Processes')",
+    "Expression": "{TM1SUBSETALL( [}Processes] )}"
+}

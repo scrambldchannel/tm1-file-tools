@@ -1,0 +1,10 @@
+﻿283,100
+284,"All Non Control"
+11,00000000000000
+274,
+18,0
+275,110
+TM1Sort( Except( TM1SubsetAll( [}Processes] ), TM1FilterByPattern( TM1SubsetAll( [}Processes] ), "}*" )), Asc)
+278,0
+281,0
+270,0

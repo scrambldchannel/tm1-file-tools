@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 from .linecode import TM1LinecodeFile
 from .user_owned import TM1UserFile
@@ -22,3 +23,21 @@ class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
         self.owner = self._get_owner_name()
         # subset_name maybe a clearer API than stem?
         self.subset_name = self.stem
+
+    def _get_mdx(self) -> Optional[str]:
+        """Read file and return the MDX, if file defines a dynamic subset, or None
+
+        Returns:
+            A string containing the MDX or None
+
+        """
+
+        mdx_chars = self._parse_single_int(self._get_line_by_code(275))
+
+        if mdx_chars > 0:
+
+            mdx_idx = self._get_line_index_by_code(275) + 1
+
+            return self._get_line_by_index(mdx_idx)
+
+        return None

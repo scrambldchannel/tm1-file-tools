@@ -1,0 +1,13 @@
+﻿283,100
+284,"test.tm1filetools.mdx_subset"
+11,20221108160443
+274,
+18,0
+275,30
+{TM1SUBSETALL( [}Processes] )}
+278,0
+281,0
+270,3
+test.tm1filetools.empty_process
+test.tm1filetools.epilog_only_process
+test.tm1filetools.prolog_only_process

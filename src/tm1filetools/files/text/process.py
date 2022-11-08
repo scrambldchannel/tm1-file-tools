@@ -16,7 +16,7 @@ class TM1ProcessFile(TM1LinecodeFile):
     # three line auto generated code where code tabs are empty
     _code_block_prefix_lines = ["", "#****Begin: Generated Statements***", "#****End: Generated Statements****"]
 
-    _datasource_type_mapping = {"CHARACTERDELIMITED": "ASCII"}
+    _datasource_type_mapping = {"NULL": "None", "CHARACTERDELIMITED": "ASCII"}
 
     _type_mapping = {1: "Numeric", 2: "String"}
 
@@ -102,6 +102,8 @@ class TM1ProcessFile(TM1LinecodeFile):
         parameters = self._get_parameters()
         variables = self._get_variables()
 
+        datasource = self._get_datasource()
+
         json_dump = {
             "Name": name,
             "PrologProcedure": prolog,
@@ -111,6 +113,7 @@ class TM1ProcessFile(TM1LinecodeFile):
             "HasSecurityAccess": security_access,
             "Parameters": parameters,
             "Variables": variables,
+            "DataSource": datasource,
         }
 
         return json.dumps(json_dump, sort_keys=sort_keys, indent=4)
@@ -192,13 +195,21 @@ class TM1ProcessFile(TM1LinecodeFile):
 
     def _get_datasource(self) -> dict:
 
-        # What does the json look like with no datasource?
-        datasource = {}
+        # On processes with a datasource, the correct json
+        # seems to be this
+        datasource = {"Type": "None"}
 
         # need to come up with a mapping for all types
         datasource_type = self._parse_single_string(self._get_line_by_code(562))
+
         datasource_type_json = self._datasource_type_mapping[datasource_type]
-        datasource["Type"] = datasource_type_json
+        if datasource_type_json:
+            datasource["Type"] = datasource_type_json
+
+        # if we didn't find a mapping, return an empty datasource dict
+        if datasource["Type"] == "None":
+            return datasource
+
         # I'm going to assume the delimiter type is always "Character" when source type is ASCII
         # obviously need to map other types if necessary
         if datasource_type_json == "ASCII":
