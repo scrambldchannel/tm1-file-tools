@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 from tm1filetools.files.binary.cube import TM1AttributeCubeFile
@@ -270,3 +272,11 @@ def login_config_folder(tmp_path_factory):
     f.write_text(cfg)
 
     return d
+
+
+@pytest.fixture(scope="function")
+def json_dumps_folder():
+
+    path = Path.joinpath(Path.cwd(), "tests", "test_files", "artifacts")
+
+    return path
