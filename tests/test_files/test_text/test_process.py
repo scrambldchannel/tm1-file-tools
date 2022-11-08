@@ -79,12 +79,51 @@ def test_to_json(json_dumps_folder):
     assert json_out["Parameters"][1]["Name"] == "pVersion"
     assert json_out["Parameters"][2]["Name"] == "pScenario"
 
-    assert json_out["Parameters"][0]["Type"] == 2
-    assert json_out["Parameters"][1]["Type"] == 2
-    assert json_out["Parameters"][2]["Type"] == 2
+    assert json_out["Parameters"][0]["Type"] == "String"
+    assert json_out["Parameters"][1]["Type"] == "String"
+    assert json_out["Parameters"][2]["Type"] == "String"
 
     assert json_out["Parameters"][0]["Value"] == "All"
     assert json_out["Parameters"][0]["Prompt"] == ""
+
+    assert json_out["Variables"][0]["Name"] == "vPeriod"
+    assert json_out["Variables"][0]["Type"] == "String"
+
+
+def test_get_parameters(json_dumps_folder):
+
+    # create pro object from the file
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
+
+    params = pro._get_parameters()
+
+    with open(Path.joinpath(json_dumps_folder, "processes", "new_process.json"), "r") as f:
+        expected_json_str = f.read()
+
+    json_expected = json.loads(expected_json_str)
+
+    assert params[0] == json_expected["Parameters"][0]
+    assert params[1] == json_expected["Parameters"][1]
+    assert params[2] == json_expected["Parameters"][2]
+
+
+def test_get_variables(json_dumps_folder):
+
+    # create pro object from the file
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
+
+    vars = pro._get_variables()
+
+    with open(Path.joinpath(json_dumps_folder, "processes", "new_process.json"), "r") as f:
+        expected_json_str = f.read()
+
+    json_expected = json.loads(expected_json_str)
+
+    assert vars[0] == json_expected["Variables"][0]
+    assert vars[1] == json_expected["Variables"][1]
+    assert vars[2] == json_expected["Variables"][2]
+    assert vars[3] == json_expected["Variables"][3]
+    assert vars[4] == json_expected["Variables"][4]
 
 
 def test_parse_single_int(json_dumps_folder):

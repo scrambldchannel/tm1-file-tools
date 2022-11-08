@@ -22,6 +22,8 @@ class TM1ProcessFile(TM1TextFile):
 
     _datasource_type_mapping = {"CHARACTERDELIMITED": "ASCII"}
 
+    _type_mapping = {1: "Numeric", 2: "String"}
+
     def __init__(self, path: Path):
 
         super().__init__(path)
@@ -93,6 +95,7 @@ class TM1ProcessFile(TM1TextFile):
         security_access = security_access == 1
 
         parameters = self._get_parameters()
+        variables = self._get_variables()
 
         json_dump = {
             "Name": name,
@@ -102,6 +105,7 @@ class TM1ProcessFile(TM1TextFile):
             "EpilogProcedure": epilog,
             "HasSecurityAccess": security_access,
             "Parameters": parameters,
+            "Variables": variables,
         }
 
         return json.dumps(json_dump, sort_keys=sort_keys, indent=4)
@@ -126,7 +130,7 @@ class TM1ProcessFile(TM1TextFile):
         for idx, name in enumerate(names):
 
             # these are single ints on the line
-            datatype = int(self._get_line_by_index(idx_datatype + idx + 1))
+            datatype = self._type_mapping[int(self._get_line_by_index(idx_datatype + idx + 1))]
 
             hint = self._get_key_value_pair_string(self._get_line_by_index(idx_hint + idx + 1))["value"]
 
@@ -142,6 +146,44 @@ class TM1ProcessFile(TM1TextFile):
             )
 
         return params
+
+    def _get_variables(self) -> list:
+
+        # Variables are a bit like the parameters with them
+        # being defined over multiple lines in different sections
+
+        # What does the json look like with no datasource?
+        variables = []
+
+        # variable names are from 577
+        names = self._get_multiline_block(linecode=577)
+
+        # offsets are from 579
+        idx_offset = self._get_line_index_by_code(579)
+
+        # types are from 578
+        idx_types = self._get_line_index_by_code(578)
+
+        # start and end bytes
+        idx_start = self._get_line_index_by_code(580)
+        idx_end = self._get_line_index_by_code(581)
+
+        for idx, name in enumerate(names):
+
+            # these are single ints on the line
+            offset = int(self._get_line_by_index(idx_offset + idx + 1))
+            type = self._type_mapping[int(self._get_line_by_index(idx_types + idx + 1))]
+
+            # get start and end bytes
+            start = int(self._get_line_by_index(idx_start + idx + 1))
+            end = int(self._get_line_by_index(idx_end + idx + 1))
+
+            #
+            var = {"EndByte": end, "Name": name, "Position": offset, "StartByte": start, "Type": type}
+
+            variables.append(var)
+
+        return variables
 
     def _get_datasource(self) -> dict:
 
