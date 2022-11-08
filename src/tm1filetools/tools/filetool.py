@@ -365,7 +365,7 @@ class TM1FileTool:
 
     # generic operations on objects
 
-    def delete(self, file_object: TM1File) -> None:
+    def delete(self, file_object: TM1File) -> int:
         """Deletes the file specified and updates properties of the file tool object
 
         Args:
@@ -373,10 +373,14 @@ class TM1FileTool:
 
         """
 
-        file_object.delete()
+        count = file_object.delete()
 
         # potentially slow
+        # This is all a bit hacky because the delete method in the object itself
+        # Doesn't know anything about the file tool object
         self.find_all()
+
+        return count
 
     def rename(self, file_object, new_name: str) -> None:
         """Renames the file specified and updates properties of the file tool object
@@ -393,81 +397,146 @@ class TM1FileTool:
 
     # bulk deletes for relevant objects
 
-    def delete_all_feeders(self) -> None:
-        """Deletes all feeder files"""
+    def delete_all_feeders(self) -> int:
+        """Deletes all currently found feeder files
 
+        Returns:
+            int: count of files deleted
+        """
+
+        count = 0
         for fd in self.get_feeders():
-            fd.delete()
+            count = count + fd.delete()
 
         self._find_feeders()
 
-    def delete_all_blbs(self) -> None:
-        """Deletes all blb files"""
+        return count
 
+    def delete_all_blbs(self) -> int:
+        """Deletes all currently found blb files
+
+        Returns:
+            int: count of files deleted
+        """
+
+        count = 0
         for b in self.get_blbs(control=True):
-            b.delete()
+            count = count + b.delete()
 
         self._find_blbs()
 
+        return count
+
     # bulk deletes for orphans
 
-    def delete_all_orphans(self) -> None:
-        """Deletes all orphan files (rules, attribute dims etc)"""
+    def delete_all_orphans(self) -> int:
+        """Deletes all orphan files (rules, attribute dims etc)
 
-        self.delete_orphan_rules()
-        self.delete_orphan_attr_dims()
-        self.delete_orphan_attr_cubes()
-        self.delete_orphan_views()
-        self.delete_orphan_subs()
-        self.delete_orphan_feeders()
+        Returns:
+            int: count of files deleted
 
-    def delete_orphan_rules(self) -> None:
-        """Deletes all orphan rules files"""
+        """
 
+        count = 0
+        count = count + self.delete_orphan_rules()
+        count = count + self.delete_orphan_attr_dims()
+        count = count + self.delete_orphan_attr_cubes()
+        count = count + self.delete_orphan_views()
+        count = count + self.delete_orphan_subs()
+        count = count + self.delete_orphan_feeders()
+
+        # should we rescan here?
+        return count
+
+    def delete_orphan_rules(self) -> int:
+        """Deletes all orphan rules files
+
+        Returns:
+            int: count of files deleted
+        """
+
+        count = 0
         for r in self.get_orphan_rules():
-            r.delete()
+            count = count + r.delete()
 
         self._find_rules()
 
-    def delete_orphan_attr_dims(self) -> None:
-        """Deletes all orphan attribute dim files"""
+        return count
 
+    def delete_orphan_attr_dims(self) -> int:
+        """Deletes all orphan attribute dim files
+
+        Returns:
+            int: count of files deleted
+        """
+
+        count = 0
         for d in self.get_orphan_attr_dims():
-            d.delete()
+            count = count + d.delete()
 
         self._find_dims()
 
-    def delete_orphan_attr_cubes(self) -> None:
-        """Deletes all orphan attribute cube files"""
+        return count
 
+    def delete_orphan_attr_cubes(self) -> int:
+        """Deletes all orphan attribute cube files
+
+        Returns:
+            int: Count of files deleted
+        """
+
+        count = 0
         for c in self.get_orphan_attr_cubes():
             c.delete()
 
         self._find_cubes()
 
-    def delete_orphan_views(self) -> None:
-        """Deletes all orphan attribute view files"""
+        return count
 
+    def delete_orphan_views(self) -> int:
+        """Deletes all orphan attribute view files
+
+        Returns:
+            int: count of files deleted
+        """
+
+        count = 0
         for v in self.get_orphan_views():
-            v.delete()
+            count = count + v.delete()
 
         self._find_views()
 
-    def delete_orphan_subs(self) -> None:
-        """Deletes all orphan attribute subset files"""
+        return count
 
+    def delete_orphan_subs(self) -> int:
+        """Deletes all orphan attribute subset files
+
+        Returns:
+            int: count of files deleted
+
+        """
+
+        count = 0
         for s in self.get_orphan_subs():
-            s.delete()
+            count = count + s.delete()
 
         self._find_subs()
 
-    def delete_orphan_feeders(self) -> None:
-        """Deletes all orphan feeder files"""
+        return count
 
+    def delete_orphan_feeders(self) -> int:
+        """Deletes all orphan feeder files
+        Returns:
+            int: count of files deleted
+        """
+
+        count = 0
         for f in self.get_orphan_feeders():
-            f.delete()
+            count = count + f.delete()
 
         self._find_feeders()
+
+        return count
 
     # finders for different file types
 
