@@ -180,60 +180,6 @@ class TM1ProcessFile(TM1LinecodeFile):
 
         return datasource
 
-    def _get_key_value_pair_string(self, line: str):
-
-        # e.g. 'pPeriod,"All"'
-
-        key = line.split(self.delimiter)[0]
-        value = str.join("", line.split(self.delimiter)[1:]).strip(self.quote_character)
-
-        return {"key": key, "value": value}
-
-    def _get_key_value_pair_int(self, line: str, quote_character: str):
-
-        # e.g. 'pLogging,0'
-
-        key = line.split(self.delimiter)[0]
-        value = int(line.split(self.delimiter)[1])
-
-        return {"key": key, "value": value}
-
-    def _get_multiline_block(self, linecode):
-        """
-        Read the int value from the submitted line and return the following n lines
-
-        e.g. sensible values are:
-        - 560 (ProcessParametersNames)
-        - 572 (ProcessPrologProcedure)
-        - 575 (ProcessEpilogProcedure)
-        - etc ...
-
-        See [gist](https://gist.github.com/scrambldchannel/9955cb731f80616c706f2d5a81b82c2a)
-
-        """
-
-        # get the index and the line for this code
-        index = self._get_line_index_by_code(linecode)
-        line = self._get_line_by_code(linecode)
-
-        # parse the line to get the number of lines
-        number_of_lines = self._parse_single_int(line)
-
-        lines = []
-
-        # loop over the next n lines
-        index = index + 1
-        for i in range(index, index + number_of_lines):
-
-            line = self._get_line_by_index(i)
-            lines.append(line)
-
-        return lines
-
-    @staticmethod
-    def _codeline_strip_whitespace(line: str) -> str:
-        return line.rstrip()
-
     @staticmethod
     def _codeblock_to_json_str(lines: list[str]) -> str:
 
