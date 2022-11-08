@@ -1,0 +1,9 @@
+{
+    "Name": "test.tm1filetools.multi_element_static_subset",
+    "Hierarchy@odata.bind": "Dimensions('}Processes')/Hierarchies('}Processes')",
+    "Elements@odata.bind": [
+        "Dimensions('}Processes')/Hierarchies('}Processes')/Elements('test.tm1filetools.empty_process')",
+        "Dimensions('}Processes')/Hierarchies('}Processes')/Elements('test.tm1filetools.epilog_only_process')",
+        "Dimensions('}Processes')/Hierarchies('}Processes')/Elements('test.tm1filetools.prolog_only_process')"
+    ]
+}
