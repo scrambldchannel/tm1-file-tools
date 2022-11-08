@@ -24,38 +24,77 @@ class TM1ProcessFile(TM1LinecodeFile):
 
         super().__init__(path)
 
-    def _get_prolog_codeblock(self):
+    def get_prolog_code(self, rstrip=True) -> list[str]:
+        """
+        Get a list of strings representing each line of code in the prolog
+
+        Args:
+            rstrip: Strip whitespace from end of lines (default=True)
+
+        Returns:
+            List of strings, one for each line in the prolog
+
+        """
 
         linecode = 572
 
-        return self._get_multiline_block(linecode)
+        return self._get_multiline_block(linecode, rstrip=rstrip)
 
-    def _get_metadata_codeblock(self):
+    def get_metadata_code(self, rstrip=True) -> list[str]:
+        """
+        Get a list of strings representing each line of code in the metadata tab
 
+        Args:
+            rstrip: Strip whitespace from end of lines (default=True)
+
+        Returns:
+            List of strings, one for each line in the metadata tab
+
+        """
         linecode = 573
 
-        return self._get_multiline_block(linecode)
+        return self._get_multiline_block(linecode, rstrip=rstrip)
 
-    def _get_data_codeblock(self):
+    def get_data_code(self, rstrip=True) -> list[str]:
+        """
+        Get a list of strings representing each line of code in the data tab
+
+        Args:
+            rstrip: Strip whitespace from end of lines (default=True)
+
+        Returns:
+            List of strings, one for each line in the data tab
+
+        """
 
         linecode = 574
 
-        return self._get_multiline_block(linecode)
+        return self._get_multiline_block(linecode, rstrip=rstrip)
 
-    def _get_epilog_codeblock(self):
+    def get_epilog_code(self, rstrip=True) -> list[str]:
+        """
+        Get a list of strings representing each line of code in the epilog
+
+        Args:
+            rstrip: Strip whitespace from end of lines (default=True)
+
+        Returns:
+            List of strings, one for each line in the epilog
+
+        """
 
         linecode = 575
 
-        return self._get_multiline_block(linecode)
+        return self._get_multiline_block(linecode, rstrip=rstrip)
 
-    def _to_json(self, sort_keys: bool = True):
+    def _to_json(self, sort_keys: bool = True, rstrip: bool = True):
 
         name = self._parse_single_string(self._get_line_by_code(602))
 
-        prolog = self._codeblock_to_json_str(self._get_prolog_codeblock())
-        metadata = self._codeblock_to_json_str(self._get_metadata_codeblock())
-        data = self._codeblock_to_json_str(self._get_data_codeblock())
-        epilog = self._codeblock_to_json_str(self._get_epilog_codeblock())
+        prolog = self._codeblock_to_json_str(self.get_prolog_code())
+        metadata = self._codeblock_to_json_str(self.get_metadata_code())
+        data = self._codeblock_to_json_str(self.get_data_code())
+        epilog = self._codeblock_to_json_str(self.get_epilog_code())
 
         security_access = self._parse_single_int(self._get_line_by_code(1217))
         security_access = security_access == 1

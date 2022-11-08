@@ -136,10 +136,10 @@ def test_codeblock_to_json(json_dumps_folder):
     assert len_cb == len_exp
 
 
-def test_prolog_code_block(json_dumps_folder):
+def test_prolog(json_dumps_folder):
     pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
 
-    lines = pro._get_prolog_codeblock()
+    lines = pro.get_prolog_code()
 
     assert len(lines) == 48
     assert lines[0] == pro._code_block_prefix_lines[0]
@@ -147,10 +147,10 @@ def test_prolog_code_block(json_dumps_folder):
     assert lines[2] == pro._code_block_prefix_lines[2]
 
 
-def test_metadata_code_block(json_dumps_folder):
+def test_metadata(json_dumps_folder):
     pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
 
-    lines = pro._get_metadata_codeblock()
+    lines = pro.get_metadata_code()
 
     assert len(lines) == 3
 
@@ -162,7 +162,7 @@ def test_metadata_code_block(json_dumps_folder):
 def test_data_code_block(json_dumps_folder):
     pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
 
-    lines = pro._get_data_codeblock()
+    lines = pro.get_data_code()
 
     assert lines[0] == pro._code_block_prefix_lines[0]
     assert lines[1] == pro._code_block_prefix_lines[1]
@@ -174,7 +174,7 @@ def test_data_code_block(json_dumps_folder):
 def test_epilog_code_block(json_dumps_folder):
     pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
 
-    lines = pro._get_epilog_codeblock()
+    lines = pro.get_epilog_code()
 
     assert lines[0] == pro._code_block_prefix_lines[0]
     assert lines[1] == pro._code_block_prefix_lines[1]

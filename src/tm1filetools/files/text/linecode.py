@@ -103,7 +103,7 @@ class TM1LinecodeFile(TM1TextFile):
 
         return {"key": key, "value": value}
 
-    def _get_multiline_block(self, linecode):
+    def _get_multiline_block(self, linecode: int, rstrip: bool = False):
         """
         Read the int value from the submitted line and return the following n lines
 
@@ -132,6 +132,9 @@ class TM1LinecodeFile(TM1TextFile):
 
             line = self._get_line_by_index(i)
             lines.append(line)
+
+        if rstrip:
+            return [line.rstrip() for line in lines]
 
         return lines
 
