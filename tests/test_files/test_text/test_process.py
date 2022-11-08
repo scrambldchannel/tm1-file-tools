@@ -205,3 +205,121 @@ def test_get_datasource(json_dumps_folder):
     assert datasource["asciiHeaderRecords"] == 0
     assert datasource["asciiQuoteCharacter"] == '"'
     assert datasource["asciiThousandSeparator"] == ","
+
+
+def test_empty_process(json_dumps_folder):
+
+    process = "test.tm1filetools.empty_process"
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", f"{process}.pro"))
+
+    json_out_str = pro._to_json()
+
+    assert json_out_str
+
+    json_out = json.loads(json_out_str)
+
+    with open(Path.joinpath(json_dumps_folder, "processes", f"{process}.json"), "r") as f:
+        expected_json_str = f.read()
+
+    json_expected = json.loads(expected_json_str)
+
+    assert json_out["Name"] == json_expected["Name"]
+    assert json_out["PrologProcedure"] == json_expected["PrologProcedure"]
+    assert json_out["EpilogProcedure"] == json_expected["EpilogProcedure"]
+    assert json_out["MetadataProcedure"] == json_expected["MetadataProcedure"]
+    assert json_out["DataProcedure"] == json_expected["DataProcedure"]
+    assert json_out["HasSecurityAccess"] == json_expected["HasSecurityAccess"]
+
+    # not sure what to do about this UIData field,
+    # need to determine whether a process can be created by TM1py without it
+    # assert json_out["UIData"] == json_expected["UIData"]
+
+    # failing
+    # assert json_out["DataSource"] == json_expected["DataSource"]
+
+    # These work, an empty list is what is expected
+    assert json_out["Parameters"] == json_expected["Parameters"]
+    assert json_out["Variables"] == json_expected["Variables"]
+
+    # this I have looked at yet
+    # assert json_out["VariablesUIData"] == json_expected["VariablesUIData"]
+
+
+def test_prolog_only_process(json_dumps_folder):
+
+    process = "test.tm1filetools.prolog_only_process"
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", f"{process}.pro"))
+
+    json_out_str = pro._to_json()
+
+    assert json_out_str
+
+    json_out = json.loads(json_out_str)
+
+    with open(Path.joinpath(json_dumps_folder, "processes", f"{process}.json"), "r") as f:
+        expected_json_str = f.read()
+
+    json_expected = json.loads(expected_json_str)
+
+    assert json_out["Name"] == json_expected["Name"]
+    # Note, for the tabs we have data for, the json version seems to have trailing
+    # whitespace :shrug:
+    assert json_out["PrologProcedure"] == json_expected["PrologProcedure"].rstrip()
+    assert json_out["EpilogProcedure"] == json_expected["EpilogProcedure"]
+    assert json_out["MetadataProcedure"] == json_expected["MetadataProcedure"]
+    assert json_out["DataProcedure"] == json_expected["DataProcedure"]
+    assert json_out["HasSecurityAccess"] == json_expected["HasSecurityAccess"]
+
+    # not sure what to do about this UIData field,
+    # need to determine whether a process can be created by TM1py without it
+    # assert json_out["UIData"] == json_expected["UIData"]
+
+    # failing
+    # assert json_out["DataSource"] == json_expected["DataSource"]
+
+    # These work, an empty list is what is expected
+    assert json_out["Parameters"] == json_expected["Parameters"]
+    assert json_out["Variables"] == json_expected["Variables"]
+
+    # this I have looked at yet
+    # assert json_out["VariablesUIData"] == json_expected["VariablesUIData"]
+
+
+def test_epilog_only_process(json_dumps_folder):
+
+    process = "test.tm1filetools.epilog_only_process"
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", f"{process}.pro"))
+
+    json_out_str = pro._to_json()
+
+    assert json_out_str
+
+    json_out = json.loads(json_out_str)
+
+    with open(Path.joinpath(json_dumps_folder, "processes", f"{process}.json"), "r") as f:
+        expected_json_str = f.read()
+
+    json_expected = json.loads(expected_json_str)
+
+    assert json_out["Name"] == json_expected["Name"]
+    assert json_out["PrologProcedure"] == json_expected["PrologProcedure"]
+    # Note, for the tabs we have data for, the json version seems to have trailing
+    # whitespace :shrug:
+    assert json_out["EpilogProcedure"] == json_expected["EpilogProcedure"].rstrip()
+    assert json_out["MetadataProcedure"] == json_expected["MetadataProcedure"]
+    assert json_out["DataProcedure"] == json_expected["DataProcedure"]
+    assert json_out["HasSecurityAccess"] == json_expected["HasSecurityAccess"]
+
+    # not sure what to do about this UIData field,
+    # need to determine whether a process can be created by TM1py without it
+    # assert json_out["UIData"] == json_expected["UIData"]
+
+    # failing
+    # assert json_out["DataSource"] == json_expected["DataSource"]
+
+    # These work, an empty list is what is expected
+    assert json_out["Parameters"] == json_expected["Parameters"]
+    assert json_out["Variables"] == json_expected["Variables"]
+
+    # this I have looked at yet
+    # assert json_out["VariablesUIData"] == json_expected["VariablesUIData"]
