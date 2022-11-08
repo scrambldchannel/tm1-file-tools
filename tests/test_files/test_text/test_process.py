@@ -234,8 +234,8 @@ def test_empty_process(json_dumps_folder):
     # need to determine whether a process can be created by TM1py without it
     # assert json_out["UIData"] == json_expected["UIData"]
 
-    # failing
-    # assert json_out["DataSource"] == json_expected["DataSource"]
+    # should be empty
+    assert json_expected["DataSource"] == json_out["DataSource"]
 
     # These work, an empty list is what is expected
     assert json_out["Parameters"] == json_expected["Parameters"]
@@ -274,8 +274,8 @@ def test_prolog_only_process(json_dumps_folder):
     # need to determine whether a process can be created by TM1py without it
     # assert json_out["UIData"] == json_expected["UIData"]
 
-    # failing
-    # assert json_out["DataSource"] == json_expected["DataSource"]
+    # should be empty
+    assert json_expected["DataSource"] == json_out["DataSource"]
 
     # These work, an empty list is what is expected
     assert json_out["Parameters"] == json_expected["Parameters"]
@@ -314,8 +314,8 @@ def test_epilog_only_process(json_dumps_folder):
     # need to determine whether a process can be created by TM1py without it
     # assert json_out["UIData"] == json_expected["UIData"]
 
-    # failing
-    # assert json_out["DataSource"] == json_expected["DataSource"]
+    # should be empty
+    assert json_expected["DataSource"] == json_out["DataSource"]
 
     # These work, an empty list is what is expected
     assert json_out["Parameters"] == json_expected["Parameters"]
