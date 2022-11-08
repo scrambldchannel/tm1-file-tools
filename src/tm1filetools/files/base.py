@@ -35,9 +35,18 @@ class TM1File:
 
         return self._path.suffix[1:]
 
-    def delete(self):
+    def delete(self) -> int:
+        """Deletes this file
 
-        return self._path.unlink()
+        Returns:
+            count of files deleted
+
+        """
+
+        # How best to do exception handling?
+        self._path.unlink()
+
+        return 1
 
     # i.e. rename the stem part, not the suffix or the parent
     # probably most useful for renaming cubes, dims, views and subsets in advance of a restart
