@@ -139,6 +139,6 @@ def test_get_hierarchy_odata(json_dumps_folder):
 
     subset = "test.tm1filetools.mdx_subset"
 
-    sub = TM1SubsetFile(Path.joinpath(json_dumps_folder, "subsets", f"{subset}.sub"))
+    sub = TM1SubsetFile(Path.joinpath(json_dumps_folder, "subsets", f"{subset}.sub"))  # noqa
 
     expected_string = "Dimensions('}Processes')/Hierarchies('}Processes')"  # noqa
