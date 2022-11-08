@@ -1,7 +1,7 @@
 TM1 File Tools
 ==============
 
-A Python package that simplifies working with files associated with a
+**TM1 File Tools** Python package that simplifies working with files associated with a
 TM1 server. It’s primarily useful for linting or cleaning up a server
 directory without a dependency on a running TM1 Server.
 
