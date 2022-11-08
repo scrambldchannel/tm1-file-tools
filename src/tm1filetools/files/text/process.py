@@ -1,10 +1,10 @@
 import json
 from pathlib import Path
 
-from .text import TM1TextFile
+from .linecode import TM1LinecodeFile
 
 
-class TM1ProcessFile(TM1TextFile):
+class TM1ProcessFile(TM1LinecodeFile):
     """
     A class representation of a tm1 TI process file. A TM1 .pro file
 
@@ -51,36 +51,6 @@ class TM1ProcessFile(TM1TextFile):
         linecode = 575
 
         return self._get_multiline_block(linecode)
-
-    def _get_line_by_code(self, linecode: int):
-
-        # Are lines ever duplicated?
-        lines = self.readlines()
-
-        for line in lines:
-
-            code = line.split(self.delimiter)[0]
-
-            if code == str(linecode):
-                return line
-
-    def _get_line_index_by_code(self, linecode: int):
-
-        # Are lines ever duplicated?
-        lines = self.readlines()
-
-        for index, line in enumerate(lines):
-
-            code = line.split(self.delimiter)[0]
-
-            if code == str(linecode):
-                return index
-
-    def _get_line_by_index(self, index: int):
-
-        lines = self.readlines()
-
-        return lines[index]
 
     def to_json(self, sort_keys: bool = True):
 
@@ -209,58 +179,6 @@ class TM1ProcessFile(TM1TextFile):
         datasource["dataSourceNameForServer"] = self._parse_single_string(self._get_line_by_code(586))
 
         return datasource
-        # this needs to be refactored
-        # idx_datatype = self._get_line_index_by_code(561)
-        # idx_default = self._get_line_index_by_code(590)
-        # idx_hint = self._get_line_index_by_code(637)
-
-        # names = self._get_multiline_block(linecode=560)
-
-        # for idx, name in enumerate(names):
-
-        #     # these are single ints on the line
-        #     datatype = int(self._get_line_by_index(idx_datatype + idx + 1))
-
-        #     hint = self._get_key_value_pair_string(self._get_line_by_index(idx_hint + idx + 1))["value"]
-
-        #     default = self._get_key_value_pair_string(self._get_line_by_index(idx_default + idx + 1))["value"]
-
-        #     params.append(
-        #         {
-        #             "Name": name,
-        #             "Prompt": hint,
-        #             "Type": datatype,
-        #             "Value": default,
-        #         }
-        #     )
-
-        # return params
-
-    def _parse_single_int(self, line: str) -> int:
-        """
-        Read a line with a code and a single int value and return the value only
-        """
-
-        _, value = line.split(self.delimiter)
-
-        return int(value)
-
-    def _parse_single_string(self, line: str) -> str:
-        """
-        Read a value string containing a single string and return the value without quotes
-        """
-
-        # need to make this portable
-
-        chunks = line.split(self.delimiter)
-
-        value = str.join(",", chunks[1:])
-
-        # hack for getting the delimiter - will need to be done better
-        if value == '""""':
-            return '"'
-
-        return value.strip(self.quote_character)
 
     def _get_key_value_pair_string(self, line: str):
 
