@@ -57,23 +57,23 @@ class TM1LinecodeFile(TM1TextFile):
             if code == str(linecode):
                 return index
 
-    def _parse_single_int(self, line: str) -> int:
+    @classmethod
+    def _parse_single_int(cls, line: str) -> int:
         """
         Read a line with a code and a single int value and return the value only
         """
 
-        _, value = line.split(self.code_delimiter)
+        _, value = line.split(cls.code_delimiter)
 
         return int(value)
 
-    def _parse_single_string(self, line: str) -> str:
+    @classmethod
+    def _parse_single_string(cls, line: str) -> str:
         """
         Read a value string containing a single string and return the value without quotes
         """
 
-        # need to make this portable
-
-        chunks = line.split(self.code_delimiter)
+        chunks = line.split(cls.code_delimiter)
 
         value = str.join(",", chunks[1:])
 
@@ -81,7 +81,7 @@ class TM1LinecodeFile(TM1TextFile):
         if value == '""""':
             return '"'
 
-        return value.strip(self.code_quote)
+        return value.strip(cls.code_quote)
 
     def _get_key_value_pair_string(self, line: str):
 
@@ -92,7 +92,7 @@ class TM1LinecodeFile(TM1TextFile):
 
         return {"key": key, "value": value}
 
-    def _get_key_value_pair_int(self, line: str, quote_character: str):
+    def _get_key_value_pair_int(self, line: str):
 
         # e.g. 'pLogging,0'
 

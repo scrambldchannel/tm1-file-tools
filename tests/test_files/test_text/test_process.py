@@ -12,39 +12,6 @@ def test_init(test_folder):
     assert p.suffix == "pro"
 
 
-def test_get_line_by_code(test_folder):
-
-    p = TM1ProcessFile(Path.joinpath(test_folder, "copy data from my cube.pro"))
-
-    # build up this file and read some basic line codes
-
-    p.write(
-        r"""601,100
-602,"my zany process"
-        """
-    )
-
-    # line, code, value, index
-    assert p._get_line_by_code(linecode=601) == "601,100"
-    assert p._get_line_by_code(linecode=602) == '602,"my zany process"'
-
-
-def test_get_line_by_index(test_folder):
-
-    p = TM1ProcessFile(Path.joinpath(test_folder, "copy data from my cube.pro"))
-
-    # build up this file and read some basic line codes
-
-    p.write(
-        r"""601,100
-602,"my zany process"
-        """
-    )
-
-    assert p._get_line_by_index(index=0) == "601,100"
-    assert p._get_line_by_index(index=1) == '602,"my zany process"'
-
-
 def test_to_json(json_dumps_folder):
 
     # create pro object from the file
@@ -124,53 +91,6 @@ def test_get_variables(json_dumps_folder):
     assert vars[2] == json_expected["Variables"][2]
     assert vars[3] == json_expected["Variables"][3]
     assert vars[4] == json_expected["Variables"][4]
-
-
-def test_parse_single_int(json_dumps_folder):
-
-    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
-
-    line = pro._get_line_by_code(601)
-    assert pro._parse_single_int(line) == 100
-
-    line = pro._get_line_by_code(572)
-    assert pro._parse_single_int(line) == 48
-
-
-def test_parse_single_str(json_dumps_folder):
-
-    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
-
-    line = '602,"my zany process"'
-
-    assert pro._parse_single_string(line=line) == "my zany process"
-
-    line = '602,"my, zany process"'
-
-    assert pro._parse_single_string(line=line) == "my, zany process"
-
-    line = '602,"my, zany process"'
-
-    assert pro._parse_single_string(line=line) == "my, zany process"
-
-
-def test_get_multiline_block(json_dumps_folder):
-
-    # create pro object from the file
-    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
-
-    lines = pro._get_multiline_block(linecode=572)
-
-    # lines should be correct here
-    assert len(lines) == 48
-
-    assert lines[0] == ""
-    assert lines[2] == "#****End: Generated Statements****"
-    assert lines[4] == "#####  LOGGING"
-    # check indent
-    assert lines[40] == "   'pCubeLogging', 0,"
-
-    assert lines[-1] == ""
 
 
 def test_codeblock_to_json(json_dumps_folder):
