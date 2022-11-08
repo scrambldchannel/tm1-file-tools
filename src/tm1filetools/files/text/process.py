@@ -24,10 +24,10 @@ class TM1ProcessFile(TM1TextFile):
 
         super().__init__(path)
 
-        self.prolog = None
-        self.metadata = None
-        self.data = None
-        self.epilog = None
+        # self.prolog = None
+        # self.metadata = None
+        # self.data = None
+        # self.epilog = None
 
         # Attempt some simple parsing
         # https://gist.github.com/scrambldchannel/9955cb731f80616c706f2d5a81b82c2a
@@ -79,8 +79,22 @@ class TM1ProcessFile(TM1TextFile):
 
         line, _, name, _ = self._get_line_by_code(602)
 
+        _, prolog, _ = self._get_prolog_codeblock()
+        _, metadata, _ = self._get_metadata_codeblock()
+        _, data, _ = self._get_data_codeblock()
+        _, epilog, _ = self._get_epilog_codeblock()
+
+        prolog = self._codeblock_to_json_str(prolog)
+        metadata = self._codeblock_to_json_str(metadata)
+        data = self._codeblock_to_json_str(data)
+        epilog = self._codeblock_to_json_str(epilog)
+
         json_dump = {
             "Name": name,
+            "PrologProcedure": prolog,
+            "MetadataProcedure": metadata,
+            "DataProcedure": data,
+            "EpilogProcedure": epilog,
         }
 
         return json.dumps(json_dump, sort_keys=sort_keys, indent=4)

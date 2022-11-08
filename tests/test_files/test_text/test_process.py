@@ -67,6 +67,10 @@ def test_to_json(json_dumps_folder):
 
     assert json_out["Name"] == json_expected["Name"]
 
+    assert json_out["PrologProcedure"][0] == "\r"
+
+    assert json_out["PrologProcedure"][0] == json_expected["PrologProcedure"][0]
+
 
 def test_parse_single_int():
 
