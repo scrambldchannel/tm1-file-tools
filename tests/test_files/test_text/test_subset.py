@@ -134,6 +134,21 @@ def test_mdx_subset(json_dumps_folder):
     assert json_out["Expression"] == expected_json["Expression"]
 
 
+def test_hierarchy_odata():
+
+    result = TM1SubsetFile._get_hierarchy_odata(dim="}Processes")
+
+    expected_string = "Dimensions('}Processes')/Hierarchies('}Processes')"  # noqa
+
+    assert result == expected_string
+
+    result = TM1SubsetFile._get_hierarchy_odata(dim="}Processes", hier="Not }Processes")
+
+    expected_string = "Dimensions('}Processes')/Hierarchies('Not }Processes')"  # noqa
+
+    assert result == expected_string
+
+
 @pytest.mark.skip("Not yet working")
 def test_get_hierarchy_odata(json_dumps_folder):
 

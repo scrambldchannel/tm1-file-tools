@@ -64,10 +64,24 @@ class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
         if self._get_mdx():
             json_dump["Expression"] = self._get_mdx()
 
-        # derive "Hierarchy@odata.bind" string
-
         # hierarchy_odata = self._get_hierarchy_odata()
 
         # json_dump["Hierarchy@odata.bind"] = hierarchy_odata
 
         return json_dump
+
+    @staticmethod
+    def _get_hierarchy_odata(dim: str, hier: str = None):
+
+        # this is a fairly trivial function but may be useful more generally
+        # perhaps it should be moved to a helper class?
+
+        # derive "Hierarchy@odata.bind" string
+        # Example - "Dimensions('}Processes')/Hierarchies('}Processes')"
+
+        # use default hierarchy if none provided
+
+        if hier is None:
+            hier = dim
+
+        return f"Dimensions('{dim}')/Hierarchies('{hier}')"
