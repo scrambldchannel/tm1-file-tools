@@ -1,4 +1,6 @@
+from datetime import datetime
 from pathlib import Path
+from time import sleep
 
 from tm1filetools.files.base import TM1File
 
@@ -91,3 +93,22 @@ def test_str(test_folder):
     f = TM1File(Path.joinpath(test_folder, "cat.cub"))
 
     assert f.__str__() == "TM1File (cat.cub)"
+
+
+def test_last_modified(test_folder):
+
+    dt_now = datetime.now()
+
+    f = TM1File(Path.joinpath(test_folder, "cat.cub"))
+
+    lm = f.get_last_modified()
+    assert lm < dt_now
+
+    assert f.get_last_modified() == lm
+
+    # ensure a difference
+    sleep(0.0001)
+
+    f._path.touch()
+
+    assert f.get_last_modified() > lm

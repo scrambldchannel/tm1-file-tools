@@ -1,4 +1,5 @@
 import itertools
+from datetime import datetime
 from pathlib import Path
 
 
@@ -69,6 +70,15 @@ class TM1File:
     def strip_prefix(self):
 
         return self.stem.removeprefix(self.prefix)
+
+    def get_last_modified(self) -> datetime:
+        """
+        Get the last modified date of the file
+        """
+
+        if self._path.exists():
+
+            return datetime.fromtimestamp(self._path.stat().st_mtime)
 
     @staticmethod
     def _get_suffix_permutations(suffix: str):
