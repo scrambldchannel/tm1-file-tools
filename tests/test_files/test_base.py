@@ -107,7 +107,7 @@ def test_last_modified(test_folder):
     assert f.get_last_modified() == lm
 
     # ensure a difference
-    sleep(0.0001)
+    sleep(0.25)
 
     f._path.touch()
 
