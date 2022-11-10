@@ -45,3 +45,14 @@ class TM1CfgFile(TM1TextFile):
             and self.config.has_option(section=self._section, option="DataBaseDirectory")  # noqa
             and self.config.has_option(section=self._section, option="PortNumber")  # noqa
         )
+
+    def get_data_path(self):
+
+        if self.is_valid:
+            return self.get_parameter("DataBaseDirectory")
+
+    def get_log_path(self):
+
+        if self.is_valid:
+
+            return self.get_parameter("LoggingDirectory")

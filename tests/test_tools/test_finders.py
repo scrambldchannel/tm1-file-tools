@@ -81,16 +81,6 @@ def test_find_chores(test_folder):
     assert all(f.stem != "brown_snake" for f in ft._chore_files)
 
 
-def test_find_logs(test_folder):
-
-    ft = TM1FileTool(test_folder)
-
-    ft._find_logs()
-
-    assert any(log.stem == "tm1s" for log in ft._log_files)
-    assert all(log.stem != "dog" for log in ft._log_files)
-
-
 def test_find_blb(test_folder):
 
     ft = TM1FileTool(test_folder)

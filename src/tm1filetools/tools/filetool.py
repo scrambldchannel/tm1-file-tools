@@ -1,4 +1,4 @@
-from pathlib import Path, PureWindowsPath, WindowsPath
+from pathlib import Path
 from typing import List, Optional
 
 from tm1filetools.files import (
@@ -6,15 +6,12 @@ from tm1filetools.files import (
     TM1AttributeCubeFile,
     TM1AttributeDimensionFile,
     TM1BLBFile,
-    TM1CfgFile,
-    TM1ChangeLogFile,
     TM1ChoreFile,
     TM1CMAFile,
     TM1CubeFile,
     TM1DimensionFile,
     TM1FeedersFile,
     TM1LogFile,
-    TM1ProcessErorrLogFile,
     TM1ProcessFile,
     TM1RulesFile,
     TM1SubsetFile,
@@ -22,26 +19,17 @@ from tm1filetools.files import (
 )
 from tm1filetools.files.base import TM1File
 
+from .base import TM1BaseFileTool
 
-class TM1FileTool:
+# from .cfgfiletool import TM1CfgFileTool
+from .logfiletool import TM1LogFileTool
+
+
+class TM1FileTool(TM1BaseFileTool):
     """
     TM1 file tool object
 
     """
-
-    suffixes = [
-        TM1BLBFile.suffix,
-        TM1CfgFile.suffix,
-        TM1CubeFile.suffix,
-        TM1DimensionFile.suffix,
-        TM1ProcessFile.suffix,
-        TM1ChoreFile.suffix,
-        TM1RulesFile.suffix,
-        TM1SubsetFile.suffix,
-        TM1ViewFile.suffix,
-        TM1CMAFile.suffix,
-        TM1FeedersFile.suffix,
-    ]
 
     def __init__(self, path: Path, local: bool = False):
 
@@ -51,10 +39,11 @@ class TM1FileTool:
         # this means that an absolute path in the cfg file can be used
         self._local: bool = local
 
-        self.config_file: Optional[TM1CfgFile] = self._find_config_file()
+        # just set these to the current path
+        # can be overwritten potentially if using a config file to derive separate paths
+        self._data_path, self._log_path = self._path, self._path
 
-        # if we do have a config file, attempt to derive paths to logs, data etc
-        self._data_path, self._log_path = self._get_paths_from_cfg()
+        self.logfile_tool: TM1LogFileTool = TM1LogFileTool(self._log_path)
 
         # Fetch lists of files on demand
 
@@ -88,7 +77,7 @@ class TM1FileTool:
         self._find_subs()
         self._find_views()
         self._find_feeders()
-        self._find_logs()
+        self.logfile_tool._find_logs()
         self._find_cmas()
         self._find_blbs()
         self._find_chores()
@@ -223,18 +212,6 @@ class TM1FileTool:
 
         return self._filter_model_and_or_control(self._chore_files, model=model, control=control)
 
-    def get_logs(self) -> List[TM1LogFile]:
-        """Returns list of all log files
-
-        Returns:
-            List of log files
-        """
-
-        if self._log_files is None:
-            self._find_logs()
-
-        return self._log_files
-
     def get_blbs(self, model: bool = True, control: bool = False) -> List[TM1BLBFile]:
         """Returns list of all blb files
 
@@ -362,6 +339,22 @@ class TM1FileTool:
             for f in self.get_feeders(control=True)
             if f.stem.lower() not in [c.stem.lower() for c in self.get_cubes(control=True)]
         ]
+
+    # to deprecate
+
+    def get_logs(self) -> List[TM1LogFile]:
+        """Returns list of all log files
+
+        Returns:
+            List of log files
+        """
+
+        # add deprecation warning
+
+        if self._log_files is None:
+            self.logfile_tool._find_logs()
+
+        return self._log_files
 
     # generic operations on objects
 
@@ -596,23 +589,6 @@ class TM1FileTool:
 
         self._blb_files = [TM1BLBFile(b) for b in self._find_files(TM1BLBFile.suffix)]
 
-    def _find_logs(self):
-
-        # logs may be in a different path so search with the glob func
-        # We should also be careful of the tm1s.log file as we may fail to get a lock on it
-
-        logs = []
-        for log in self._case_insensitive_glob(self._log_path, f"*.{TM1LogFile.suffix}"):
-            # if we think this is the tm1s.log file, use the derived class that avoids trying to open it
-            if log.stem.lower() == "tm1s":
-                logs.append(TM1ChangeLogFile(log))
-            elif log.stem.lower().startswith(TM1ProcessErorrLogFile.prefix.lower()):
-                logs.append(TM1ProcessErorrLogFile)
-            else:
-                logs.append(TM1LogFile(log))
-
-        self._log_files = logs
-
     def _find_non_tm1(self, recursive: bool = False):
 
         # I wasn't quite sure what functionality I wanted here but decided
@@ -632,58 +608,6 @@ class TM1FileTool:
             return self._case_insensitive_glob(path, f"{prefix}*.{suffix}", recursive=recursive)
 
         return self._case_insensitive_glob(self._data_path, f"{prefix}*.{suffix}", recursive=recursive)
-
-    def _find_config_file(self):
-
-        cfg_file_path = next(self._case_insensitive_glob(path=self._path, pattern="tm1s.cfg"), None)
-
-        if cfg_file_path:
-            return TM1CfgFile(cfg_file_path)
-
-        return None
-
-    def _get_paths_from_cfg(self):
-
-        # if we can't find a valid config file, use the init path for data and logs
-        if not self.config_file:
-            return self._path, self._path
-
-        # read the params from the config file and see if a concrete path can be derived
-        data_dir = self.config_file.get_parameter("DataBaseDirectory")
-        log_dir = self.config_file.get_parameter("LoggingDirectory")
-
-        return self._derive_path(data_dir), self._derive_path(log_dir)
-
-    def _derive_path(self, dir: str):
-
-        if dir:
-
-            pure_path = PureWindowsPath(dir)
-
-            if pure_path.is_absolute():
-
-                if self._local:
-                    return WindowsPath(pure_path)
-
-                # We can't do much with an absolute path when running on a separate machine
-                return self._path
-
-            else:
-                # thanks to the magic of pathlib, this seems to work cross platform :)
-                # note, I've made it an absolute path, not sure this is strictly necessary
-                return Path.joinpath(self._path, pure_path).resolve()
-
-        return self._path
-
-    @staticmethod
-    def _case_insensitive_glob(path: Path, pattern: str, recursive: bool = False):
-        def either(c):
-            return "[%s%s]" % (c.lower(), c.upper()) if c.isalpha() else c
-
-        if recursive:
-            return path.rglob("".join(map(either, pattern)))
-
-        return path.glob("".join(map(either, pattern)))
 
     @staticmethod
     def _filter_model_and_or_control(objects, model: bool = True, control: bool = False):
