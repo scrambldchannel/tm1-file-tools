@@ -127,16 +127,6 @@ def test_get_control_chores(test_folder):
     assert all(c.stem != "donkey" for c in chores)
 
 
-def test_get_logs(test_folder):
-
-    ft = TM1FileTool(test_folder)
-
-    logs = ft.get_logs()
-
-    assert any(log.stem == "tm1s" for log in logs)
-    assert all(log.stem != "}shark" for log in logs)
-
-
 def test_get_blbs(test_folder):
 
     ft = TM1FileTool(test_folder)
