@@ -1,12 +1,11 @@
-from pathlib import Path, PureWindowsPath, WindowsPath
+from pathlib import Path
 from typing import List, Optional
 
-from tm1filetools.files import (  # TM1ChangeLogFile,; TM1ProcessErorrLogFile,
+from tm1filetools.files import (
     NonTM1File,
     TM1AttributeCubeFile,
     TM1AttributeDimensionFile,
     TM1BLBFile,
-    TM1CfgFile,
     TM1ChoreFile,
     TM1CMAFile,
     TM1CubeFile,
@@ -21,6 +20,8 @@ from tm1filetools.files import (  # TM1ChangeLogFile,; TM1ProcessErorrLogFile,
 from tm1filetools.files.base import TM1File
 
 from .base import TM1BaseFileTool
+
+# from .cfgfiletool import TM1CfgFileTool
 from .logfiletool import TM1LogFileTool
 
 
@@ -38,12 +39,11 @@ class TM1FileTool(TM1BaseFileTool):
         # this means that an absolute path in the cfg file can be used
         self._local: bool = local
 
-        self.config_file: Optional[TM1CfgFile] = self._find_config_file()
+        # just set these to the current path
+        # can be overwritten potentially if using a config file to derive separate paths
+        self._data_path, self._log_path = self._path, self._path
 
-        # if we do have a config file, attempt to derive paths to logs, data etc
-        self._data_path, self._log_path = self._get_paths_from_cfg()
-
-        self.logfile_tool = TM1LogFileTool(self._log_path)
+        self.logfile_tool: TM1LogFileTool = TM1LogFileTool(self._log_path)
 
         # Fetch lists of files on demand
 
@@ -608,48 +608,6 @@ class TM1FileTool(TM1BaseFileTool):
             return self._case_insensitive_glob(path, f"{prefix}*.{suffix}", recursive=recursive)
 
         return self._case_insensitive_glob(self._data_path, f"{prefix}*.{suffix}", recursive=recursive)
-
-    def _find_config_file(self):
-
-        cfg_file_path = next(self._case_insensitive_glob(path=self._path, pattern="tm1s.cfg"), None)
-
-        if cfg_file_path:
-            return TM1CfgFile(cfg_file_path)
-
-        return None
-
-    def _get_paths_from_cfg(self):
-
-        # if we can't find a valid config file, use the init path for data and logs
-        if not self.config_file:
-            return self._path, self._path
-
-        # read the params from the config file and see if a concrete path can be derived
-        data_dir = self.config_file.get_parameter("DataBaseDirectory")
-        log_dir = self.config_file.get_parameter("LoggingDirectory")
-
-        return self._derive_path(data_dir), self._derive_path(log_dir)
-
-    def _derive_path(self, dir: str):
-
-        if dir:
-
-            pure_path = PureWindowsPath(dir)
-
-            if pure_path.is_absolute():
-
-                if self._local:
-                    return WindowsPath(pure_path)
-
-                # We can't do much with an absolute path when running on a separate machine
-                return self._path
-
-            else:
-                # thanks to the magic of pathlib, this seems to work cross platform :)
-                # note, I've made it an absolute path, not sure this is strictly necessary
-                return Path.joinpath(self._path, pure_path).resolve()
-
-        return self._path
 
     @staticmethod
     def _filter_model_and_or_control(objects, model: bool = True, control: bool = False):
