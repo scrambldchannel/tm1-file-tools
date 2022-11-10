@@ -1,5 +1,6 @@
 from datetime import datetime
 from pathlib import Path
+from time import sleep
 
 from tm1filetools.files.base import TM1File
 
@@ -104,6 +105,9 @@ def test_last_modified(test_folder):
     assert lm < dt_now
 
     assert f.get_last_modified() == lm
+
+    # ensure a difference
+    sleep(0.0001)
 
     f._path.touch()
 
