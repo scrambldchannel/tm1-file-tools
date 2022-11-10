@@ -44,21 +44,17 @@ class TM1CfgFileTool(TM1BaseFileTool):
 
     def _derive_path(self, dir: str):
 
-        if dir:
+        pure_path = PureWindowsPath(dir)
 
-            pure_path = PureWindowsPath(dir)
+        if pure_path.is_absolute():
 
-            if pure_path.is_absolute():
+            if self._local:
+                return WindowsPath(pure_path)
 
-                if self._local:
-                    return WindowsPath(pure_path)
+            # We can't do much with an absolute path when running on a separate machine
+            return self._path
 
-                # We can't do much with an absolute path when running on a separate machine
-                return self._path
-
-            else:
-                # thanks to the magic of pathlib, this seems to work cross platform :)
-                # note, I've made it an absolute path, not sure this is strictly necessary
-                return Path.joinpath(self._path, pure_path).resolve()
-
-        return self._path
+        else:
+            # thanks to the magic of pathlib, this seems to work cross platform :)
+            # note, I've made it an absolute path, not sure this is strictly necessary
+            return Path.joinpath(self._path, pure_path).resolve()

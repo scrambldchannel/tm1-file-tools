@@ -90,7 +90,9 @@ def test_get_data_path_rel(rel_config_folder):
 
     ft = TM1CfgFileTool(path=rel_config_folder)
 
+    assert ft.get_data_path()
     assert ft.get_data_path().exists()
+
     assert ft.get_data_path().is_absolute()
 
 
