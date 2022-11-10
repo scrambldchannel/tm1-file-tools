@@ -24,7 +24,7 @@ def test_get_data_path_no_cfg(empty_folder):
     # if config file not found, should just be the original path
     ft = TM1CfgFileTool(path=empty_folder)
 
-    assert ft.get_data_path() is None
+    assert ft._get_data_path_param() is None
 
 
 def test_get_log_path_no_cfg(empty_folder):
@@ -85,21 +85,19 @@ def test_get_log_path_local(abs_config_folder, rel_config_folder):
     assert ft.get_log_path().stem == "logs"
 
 
-@pytest.mark.skip("failing")
 def test_get_data_path_rel(rel_config_folder):
 
     ft = TM1CfgFileTool(path=rel_config_folder)
 
     assert ft.get_data_path()
     assert ft.get_data_path().exists()
-
     assert ft.get_data_path().is_absolute()
 
 
-@pytest.mark.skip("failing")
 def test_get_log_path_rel(rel_config_folder):
 
     ft = TM1CfgFileTool(path=rel_config_folder)
 
+    assert ft.get_data_path()
     assert ft.get_log_path().exists()
     assert ft.get_log_path().is_absolute()

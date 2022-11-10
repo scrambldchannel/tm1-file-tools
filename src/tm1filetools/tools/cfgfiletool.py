@@ -15,36 +15,41 @@ class TM1CfgFileTool(TM1BaseFileTool):
 
         self._path: Path = path
 
-        self._path = path
+        self._path_cfg = None
 
-        self._local = local
+        self._local: bool = local
 
-        self.config_file = self._find_config_file()
+        self.config_file: TM1CfgFile = self._find_config_file()
 
     def _find_config_file(self):
 
         if self._path.is_dir():
-            self._path = Path.joinpath(self._path, "tm1s.cfg")
+            self._path_cfg = Path.joinpath(self._path, "tm1s.cfg")
+        else:
+            self._path_cfg = self._path
 
-        if self._path.exists():
-            return TM1CfgFile(self._path)
+        if self._path_cfg.exists():
+            return TM1CfgFile(self._path_cfg)
 
-    def get_data_path(self):
-
-        if self.config_file:
-            if self.config_file.is_valid():
-                return self._derive_path(self.config_file.get_parameter("DataBaseDirectory"))
-
-    def get_log_path(self):
+    def _get_data_path_param(self):
 
         if self.config_file:
-            if self.config_file.is_valid():
+            return self.config_file.get_data_path()
 
-                return self._derive_path(self.config_file.get_parameter("LoggingDirectory"))
+    def _get_log_path_param(self):
 
-    def _derive_path(self, dir: str):
+        if self.config_file:
+            return self.config_file.get_log_path()
 
-        pure_path = PureWindowsPath(dir)
+    def _derive_path(self, path: str):
+
+        # this method needs love, or at least commentary
+        # I was trying to derive an absolute path if possible
+        # from the params in the cfg file
+        # but I can't quite remember what the exact behaviour
+        # was supposed to be, even though I only wrote it two weeks ago!
+
+        pure_path = PureWindowsPath(path)
 
         if pure_path.is_absolute():
 
@@ -58,3 +63,17 @@ class TM1CfgFileTool(TM1BaseFileTool):
             # thanks to the magic of pathlib, this seems to work cross platform :)
             # note, I've made it an absolute path, not sure this is strictly necessary
             return Path.joinpath(self._path, pure_path).resolve()
+
+    def get_data_path(self) -> Path:
+
+        path_str = self._get_data_path_param()
+
+        if path_str:
+            return self._derive_path(path_str)
+
+    def get_log_path(self) -> Path:
+
+        path_str = self._get_log_path_param()
+
+        if path_str:
+            return self._derive_path(path_str)
