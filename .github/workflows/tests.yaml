@@ -19,7 +19,7 @@ jobs:
     # potentially add further python versions to test against
     strategy:
       matrix:
-        python-version: ['3.9.7']
+        python-version: ["3.9", "3.10", "3.11"]
 
     steps:
 
