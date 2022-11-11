@@ -73,7 +73,7 @@ class TM1LogFileTool(TM1BaseFileTool):
             if log.stem.lower() == "tm1s":
                 tm1_log.append(TM1ChangeLogFile(log))
             elif log.stem.lower().startswith(TM1ProcessErorrLogFile.prefix.lower()):
-                process_error_logs.append(TM1ProcessErorrLogFile)
+                process_error_logs.append(TM1ProcessErorrLogFile(log))
             else:
                 cube_change_logs.append(TM1LogFile(log))
 

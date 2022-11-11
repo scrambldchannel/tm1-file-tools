@@ -33,6 +33,7 @@ class TM1ProcessErorrLogFile(TM1LogFile):
 
     def _get_process_name(self):
 
+        #
         return "_".join(self.stem.split("_")[2:])
 
     def _get_timestamp(self):

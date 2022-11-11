@@ -20,7 +20,8 @@ view_files = ["mouse.vue", "squirrel.VUE", "}shark.vue"]
 view_folders = ["cat", "koala"]
 feeders_files = ["cat.feeders", "possum.FEEDERS"]
 # should also add in a TI process error log
-log_files = ["tm1s.log", "tm1server.LOG"]
+# I am unsure about how the process error string should look exactly
+log_files = ["tm1s.log", "tm1server.LOG", "TM1ProcessError_123123_myproc.log"]
 blb_files = ["emu.blb", "unicorn.blb"]
 cma_files = ["bunyip.CMA", "troll.cma"]
 junk_files = ["cat.cub.bak", "no_extension", "zzzBackup12.zip"]
