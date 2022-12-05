@@ -1,3 +1,4 @@
+from tm1filetools.files import TM1SubsetFile
 from tm1filetools.tools import TM1FileTool
 
 
@@ -41,3 +42,19 @@ def test_find_all(test_folder):
     ft.find_all()
 
     assert all(f.stem != "cat" for f in ft._feeders_files)
+
+
+def test_find_folders(test_folder):
+
+    ft = TM1FileTool(test_folder)
+
+    folders = ft._find_folders()
+
+    # make sure we get something
+    assert len(folders) > 0
+
+    # make sure suffix taken into account
+    assert all(f.name != "cat" for f in folders)
+
+    assert any(f.name == f"cat{TM1SubsetFile.folder_suffix}" for f in folders)
+    assert all(f.name != f"frog{TM1SubsetFile.folder_suffix}" for f in folders)
