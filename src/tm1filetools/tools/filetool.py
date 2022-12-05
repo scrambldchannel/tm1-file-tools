@@ -609,6 +609,21 @@ class TM1FileTool(TM1BaseFileTool):
 
         return self._case_insensitive_glob(self._data_path, f"{prefix}*.{suffix}", recursive=recursive)
 
+    def _find_folders(self, recursive: bool = False, path: Path = None):
+        """
+        Return list of all folders in the given path or within the data directory
+        """
+
+        # this doesn't really belong here but put here for now
+        # also need to think about what else needs to be added to this list
+        static_folders = ["}applications", "}async", "}externals"]  # noqa
+
+        if path:
+
+            return [f for f in path.iterdir() if f.is_dir()]
+
+        return [f for f in self._data_path.iterdir() if f.is_dir()]
+
     @staticmethod
     def _filter_model_and_or_control(objects, model: bool = True, control: bool = False):
 
