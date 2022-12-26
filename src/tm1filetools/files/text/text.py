@@ -21,12 +21,17 @@ class TM1TextFile(TM1File):
 
         self.f = None
 
-    def reader(self):
+    def reader(self, strip_newline: bool = True):
 
         if self._path.exists:
             with open(self._path, "r") as f:
                 for row in f:
-                    yield row
+                    # do I ever not want to strip the newline char?
+
+                    if strip_newline:
+                        yield row.strip()
+                    else:
+                        yield row
 
     def read(self):
         with open(self._path, "r") as f:
