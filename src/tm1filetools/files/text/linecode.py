@@ -36,19 +36,20 @@ class TM1LinecodeFile(TM1TextFile):
     def _get_line_by_code(self, linecode: int):
 
         # Are lines ever duplicated?
-        lines = self.readlines()
+        lines = self.reader()
 
         for line in lines:
 
             code = line.split(self.code_delimiter)[0]
 
             if code == str(linecode):
-                return line
+                # do I ever not want to strip the newline char?
+                return line.strip()
 
     def _get_line_index_by_code(self, linecode: int):
 
         # Are lines ever duplicated?
-        lines = self.readlines()
+        lines = self.reader()
 
         for index, line in enumerate(lines):
 
