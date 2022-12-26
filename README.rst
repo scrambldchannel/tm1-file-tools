@@ -55,6 +55,5 @@ Example Usage
 Running Tests
 -------------
 
-```
-$ pytest tests
-```
+``$ pytest tests
+``
