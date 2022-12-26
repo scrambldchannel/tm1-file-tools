@@ -129,6 +129,7 @@ class TM1LinecodeFile(TM1TextFile):
         # parse the line to get the number of lines
         number_of_lines = self._parse_single_int(line)
 
+        # This isn't the most elegant but the size of these chunks is unlikely to be large
         lines = []
 
         # loop over the next n lines
