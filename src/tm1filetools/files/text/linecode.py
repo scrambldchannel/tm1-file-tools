@@ -1,3 +1,4 @@
+import itertools
 from pathlib import Path
 
 from .text import TM1TextFile
@@ -6,7 +7,7 @@ from .text import TM1TextFile
 # Can perhaps make these abstract classes
 class TM1LinecodeFile(TM1TextFile):
     """
-    Class with extra methods for dealining with files that are plain text but use line numbers to specify things
+    Class with extra methods for dealing with files that are plain text but use line numbers to specify things
 
     Examples are subsets, views, processes and chores (I think)
 
@@ -27,16 +28,14 @@ class TM1LinecodeFile(TM1TextFile):
 
         super().__init__(path)
 
-    def _get_line_by_index(self, index: int):
+    def _get_line_by_index(self, index: int, strip_newline=True):
 
-        lines = self.readlines()
+        return next(itertools.islice(self.reader(strip_newline=strip_newline), index, index + 1))
 
-        return lines[index]
-
-    def _get_line_by_code(self, linecode: int):
+    def _get_line_by_code(self, linecode: int, strip_newline=True):
 
         # Are lines ever duplicated?
-        lines = self.readlines()
+        lines = self.reader(strip_newline=strip_newline)
 
         for line in lines:
 
@@ -48,7 +47,7 @@ class TM1LinecodeFile(TM1TextFile):
     def _get_line_index_by_code(self, linecode: int):
 
         # Are lines ever duplicated?
-        lines = self.readlines()
+        lines = self.reader()
 
         for index, line in enumerate(lines):
 
@@ -109,7 +108,7 @@ class TM1LinecodeFile(TM1TextFile):
 
         return {"key": key, "value": value}
 
-    def _get_multiline_block(self, linecode: int, rstrip: bool = False):
+    def _get_multiline_block(self, linecode: int, rstrip: bool = True):
         """
         Read the int value from the submitted line and return the following n lines
 
@@ -130,20 +129,17 @@ class TM1LinecodeFile(TM1TextFile):
         # parse the line to get the number of lines
         number_of_lines = self._parse_single_int(line)
 
+        # This isn't the most elegant but the size of these chunks is unlikely to be large
         lines = []
 
         # loop over the next n lines
         index = index + 1
         for i in range(index, index + number_of_lines):
 
-            line = self._get_line_by_index(i)
+            line = self._get_line_by_index(i, strip_newline=False)
             lines.append(line)
 
         if rstrip:
             return [line.rstrip() for line in lines]
 
         return lines
-
-    @staticmethod
-    def _codeline_strip_whitespace(line: str) -> str:
-        return line.rstrip()
