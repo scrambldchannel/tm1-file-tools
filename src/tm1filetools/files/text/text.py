@@ -19,6 +19,15 @@ class TM1TextFile(TM1File):
         self.is_non_empty = self._get_non_empty()
         self.encoding = self._get_encoding()
 
+        self.f = None
+
+    def reader(self):
+
+        if self._path.exists:
+            with open(self._path, "r") as f:
+                for row in f:
+                    yield row
+
     def read(self):
         with open(self._path, "r") as f:
             return f.read()

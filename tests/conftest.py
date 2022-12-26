@@ -227,6 +227,20 @@ def test_folder(tmp_path_factory):
         f = d / f"{lg}"
         f.touch()
 
+    # add a basic transaction log for testing
+    changelog = r""" #LOG_FORMAT=1
+#LOGID=6
+#LOGIV=
+"","20200801185011","20200801185011","Admin","S","20200722131536","20200801185011","}DimensionProperties","}dimensions","LAST_TIME_UPDATED",""
+#"","20200802084038","CubeSerialized: TM1py_tests_annotations: by Admin"
+"","20200802084728","20200802084728","Admin","N","0","6","TM1py_Tests_Cell_Cube_RPS1","e2","e3",""
+
+    """
+
+    f = d / "tm1s20200801080426.log"
+
+    f.write_text(changelog)
+
     # return the path
     return d
 

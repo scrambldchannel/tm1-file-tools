@@ -51,3 +51,10 @@ Example Usage
    ft.delete_all_blbs()
 
    ...
+
+Running Tests
+-------------
+
+```
+$ pytest tests
+```
