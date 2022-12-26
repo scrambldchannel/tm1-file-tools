@@ -11,7 +11,7 @@ dim_files = ["koala.DIM", "possum.dim"]
 dim_attributes = ["koala.dim", "kangaroo.dim"]
 cub_files = ["cat.cub", "dog.CUB"]
 cub_attributes = ["koala.cub", "humphrey.CUB"]
-rux_files = ["dog.ruX", "giraffe.rux"]
+rux_files = ["dog.ruX", "giraffe.rux", "rux_1.rux"]
 process_files = ["dingo.PRO", "wombat.pro", "}fraggle.pRO"]
 cho_files = ["quokka.cho", "black_SNAKE.cho", "}brown_snake.cHO"]
 sub_files = ["platypus.sub", "donkey.SUB", "}dolphin.suB"]
@@ -131,6 +131,18 @@ def test_folder(tmp_path_factory):
 
         f = d / f"{r}"
         f.touch()
+
+    # add sample ruxes
+    rux_1 = r"""
+
+Skipcheck;
+
+[] = STET;
+FEEDERS    ;
+"""
+    f = d / "rux_1.ruX"
+
+    f.write_text(rux_1)
 
     for df in dim_files:
 
