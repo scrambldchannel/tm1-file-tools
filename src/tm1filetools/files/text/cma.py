@@ -66,19 +66,19 @@ class TM1CMAFile(TM1TextFile):
         self.delimiter = self._get_delimiter()
         self.cube = self._get_cube()
 
-        def reader(self, control: bool = False, cube: str = None, user: str = None, dt: str = None):
-            """
-            A generator that reads each line of the cma and yields every row matching the applied filters
+    def reader(self, control: bool = False, cube: str = None, user: str = None, dt: str = None):
+        """
+        A generator that reads each line of the cma and yields every row matching the applied filters
 
-            """
+        """
 
-            if self._path.exists:
-                with open(self._path, "r") as f:
-                    for row in csv.reader(self._discard_metadata(f), delimiter=self.delimiter, quotechar=self.quote):
+        if self._path.exists:
+            with open(self._path, "r") as f:
+                for row in csv.reader(f, delimiter=self.delimiter, quotechar=self.quote_character):
 
-                        row_obj = TM1CMARow(row)
+                    row_obj = TM1CMARow(row)
 
-                        # if dt and row_obj.dt.lower() != dt.lower():
-                        #     continue
+                    # if dt and row_obj.dt.lower() != dt.lower():
+                    #     continue
 
-                        yield row_obj
+                    yield row_obj
