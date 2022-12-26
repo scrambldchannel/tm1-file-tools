@@ -1,7 +1,5 @@
 from pathlib import Path
 
-import pytest
-
 from tm1filetools.files import TM1RulesFile
 
 
@@ -13,7 +11,6 @@ def test_init(test_folder):
     assert f.suffix == "ruX"
 
 
-@pytest.mark.skip("Failing :shrug:")
 def test_feeders(test_folder):
 
     f = TM1RulesFile(Path.joinpath(test_folder, "rux_1.ruX"))

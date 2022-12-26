@@ -135,7 +135,7 @@ def test_folder(tmp_path_factory):
     # add sample ruxes
     rux_1 = r"""
 
-Skipcheck;
+Skipcheck ;
 
 [] = STET;
 FEEDERS    ;

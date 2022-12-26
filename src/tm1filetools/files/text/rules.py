@@ -22,7 +22,7 @@ class TM1RulesFile(TM1TextFile):
 
             row = row.strip().lower()
 
-            if self._is_terminated(row) and row[:-1] == "skipcheck":
+            if self._is_terminated(row) and row[:-1].rstrip() == "skipcheck":
 
                 return True
 
@@ -33,16 +33,19 @@ class TM1RulesFile(TM1TextFile):
         for row in self.reader():
 
             row = row.strip().lower()
-            if self._is_terminated(row) and row[:-1] == "feeders":
+
+            if self._is_terminated(row) and row[:-1].rstrip() == "feeders":
 
                 return True
 
-            return False
+        return False
 
-    @staticmethod
-    def _is_terminated(row: str):
+    @classmethod
+    def _is_terminated(cls, row: str):
 
         row = row.strip()
 
         # having removed the guff at the end, I'm hoping this should
-        return row
+
+        if len(row) > 0:
+            return row if row[-1] == ";" else False
