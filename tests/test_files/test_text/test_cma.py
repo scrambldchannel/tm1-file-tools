@@ -30,4 +30,23 @@ def test_get_cube(test_folder):
     f.write('"Planning:Sales Planning","202301","Software","Germany",1000000')
 
     assert f._get_cube() == "Sales Planning"
-    # assert f.cube == "Sales Planning"
+
+
+def test_parse_els():
+
+    el_str = "202301:Software:Germany"
+
+    els = TM1CMAFile._parse_els(el_str)
+
+    assert len(els) == 3
+
+    assert els[0] == "202301"
+
+    el_str = "202302:Hardware:Australia::"
+
+    els = TM1CMAFile._parse_els(el_str)
+
+    # two trailing els should have been dropped
+    assert len(els) == 3
+
+    assert els[1] == "Hardware"

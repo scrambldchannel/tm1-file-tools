@@ -73,7 +73,7 @@ class TM1CMAFile(TM1TextFile):
 
         return row.cube
 
-    def reader(self, dt: str = None):
+    def reader(self, dt: str = None, el_filter: str = None):
         """
         A generator that reads each line of the cma and yields every row matching the applied filters
 
@@ -89,3 +89,22 @@ class TM1CMAFile(TM1TextFile):
                         continue
 
                     yield row_obj
+
+    @staticmethod
+    def _parse_els(el_string: str):
+
+        # take a list of elements, in order, separated by :
+        # e.g. "Dim1 El::Dim3 El::Value"
+        # filters for values of the first and _third_ dims in a five dim cube
+
+        els = el_string.split(":")
+
+        # remove trailing blanks as these aren't useful
+        for el in reversed(els):
+
+            if el != "":
+                break
+
+            els = els[:-1]
+
+        return els
