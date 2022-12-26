@@ -50,3 +50,13 @@ def test_parse_els():
     assert len(els) == 3
 
     assert els[1] == "Hardware"
+
+    el_str = "202302:Hardware:Australia::Value"
+
+    els = TM1CMAFile._parse_els(el_str)
+
+    assert len(els) == 5
+
+    # empty value should be retained to preserve index of value
+    assert els[3] == ""
+    assert els[4] == "Value"
