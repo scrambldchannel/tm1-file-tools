@@ -32,6 +32,20 @@ def test_get_cube(test_folder):
     assert f._get_cube() == "Sales Planning"
 
 
+def test_reader(test_folder):
+
+    f = TM1CMAFile(Path.joinpath(test_folder, "test.cma"))
+
+    f._path.touch()
+
+    f.write('"Planning:Sales Planning","202301","Software","Germany",1000000')
+
+    row = next(f.reader())
+
+    assert row.val_n == 1000000
+    assert not row.val_s
+
+
 def test_parse_els():
 
     el_str = "202301:Software:Germany"

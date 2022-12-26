@@ -17,10 +17,12 @@ class TM1CMARow:
         self._value = row[-1]
 
         # attempt to derive data type
+        self.val_n = None
+        self.val_s = None
         try:
             self.val_n = float(self._value)
             self.dt = "N"
-        finally:
+        except:  # noqa
             self.val_s = str(self._value)
             self.dt = "S"
 
@@ -65,10 +67,6 @@ class TM1CMAFile(TM1TextFile):
         if not self.is_non_empty:
             return None
 
-        # hack
-        if not self.delimiter:
-            self.delimiter = self._get_delimiter()
-
         row = next(self.reader())
 
         return row.cube
@@ -80,6 +78,10 @@ class TM1CMAFile(TM1TextFile):
         """
 
         if self._path.exists:
+            # hack
+            if not self.delimiter:
+                self.delimiter = self._get_delimiter()
+
             with open(self._path, "r") as f:
                 for row in csv.reader(f, delimiter=self.delimiter, quotechar=self.quote_character):
 
