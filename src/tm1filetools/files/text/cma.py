@@ -17,10 +17,12 @@ class TM1CMARow:
         self._value = row[-1]
 
         # attempt to derive data type
+        self.val_n = None
+        self.val_s = None
         try:
             self.val_n = float(self._value)
             self.dt = "N"
-        finally:
+        except:  # noqa
             self.val_s = str(self._value)
             self.dt = "S"
 
@@ -65,27 +67,68 @@ class TM1CMAFile(TM1TextFile):
         if not self.is_non_empty:
             return None
 
-        # hack
-        if not self.delimiter:
-            self.delimiter = self._get_delimiter()
-
         row = next(self.reader())
 
         return row.cube
 
-    def reader(self, dt: str = None):
+    def reader(self, dt: str = None, el_filter: str = None):
         """
         A generator that reads each line of the cma and yields every row matching the applied filters
 
         """
 
         if self._path.exists:
+            # hack
+            if not self.delimiter:
+                self.delimiter = self._get_delimiter()
+
             with open(self._path, "r") as f:
                 for row in csv.reader(f, delimiter=self.delimiter, quotechar=self.quote_character):
 
                     row_obj = TM1CMARow(row)
 
+                    # filter for n or s values
                     if dt and row_obj.dt.lower() != dt.lower():
                         continue
 
+                    # apply element filter
+
+                    if el_filter:
+
+                        els = self._parse_els(el_filter)
+
+                        # naive approach
+                        skip = False
+                        for i, el in enumerate(els):
+
+                            if el == "":
+                                continue
+
+                            print(row_obj.elements[i])
+                            if el != row_obj.elements[i]:
+                                skip = True
+                                break
+
+                        if skip:
+                            continue
+
                     yield row_obj
+
+    @staticmethod
+    def _parse_els(el_string: str):
+
+        # take a list of elements, in order, separated by :
+        # e.g. "Dim1 El::Dim3 El::Value"
+        # filters for values of the first and _third_ dims in a five dim cube
+
+        els = el_string.split(":")
+
+        # remove trailing blanks as these aren't useful
+        for el in reversed(els):
+
+            if el != "":
+                break
+
+            els = els[:-1]
+
+        return els
