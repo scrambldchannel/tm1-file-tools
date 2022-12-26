@@ -1,3 +1,4 @@
+import csv
 from pathlib import Path
 
 from .text import TM1TextFile
@@ -47,21 +48,29 @@ class TM1ChangeLogFile(TM1LogFile):
 
     """
 
+    metadata_prefix = "#"
+    delimiter = ","
+    quote = '"'
+
     def __init__(self, path: Path):
 
         super().__init__(path)
 
-    # to avoid opening this file, which may throw an error, override these methods
-    # Not sure if this is the best approach, can maybe output a warning
+    def reader(self):
 
-    def read(self):
-        pass
+        if self._path.exists:
+            with open(self._path, "r") as f:
+                for row in csv.reader(self._discard_metadata(f), delimiter=self.delimiter, quotechar=self.quote):
+                    yield row
 
-    def write(self, text):
-        pass
+    @classmethod
+    def _discard_metadata(cls, f):
 
-    def _get_encoding(self):
-        pass
+        # The intent here is to create a wrapper for a file object that discards
+        # the metadata lines in a change log file
+        for line in f:
 
-    def _get_non_empty(self):
-        pass
+            if line[0] == cls.metadata_prefix or line[1] == cls.metadata_prefix or len(line) < 3:
+                continue
+            else:
+                yield line
