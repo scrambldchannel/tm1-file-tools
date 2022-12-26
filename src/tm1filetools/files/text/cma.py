@@ -1,6 +1,28 @@
+import csv
 from pathlib import Path
 
 from .text import TM1TextFile
+
+
+class TM1CMARow:
+    def __init__(self, row):
+
+        """Representation of a single line in the cma file"""
+
+        # afaik, each row will have a fixed number of columns, based on the cube
+
+        self.server, self.cube = row[0].split(":")
+        self.elements = row[1:-1]
+        self.el_count = len(self.elements) + 1
+        self._value = row[-1]
+
+        # attempt to derive data type
+        try:
+            self.val_n = float(self._value)
+            self.dt = "N"
+        finally:
+            self.val_s = str(self._value)
+            self.dt = "S"
 
 
 class TM1CMAFile(TM1TextFile):
@@ -12,7 +34,7 @@ class TM1CMAFile(TM1TextFile):
     """
 
     suffix = "cma"
-    # does this vary?
+    # does this vary? I think it does for cmas based on locale
     quote_character = '"'
 
     def __init__(self, path: Path):
@@ -20,6 +42,7 @@ class TM1CMAFile(TM1TextFile):
         super().__init__(path)
 
         self.delimiter = self._get_delimiter()
+
         self.cube = self._get_cube()
 
     def _get_delimiter(self):
@@ -42,15 +65,27 @@ class TM1CMAFile(TM1TextFile):
         if not self.is_non_empty:
             return None
 
-        with self._path.open() as f:
+        # hack
+        if not self.delimiter:
+            self.delimiter = self._get_delimiter()
 
-            line = f.readline()
-            index = line.find(self.quote_character, 1)
-            return line[1:index]
+        row = next(self.reader())
 
-    def write(self, text):
+        return row.cube
 
-        super().write(text)
+    def reader(self, dt: str = None):
+        """
+        A generator that reads each line of the cma and yields every row matching the applied filters
 
-        self.delimiter = self._get_delimiter()
-        self.cube = self._get_cube()
+        """
+
+        if self._path.exists:
+            with open(self._path, "r") as f:
+                for row in csv.reader(f, delimiter=self.delimiter, quotechar=self.quote_character):
+
+                    row_obj = TM1CMARow(row)
+
+                    if dt and row_obj.dt.lower() != dt.lower():
+                        continue
+
+                    yield row_obj

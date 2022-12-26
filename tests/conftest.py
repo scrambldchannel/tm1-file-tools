@@ -147,6 +147,16 @@ def test_folder(tmp_path_factory):
         f = d / f"{c}"
         f.touch()
 
+    # add sample cma
+    cma = r""""Planning:Sales",","BP","202201","Sales","Australia","Amount",200
+Planning:Sales",","BP","202202","Sales","Australia","Amount",300
+Planning:Sales",","BP","202203","Sales","Australia","Amount",500
+Planning:Sales",","BP","202203","Sales","Australia","Comment","To the moon!"
+"""
+    f = d / "Sales.cma"
+
+    f.write_text(cma)
+
     for fd in feeders_files:
 
         f = d / f"{fd}"
