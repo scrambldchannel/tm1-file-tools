@@ -120,7 +120,16 @@ def test_el_filter_multi_length(test_folder):
 
     assert len(rows) == 1
 
-    el_str = ":Hardware::"
+    el_str = "::Germany"
+
+    rows = []
+    for row in f.reader(el_filter=el_str):
+
+        rows.append(row)
+
+    assert len(rows) == 1
+
+    el_str = ":Hardware:"
 
     rows = []
     for row in f.reader(el_filter=el_str):
