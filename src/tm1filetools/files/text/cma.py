@@ -10,7 +10,23 @@ class TM1CMARow:
         """Representation of a single line in the cma file"""
 
         # afaik, each row will have a fixed number of columns, based on the cube
-        self.row = row
+
+        # I assume the last col is the val
+        # really need to dig out an example!
+
+        self.server = row[0].split(":")[0]
+        self.cube = row[0].split(":")[1]
+        self.elements = row[1:-1]
+        self.el_count = len(self.elements) + 1
+        self._value = row[:-1]
+
+        # attempt to derive data type
+        try:
+            self.val_n = float(self._value)
+            self.dt = "N"
+        finally:
+            self.val_s = str(self._value)
+            self.dt = "S"
 
 
 class TM1CMAFile(TM1TextFile):
@@ -66,7 +82,7 @@ class TM1CMAFile(TM1TextFile):
         self.delimiter = self._get_delimiter()
         self.cube = self._get_cube()
 
-    def reader(self, control: bool = False, cube: str = None, user: str = None, dt: str = None):
+    def reader(self, dt: str = None):
         """
         A generator that reads each line of the cma and yields every row matching the applied filters
 
@@ -78,7 +94,7 @@ class TM1CMAFile(TM1TextFile):
 
                     row_obj = TM1CMARow(row)
 
-                    # if dt and row_obj.dt.lower() != dt.lower():
-                    #     continue
+                    if dt and row_obj.dt.lower() != dt.lower():
+                        continue
 
                     yield row_obj
