@@ -13,13 +13,20 @@ def test_init(test_folder):
 
 def test_changelog(test_folder):
 
-    f = TM1ChangeLogFile(Path.joinpath(test_folder, "tm1s.log"))
+    f = TM1ChangeLogFile(Path.joinpath(test_folder, "tm1s20200801080426.log"))
 
     assert f
     assert f.suffix == "log"
 
-    f.is_non_empty is None
-    f.encoding is None
+    assert f.exists
+
+    log_rows = 0
+    for row in f.reader():
+        print(row[0])
+        log_rows = log_rows + 1
+
+    assert log_rows > 0
+    assert log_rows == 3
 
 
 def test_process_error_log(test_folder):

@@ -68,9 +68,14 @@ class TM1ChangeLogFile(TM1LogFile):
 
         # The intent here is to create a wrapper for a file object that discards
         # the metadata lines in a change log file
-        for line in f:
+        for row in f:
 
-            if line[0] == cls.metadata_prefix or line[1] == cls.metadata_prefix or len(line) < 3:
+            if len(row) < 3:
+                continue
+
+            first_char = row.removeprefix(" ")[0]
+
+            if first_char == cls.metadata_prefix:
                 continue
             else:
-                yield line
+                yield row
