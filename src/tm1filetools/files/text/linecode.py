@@ -28,14 +28,14 @@ class TM1LinecodeFile(TM1TextFile):
 
         super().__init__(path)
 
-    def _get_line_by_index(self, index: int, strip_newline=True):
+    def _get_line_by_index(self, index: int, rstrip=True):
 
-        return next(itertools.islice(self.reader(strip_newline=strip_newline), index, index + 1))
+        return next(itertools.islice(self.reader(rstrip=rstrip), index, index + 1))
 
-    def _get_line_by_code(self, linecode: int, strip_newline=True):
+    def _get_line_by_code(self, linecode: int, rstrip=True):
 
         # Are lines ever duplicated?
-        lines = self.reader(strip_newline=strip_newline)
+        lines = self.reader(rstrip=rstrip)
 
         for line in lines:
 
@@ -136,7 +136,7 @@ class TM1LinecodeFile(TM1TextFile):
         index = index + 1
         for i in range(index, index + number_of_lines):
 
-            line = self._get_line_by_index(i, strip_newline=False)
+            line = self._get_line_by_index(i, rstrip=rstrip)
             lines.append(line)
 
         if rstrip:
