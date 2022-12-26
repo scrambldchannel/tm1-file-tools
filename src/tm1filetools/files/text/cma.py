@@ -11,14 +11,10 @@ class TM1CMARow:
 
         # afaik, each row will have a fixed number of columns, based on the cube
 
-        # I assume the last col is the val
-        # really need to dig out an example!
-
-        self.server = row[0].split(":")[0]
-        self.cube = row[0].split(":")[1]
+        self.server, self.cube = row[0].split(":")
         self.elements = row[1:-1]
         self.el_count = len(self.elements) + 1
-        self._value = row[:-1]
+        self._value = row[-1]
 
         # attempt to derive data type
         try:
@@ -38,7 +34,7 @@ class TM1CMAFile(TM1TextFile):
     """
 
     suffix = "cma"
-    # does this vary?
+    # does this vary? I think it does for cmas based on locale
     quote_character = '"'
 
     def __init__(self, path: Path):
@@ -46,6 +42,7 @@ class TM1CMAFile(TM1TextFile):
         super().__init__(path)
 
         self.delimiter = self._get_delimiter()
+
         self.cube = self._get_cube()
 
     def _get_delimiter(self):
@@ -68,19 +65,13 @@ class TM1CMAFile(TM1TextFile):
         if not self.is_non_empty:
             return None
 
-        with self._path.open() as f:
+        # hack
+        if not self.delimiter:
+            self.delimiter = self._get_delimiter()
 
-            line = f.readline()
-            index = line.find(self.quote_character, 1)
-            return line[1:index]
+        row = next(self.reader())
 
-    # do I really want to write to these files?
-    def write(self, text):
-
-        super().write(text)
-
-        self.delimiter = self._get_delimiter()
-        self.cube = self._get_cube()
+        return row.cube
 
     def reader(self, dt: str = None):
         """
