@@ -1,6 +1,16 @@
+import csv
 from pathlib import Path
 
 from .text import TM1TextFile
+
+
+class TM1CMARow:
+    def __init__(self, row):
+
+        """Representation of a single line in the cma file"""
+
+        # afaik, each row will have a fixed number of columns, based on the cube
+        self.row = row
 
 
 class TM1CMAFile(TM1TextFile):
@@ -48,9 +58,27 @@ class TM1CMAFile(TM1TextFile):
             index = line.find(self.quote_character, 1)
             return line[1:index]
 
+    # do I really want to write to these files?
     def write(self, text):
 
         super().write(text)
 
         self.delimiter = self._get_delimiter()
         self.cube = self._get_cube()
+
+        def reader(self, control: bool = False, cube: str = None, user: str = None, dt: str = None):
+            """
+            A generator that reads each line of the cma and yields every row matching the applied filters
+
+            """
+
+            if self._path.exists:
+                with open(self._path, "r") as f:
+                    for row in csv.reader(self._discard_metadata(f), delimiter=self.delimiter, quotechar=self.quote):
+
+                        row_obj = TM1CMARow(row)
+
+                        # if dt and row_obj.dt.lower() != dt.lower():
+                        #     continue
+
+                        yield row_obj
