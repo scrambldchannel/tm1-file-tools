@@ -1,4 +1,6 @@
 import csv
+
+# from datetime import datetime
 from pathlib import Path
 
 from .text import TM1TextFile
@@ -42,6 +44,31 @@ class TM1ProcessErorrLogFile(TM1LogFile):
         return self.stem.split("_")[1]
 
 
+class TM1ChangeLogRow:
+    def __init__(self, row):
+
+        self.time = row[1]
+        self.cube = row[7]
+        self.user = row[3]
+        self.dt = row[4].upper()
+        self.elements = row[8:-1]
+        self.el_count = len(self.elements) + 1
+        self._old_val = row[5]
+        self._new_val = row[6]
+
+        if self.dt == "N":
+            self.old_val_n = float(self._old_val)
+            self.new_val_n = float(self._new_val)
+            self.delta = self.new_val_n - self.old_val_n
+            self.abs_delta = abs(self.delta)
+
+        # shouldn't have any other types
+        else:
+            # not sure the casting is necessary
+            self.old_val_s = str(self._old_val)
+            self.new_val_s = str(self._new_val)
+
+
 class TM1ChangeLogFile(TM1LogFile):
     """
     A class representation of a tm1s log file
@@ -61,7 +88,19 @@ class TM1ChangeLogFile(TM1LogFile):
         if self._path.exists:
             with open(self._path, "r") as f:
                 for row in csv.reader(self._discard_metadata(f), delimiter=self.delimiter, quotechar=self.quote):
-                    yield row
+
+                    row_obj = TM1ChangeLogRow(row)
+                    yield row_obj
+
+    def get_cubes(self):
+
+        cubes = set()
+
+        for row in self.reader():
+
+            cubes.add(row.cube)
+
+        return cubes
 
     @classmethod
     def _discard_metadata(cls, f):

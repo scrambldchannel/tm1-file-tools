@@ -235,7 +235,7 @@ def test_folder(tmp_path_factory):
 #"","20200802084038","CubeSerialized: TM1py_tests_annotations: by Admin"
 "","20200802084728","20200802084728","Admin","N","0","6","TM1py_Tests_Cell_Cube_RPS1","e2","e3",""
 
-    """
+"""
 
     f = d / "tm1s20200801080426.log"
 

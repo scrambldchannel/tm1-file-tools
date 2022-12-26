@@ -22,11 +22,25 @@ def test_changelog(test_folder):
 
     log_rows = 0
     for row in f.reader():
-        print(row[0])
         log_rows = log_rows + 1
 
     assert log_rows > 0
-    assert log_rows == 3
+    assert log_rows == 2
+
+
+def test_changelog_cubes(test_folder):
+
+    f = TM1ChangeLogFile(Path.joinpath(test_folder, "tm1s20200801080426.log"))
+
+    assert f
+    assert f.suffix == "log"
+
+    assert f.exists
+
+    cubes = f.get_cubes()
+    assert len(cubes) == 2
+
+    assert "}DimensionProperties" in cubes
 
 
 def test_process_error_log(test_folder):
