@@ -7,7 +7,7 @@ from .text import TM1TextFile
 # Can perhaps make these abstract classes
 class TM1LinecodeFile(TM1TextFile):
     """
-    Class with extra methods for dealining with files that are plain text but use line numbers to specify things
+    Class with extra methods for dealing with files that are plain text but use line numbers to specify things
 
     Examples are subsets, views, processes and chores (I think)
 
