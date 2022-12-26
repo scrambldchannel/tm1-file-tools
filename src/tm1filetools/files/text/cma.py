@@ -87,8 +87,30 @@ class TM1CMAFile(TM1TextFile):
 
                     row_obj = TM1CMARow(row)
 
+                    # filter for n or s values
                     if dt and row_obj.dt.lower() != dt.lower():
                         continue
+
+                    # apply element filter
+
+                    if el_filter:
+
+                        els = self._parse_els(el_filter)
+
+                        # naive approach
+                        skip = False
+                        for i, el in enumerate(els):
+
+                            if el == "":
+                                continue
+
+                            print(row_obj.elements[i])
+                            if el != row_obj.elements[i]:
+                                skip = True
+                                break
+
+                        if skip:
+                            continue
 
                     yield row_obj
 

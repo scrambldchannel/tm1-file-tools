@@ -74,3 +74,57 @@ def test_parse_els():
     # empty value should be retained to preserve index of value
     assert els[3] == ""
     assert els[4] == "Value"
+
+
+def test_el_filter(test_folder):
+
+    el_str = "202301"
+
+    f = TM1CMAFile(Path.joinpath(test_folder, "test.cma"))
+
+    f._path.touch()
+
+    f.write('"Planning:Sales Planning","202301","Software","Germany",1000000')
+
+    rows = []
+    for row in f.reader(el_filter=el_str):
+
+        rows.append(row)
+
+    assert len(rows) == 1
+
+    el_str = "202302"
+
+    rows = []
+    for row in f.reader(el_filter=el_str):
+
+        rows.append(row)
+
+    assert len(rows) == 0
+
+
+def test_el_filter_multi_length(test_folder):
+
+    el_str = ":Software"
+
+    f = TM1CMAFile(Path.joinpath(test_folder, "test.cma"))
+
+    f._path.touch()
+
+    f.write('"Planning:Sales Planning","202301","Software","Germany",1000000')
+
+    rows = []
+    for row in f.reader(el_filter=el_str):
+
+        rows.append(row)
+
+    assert len(rows) == 1
+
+    el_str = ":Hardware::"
+
+    rows = []
+    for row in f.reader(el_filter=el_str):
+
+        rows.append(row)
+
+    assert len(rows) == 0
