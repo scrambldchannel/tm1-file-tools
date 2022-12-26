@@ -47,10 +47,15 @@ class TM1ProcessErorrLogFile(TM1LogFile):
 class TM1ChangeLogRow:
     def __init__(self, row):
 
+        """Representation of a single line in the transaction log"""
+
+        # parse the line and set properties
         self.time = row[1]
         self.cube = row[7]
         self.user = row[3]
         self.dt = row[4].upper()
+        # elements start at idx 8 until the end but there seems to
+        # always be an empty col at the end :shrug:
         self.elements = row[8:-1]
         self.el_count = len(self.elements) + 1
         self._old_val = row[5]
@@ -83,24 +88,54 @@ class TM1ChangeLogFile(TM1LogFile):
 
         super().__init__(path)
 
-    def reader(self):
+    def reader(self, control: bool = False, cube: str = None, user: str = None, dt: str = None):
+        """
+        A generator that reads each line of the log and yields every row matching the applied filters
 
+        """
         if self._path.exists:
             with open(self._path, "r") as f:
                 for row in csv.reader(self._discard_metadata(f), delimiter=self.delimiter, quotechar=self.quote):
 
                     row_obj = TM1ChangeLogRow(row)
+
+                    # apply filters
+                    if cube:
+                        control = True
+                        # implies include control
+                        if row_obj.cube.lower() != cube.lower():
+                            continue
+
+                    if not control and row_obj.cube[0] == "}":
+                        continue
+
+                    if user and row_obj.user.lower() != user.lower():
+                        continue
+
+                    if dt and row_obj.dt.lower() != dt.lower():
+                        continue
+
                     yield row_obj
 
-    def get_cubes(self):
+    def get_cubes(self, control: bool = False):
 
         cubes = set()
 
-        for row in self.reader():
+        for row in self.reader(control=control):
 
             cubes.add(row.cube)
 
         return cubes
+
+    def get_users(self, control: bool = False):
+
+        users = set()
+
+        for row in self.reader(control=control):
+
+            users.add(row.user)
+
+        return users
 
     @classmethod
     def _discard_metadata(cls, f):

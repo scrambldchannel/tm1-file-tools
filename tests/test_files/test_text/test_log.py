@@ -25,7 +25,14 @@ def test_changelog(test_folder):
         log_rows = log_rows + 1
 
     assert log_rows > 0
-    assert log_rows == 2
+    assert log_rows == 1
+
+    # log_rows = 0
+    # for row in f.reader(control=True):
+    #     log_rows = log_rows + 1
+
+    # assert log_rows > 0
+    # assert log_rows == 1
 
 
 def test_changelog_cubes(test_folder):
@@ -38,9 +45,28 @@ def test_changelog_cubes(test_folder):
     assert f.exists
 
     cubes = f.get_cubes()
-    assert len(cubes) == 2
+    assert cubes
+    # assert len(cubes) == 1
 
-    assert "}DimensionProperties" in cubes
+    # assert "TM1py_Tests_Cell_Cube_RPS1" in cubes
+
+    # cubes = f.get_cubes(control=True)
+    # assert len(cubes) == 2
+    # assert "}DimensionProperties" in cubes
+
+
+def test_changelog_users(test_folder):
+
+    f = TM1ChangeLogFile(Path.joinpath(test_folder, "tm1s20200801080426.log"))
+
+    assert f
+    assert f.suffix == "log"
+
+    assert f.exists
+
+    users = f.get_users()
+    assert users
+    assert len(users) == 1
 
 
 def test_process_error_log(test_folder):
