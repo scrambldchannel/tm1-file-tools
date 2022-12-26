@@ -99,7 +99,9 @@ def test_get_multiline_block(json_dumps_folder):
     assert lines[0] == ""
     assert lines[2] == "#****End: Generated Statements****"
     assert lines[4] == "#####  LOGGING"
+
+    # what was I checking here?
+    assert lines[-1] == ""
+
     # check indent
     assert lines[40] == "   'pCubeLogging', 0,"
-
-    assert lines[-1] == ""
