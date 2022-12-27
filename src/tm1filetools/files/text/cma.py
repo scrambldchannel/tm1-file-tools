@@ -104,7 +104,6 @@ class TM1CMAFile(TM1TextFile):
                             if el == "":
                                 continue
 
-                            print(row_obj.elements[i])
                             if el != row_obj.elements[i]:
                                 skip = True
                                 break
