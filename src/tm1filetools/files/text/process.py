@@ -36,9 +36,9 @@ class TM1ProcessFile(TM1LinecodeFile):
 
         """
 
-        linecode = 572
+        code = 572
 
-        return self._get_multiline_block(linecode, rstrip=rstrip)
+        return self._get_multiline_block(code, rstrip=rstrip)
 
     def get_metadata_code(self, rstrip=True) -> list[str]:
         """
@@ -89,14 +89,14 @@ class TM1ProcessFile(TM1LinecodeFile):
 
     def _to_json(self, sort_keys: bool = True, rstrip: bool = True):
 
-        name = self._parse_single_string(self._get_line_by_code(602))
+        name = self.parse_single_string(self._get_line_by_code(602))
 
         prolog = self._codeblock_to_json_str(self.get_prolog_code())
         metadata = self._codeblock_to_json_str(self.get_metadata_code())
         data = self._codeblock_to_json_str(self.get_data_code())
         epilog = self._codeblock_to_json_str(self.get_epilog_code())
 
-        security_access = self._parse_single_int(self._get_line_by_code(1217))
+        security_access = self.parse_single_int(self._get_line_by_code(1217))
         security_access = security_access == 1
 
         parameters = self._get_parameters()
@@ -129,20 +129,20 @@ class TM1ProcessFile(TM1LinecodeFile):
         # param hints are from 637
 
         # this needs to be refactored
-        idx_datatype = self._get_line_index_by_code(561)
-        idx_default = self._get_line_index_by_code(590)
-        idx_hint = self._get_line_index_by_code(637)
+        idx_datatype = self._get_index_by_code(561)
+        idx_default = self._get_index_by_code(590)
+        idx_hint = self._get_index_by_code(637)
 
         names = self._get_multiline_block(linecode=560)
 
         for idx, name in enumerate(names):
 
             # these are single ints on the line
-            datatype = self._type_mapping[int(self._get_line_by_index(idx_datatype + idx + 1))]
+            datatype = self._type_mapping[int(self._get_lines_by_index(index=idx_datatype + idx + 1)[0])]
 
-            hint = self._get_key_value_pair_string(self._get_line_by_index(idx_hint + idx + 1))["value"]
+            hint = self.parse_key_value_pair_string(self._get_lines_by_index(index=idx_hint + idx + 1)[0])["value"]
 
-            default = self._get_key_value_pair_string(self._get_line_by_index(idx_default + idx + 1))["value"]
+            default = self.parse_key_value_pair_string(self._get_lines_by_index(index=idx_default + idx + 1)[0])["value"]
 
             params.append(
                 {
@@ -167,24 +167,24 @@ class TM1ProcessFile(TM1LinecodeFile):
         names = self._get_multiline_block(linecode=577)
 
         # offsets are from 579
-        idx_offset = self._get_line_index_by_code(579)
+        idx_offset = self._get_index_by_code(579)
 
         # types are from 578
-        idx_types = self._get_line_index_by_code(578)
+        idx_types = self._get_index_by_code(578)
 
         # start and end bytes
-        idx_start = self._get_line_index_by_code(580)
-        idx_end = self._get_line_index_by_code(581)
+        idx_start = self._get_index_by_code(580)
+        idx_end = self._get_index_by_code(581)
 
         for idx, name in enumerate(names):
 
             # these are single ints on the line
-            offset = int(self._get_line_by_index(idx_offset + idx + 1))
-            type = self._type_mapping[int(self._get_line_by_index(idx_types + idx + 1))]
+            offset = int(self._get_lines_by_index(idx_offset + idx + 1)[0])
+            type = self._type_mapping[int(self._get_lines_by_index(idx_types + idx + 1)[0])]
 
             # get start and end bytes
-            start = int(self._get_line_by_index(idx_start + idx + 1))
-            end = int(self._get_line_by_index(idx_end + idx + 1))
+            start = int(self._get_lines_by_index(idx_start + idx + 1)[0])
+            end = int(self._get_lines_by_index(idx_end + idx + 1)[0])
 
             #
             var = {"EndByte": end, "Name": name, "Position": offset, "StartByte": start, "Type": type}
@@ -200,7 +200,7 @@ class TM1ProcessFile(TM1LinecodeFile):
         datasource = {"Type": "None"}
 
         # need to come up with a mapping for all types
-        datasource_type = self._parse_single_string(self._get_line_by_code(562))
+        datasource_type = self.parse_single_string(self._get_line_by_code(562))
 
         datasource_type_json = self._datasource_type_mapping[datasource_type]
         if datasource_type_json:
@@ -215,14 +215,14 @@ class TM1ProcessFile(TM1LinecodeFile):
         if datasource_type_json == "ASCII":
             datasource["asciiDelimiterType"] = "Character"
 
-        datasource["asciiDecimalSeparator"] = self._parse_single_string(self._get_line_by_code(588))
-        datasource["asciiDelimiterChar"] = self._parse_single_string(self._get_line_by_code(567))
+        datasource["asciiDecimalSeparator"] = self.parse_single_string(self._get_line_by_code(588))
+        datasource["asciiDelimiterChar"] = self.parse_single_string(self._get_line_by_code(567))
 
-        datasource["asciiHeaderRecords"] = self._parse_single_int(self._get_line_by_code(569))
-        datasource["asciiQuoteCharacter"] = self._parse_single_string(self._get_line_by_code(568))
-        datasource["asciiThousandSeparator"] = self._parse_single_string(self._get_line_by_code(589))
-        datasource["dataSourceNameForClient"] = self._parse_single_string(self._get_line_by_code(585))
-        datasource["dataSourceNameForServer"] = self._parse_single_string(self._get_line_by_code(586))
+        datasource["asciiHeaderRecords"] = self.parse_single_int(self._get_line_by_code(569))
+        datasource["asciiQuoteCharacter"] = self.parse_single_string(self._get_line_by_code(568))
+        datasource["asciiThousandSeparator"] = self.parse_single_string(self._get_line_by_code(589))
+        datasource["dataSourceNameForClient"] = self.parse_single_string(self._get_line_by_code(585))
+        datasource["dataSourceNameForServer"] = self.parse_single_string(self._get_line_by_code(586))
 
         return datasource
 

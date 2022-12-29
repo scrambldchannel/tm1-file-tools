@@ -32,19 +32,25 @@ class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
 
         """
 
-        mdx_chars = self._parse_single_int(self._get_line_by_code(275))
+        # this is captured by key 275
+        code = 275
+
+        mdx_chars = self.parse_single_int(self._get_line_by_code(code))
 
         if mdx_chars > 0:
 
-            mdx_idx = self._get_line_index_by_code(275) + 1
+            mdx_idx = self._get_index_by_code(code)
 
-            return self._get_line_by_index(mdx_idx)
+            # I believe it's all on one line, not sure
+            return self._get_lines_by_index(index=mdx_idx+1)[0]
 
         return None
 
     def _get_name_from_file(self):
 
-        return self._parse_single_string(self._get_line_by_code(284))
+        code = 284
+
+        return self.parse_single_string(self._get_line_by_code(code))
 
     def _to_json(self):
         """Read file and return a json representation

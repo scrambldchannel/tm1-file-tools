@@ -21,17 +21,21 @@ class TM1TextFile(TM1File):
 
         self.f = None
 
-    def reader(self, rstrip: bool = True):
+    # unsure of what the best approach is here
+    # looking at the way the reader function works
+    # in e.g. the csv module, it takes a file
+    # (or some sort of iterable) as an argument
+    # this is ultimately done in c 
+    # @classmethod
+    # def reader(f, rstrip: bool = True):
 
-        if self._path.exists:
-            with open(self._path, "r") as f:
-                for row in f:
-                    # do I ever not want to strip the newline char?
+    #     for row in f:
+    #         # do I ever not want to strip the newline char?
 
-                    if rstrip:
-                        yield row.rstrip()
-                    else:
-                        yield row
+    #         if rstrip:
+    #             yield row.rstrip()
+    #         else:
+    #             yield row
 
     def read(self):
         with open(self._path, "r") as f:

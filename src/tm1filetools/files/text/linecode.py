@@ -28,36 +28,49 @@ class TM1LinecodeFile(TM1TextFile):
 
         super().__init__(path)
 
-    def _get_line_by_index(self, index: int, rstrip=True):
+    def _get_lines_by_index(self, index: int, line_count: int = 1, rstrip=True):
 
-        return next(itertools.islice(self.reader(rstrip=rstrip), index, index + 1))
+       with open(self._path, "r") as f:
+            lines = itertools.islice(f, index, index + line_count)
+
+            if rstrip:
+                return [l.rstrip() for l in lines]
+            else:
+
+                return list(lines)
+
 
     def _get_line_by_code(self, linecode: int, rstrip=True):
 
         # Are lines ever duplicated?
-        lines = self.reader(rstrip=rstrip)
+        with open(self._path, "r") as f:
 
-        for line in lines:
+            for line in f:
 
-            code = line.split(self.code_delimiter)[0]
+                code = line.split(self.code_delimiter)[0]
 
-            if code == str(linecode):
-                return line
+                if code == str(linecode):
+                    if rstrip:
+                        return line.rstrip()
+                    else:
+                        return line
 
-    def _get_line_index_by_code(self, linecode: int):
+    def _get_index_by_code(self, linecode: int):
 
         # Are lines ever duplicated?
-        lines = self.reader()
 
-        for index, line in enumerate(lines):
 
-            code = line.split(self.code_delimiter)[0]
+        with open(self._path, "r") as f:
 
-            if code == str(linecode):
-                return index
+            for index, line in enumerate(f):
+
+                code = line.split(self.code_delimiter)[0]
+
+                if code == str(linecode):
+                    return index
 
     @classmethod
-    def _parse_single_int(cls, line: str) -> int:
+    def parse_single_int(cls, line: str) -> int:
         """
         Read a line with a code and a single int value and return the value only
         """
@@ -73,7 +86,7 @@ class TM1LinecodeFile(TM1TextFile):
             return 0
 
     @classmethod
-    def _parse_single_string(cls, line: str) -> str:
+    def parse_single_string(cls, line: str) -> str:
         """
         Read a value string containing a single string and return the value without quotes
         """
@@ -89,7 +102,7 @@ class TM1LinecodeFile(TM1TextFile):
         return value.strip(cls.code_quote)
 
     @classmethod
-    def _get_key_value_pair_string(cls, line: str):
+    def parse_key_value_pair_string(cls, line: str):
 
         # e.g. 'pPeriod,"All"'
 
@@ -99,7 +112,7 @@ class TM1LinecodeFile(TM1TextFile):
         return {"key": key, "value": value}
 
     @classmethod
-    def _get_key_value_pair_int(cls, line: str):
+    def parse_key_value_pair_int(cls, line: str):
 
         # e.g. 'pLogging,0'
 
@@ -123,23 +136,13 @@ class TM1LinecodeFile(TM1TextFile):
         """
 
         # get the index and the line for this code
-        index = self._get_line_index_by_code(linecode)
+        index = self._get_index_by_code(linecode)
         line = self._get_line_by_code(linecode)
 
         # parse the line to get the number of lines
-        number_of_lines = self._parse_single_int(line)
+        line_count = self.parse_single_int(line)
 
-        # This isn't the most elegant but the size of these chunks is unlikely to be large
-        lines = []
+        with open(self._path) as f:
+            lines = self._get_lines_by_index(index=index+1, line_count=line_count, rstrip=rstrip)
 
-        # loop over the next n lines
-        index = index + 1
-        for i in range(index, index + number_of_lines):
-
-            line = self._get_line_by_index(i, rstrip=rstrip)
-            lines.append(line)
-
-        if rstrip:
-            return [line.rstrip() for line in lines]
-
-        return lines
+            return lines
