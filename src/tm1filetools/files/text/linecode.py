@@ -30,15 +30,14 @@ class TM1LinecodeFile(TM1TextFile):
 
     def _get_lines_by_index(self, index: int, line_count: int = 1, rstrip=True):
 
-       with open(self._path, "r") as f:
+        with open(self._path, "r") as f:
             lines = itertools.islice(f, index, index + line_count)
 
             if rstrip:
-                return [l.rstrip() for l in lines]
+                return [line.rstrip() for line in lines]
             else:
 
                 return list(lines)
-
 
     def _get_line_by_code(self, linecode: int, rstrip=True):
 
@@ -58,7 +57,6 @@ class TM1LinecodeFile(TM1TextFile):
     def _get_index_by_code(self, linecode: int):
 
         # Are lines ever duplicated?
-
 
         with open(self._path, "r") as f:
 
@@ -142,7 +140,6 @@ class TM1LinecodeFile(TM1TextFile):
         # parse the line to get the number of lines
         line_count = self.parse_single_int(line)
 
-        with open(self._path) as f:
-            lines = self._get_lines_by_index(index=index+1, line_count=line_count, rstrip=rstrip)
+        lines = self._get_lines_by_index(index=index + 1, line_count=line_count, rstrip=rstrip)
 
-            return lines
+        return lines

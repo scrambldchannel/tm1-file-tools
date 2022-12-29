@@ -25,7 +25,7 @@ class TM1TextFile(TM1File):
     # looking at the way the reader function works
     # in e.g. the csv module, it takes a file
     # (or some sort of iterable) as an argument
-    # this is ultimately done in c 
+    # this is ultimately done in c
     # @classmethod
     # def reader(f, rstrip: bool = True):
 

@@ -43,12 +43,11 @@ def test_get_lines_by_index(test_folder):
 
     lines = p._get_lines_by_index(index=0, line_count=2, rstrip=True)
     assert len(lines) == 2
-    assert lines[0]  == "601,100"
-
+    assert lines[0] == "601,100"
 
     lines = p._get_lines_by_index(index=0, line_count=1, rstrip=False)
     assert len(lines) == 1
-    assert lines[0]  == "601,100\n"
+    assert lines[0] == "601,100\n"
 
 
 def test_parse_single_int():
