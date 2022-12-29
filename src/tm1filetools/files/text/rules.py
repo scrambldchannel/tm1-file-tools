@@ -18,25 +18,29 @@ class TM1RulesFile(TM1TextFile):
 
     def has_skipcheck(self):
 
-        for row in self.reader():
+        with open(self._path, "r") as f:
 
-            row = row.strip().lower()
+            for row in f:
 
-            if self._is_terminated(row) and row[:-1].rstrip() == "skipcheck":
+                row = row.strip().lower()
 
-                return True
+                if self._is_terminated(row) and row[:-1].rstrip() == "skipcheck":
+
+                    return True
 
         return False
 
     def has_feeders(self):
 
-        for row in self.reader():
+        with open(self._path, "r") as f:
 
-            row = row.strip().lower()
+            for row in f:
 
-            if self._is_terminated(row) and row[:-1].rstrip() == "feeders":
+                row = row.strip().lower()
 
-                return True
+                if self._is_terminated(row) and row[:-1].rstrip() == "feeders":
+
+                    return True
 
         return False
 
