@@ -42,7 +42,7 @@ class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
             mdx_idx = self._get_index_by_code(code)
 
             # I believe it's all on one line, not sure
-            return self._get_lines_by_index(index=mdx_idx+1)[0]
+            return self._get_lines_by_index(index=mdx_idx + 1)[0]
 
         return None
 

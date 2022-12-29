@@ -142,7 +142,9 @@ class TM1ProcessFile(TM1LinecodeFile):
 
             hint = self.parse_key_value_pair_string(self._get_lines_by_index(index=idx_hint + idx + 1)[0])["value"]
 
-            default = self.parse_key_value_pair_string(self._get_lines_by_index(index=idx_default + idx + 1)[0])["value"]
+            default = self.parse_key_value_pair_string(self._get_lines_by_index(index=idx_default + idx + 1)[0])[
+                "value"
+            ]
 
             params.append(
                 {
