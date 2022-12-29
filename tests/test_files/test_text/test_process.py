@@ -12,49 +12,49 @@ def test_init(test_folder):
     assert p.suffix == "pro"
 
 
-# def test_to_json(json_dumps_folder):
+def test_to_json(json_dumps_folder):
 
-#     # create pro object from the file
-#     pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
+    # create pro object from the file
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
 
-#     json_out_str = pro._to_json()
+    json_out_str = pro._to_json()
 
-#     with open(Path.joinpath(json_dumps_folder, "processes", "new_process.json"), "r") as f:
-#         expected_json_str = f.read()
+    with open(Path.joinpath(json_dumps_folder, "processes", "new_process.json"), "r") as f:
+        expected_json_str = f.read()
 
-#     json_expected = json.loads(expected_json_str)
+    json_expected = json.loads(expected_json_str)
 
-#     assert json_out_str
+    assert json_out_str
 
-#     json_out = json.loads(json_out_str)
+    json_out = json.loads(json_out_str)
 
-#     assert json_out["Name"] == "new process"
-#     assert json_out["Name"] == json_expected["Name"]
+    assert json_out["Name"] == "new process"
+    assert json_out["Name"] == json_expected["Name"]
 
-#     assert json_out["PrologProcedure"][0] == json_expected["PrologProcedure"][0]
-#     assert json_out["PrologProcedure"][5] == json_expected["PrologProcedure"][5]
-#     assert json_out["PrologProcedure"][12] == json_expected["PrologProcedure"][12]
+    assert json_out["PrologProcedure"][0] == json_expected["PrologProcedure"][0]
+    assert json_out["PrologProcedure"][5] == json_expected["PrologProcedure"][5]
+    assert json_out["PrologProcedure"][12] == json_expected["PrologProcedure"][12]
 
-#     assert json_out["MetadataProcedure"] == json_expected["MetadataProcedure"]
-#     assert json_out["DataProcedure"] == json_expected["DataProcedure"]
-#     assert json_out["EpilogProcedure"] == json_expected["EpilogProcedure"]
+    assert json_out["MetadataProcedure"] == json_expected["MetadataProcedure"]
+    assert json_out["DataProcedure"] == json_expected["DataProcedure"]
+    assert json_out["EpilogProcedure"] == json_expected["EpilogProcedure"]
 
-#     assert json_out["HasSecurityAccess"] is False
-#     assert json_out["HasSecurityAccess"] == json_expected["HasSecurityAccess"]
+    assert json_out["HasSecurityAccess"] is False
+    assert json_out["HasSecurityAccess"] == json_expected["HasSecurityAccess"]
 
-#     assert json_out["Parameters"][0]["Name"] == "pPeriod"
-#     assert json_out["Parameters"][1]["Name"] == "pVersion"
-#     assert json_out["Parameters"][2]["Name"] == "pScenario"
+    assert json_out["Parameters"][0]["Name"] == "pPeriod"
+    assert json_out["Parameters"][1]["Name"] == "pVersion"
+    assert json_out["Parameters"][2]["Name"] == "pScenario"
 
-#     assert json_out["Parameters"][0]["Type"] == "String"
-#     assert json_out["Parameters"][1]["Type"] == "String"
-#     assert json_out["Parameters"][2]["Type"] == "String"
+    assert json_out["Parameters"][0]["Type"] == "String"
+    assert json_out["Parameters"][1]["Type"] == "String"
+    assert json_out["Parameters"][2]["Type"] == "String"
 
-#     assert json_out["Parameters"][0]["Value"] == "All"
-#     assert json_out["Parameters"][0]["Prompt"] == ""
+    assert json_out["Parameters"][0]["Value"] == "All"
+    assert json_out["Parameters"][0]["Prompt"] == ""
 
-#     assert json_out["Variables"][0]["Name"] == "vPeriod"
-#     assert json_out["Variables"][0]["Type"] == "String"
+    assert json_out["Variables"][0]["Name"] == "vPeriod"
+    assert json_out["Variables"][0]["Type"] == "String"
 
 
 def test_get_parameters(json_dumps_folder):
