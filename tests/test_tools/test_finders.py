@@ -35,7 +35,11 @@ def test_find_procs(test_folder):
 
     ft = TM1FileTool(test_folder)
 
+    assert not ft._proc_files
+
     ft._find_procs()
+
+    assert len(ft._proc_files) == 3
 
     assert any(s.stem == "dingo" for s in ft._proc_files)
     assert all(s.stem != "womble" for s in ft._proc_files)
