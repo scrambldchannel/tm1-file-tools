@@ -169,15 +169,15 @@ def test_codeblock_to_json_str(json_dumps_folder, proc, block):
     assert codeblock_json_string == expected_json.get("PrologProcedure")
 
 
-# def test_prolog(json_dumps_folder):
-#     pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
+def test_prolog(json_dumps_folder):
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
 
-#     lines = pro.get_prolog_code()
+    lines = pro.get_prolog_code()
 
-#     assert len(lines) == 48
-#     assert lines[0] == pro._code_block_prefix_lines[0]
-#     assert lines[1] == pro._code_block_prefix_lines[1]
-#     assert lines[2] == pro._code_block_prefix_lines[2]
+    assert len(lines) == 48
+    assert lines[0] == pro._code_block_prefix_lines[0]
+    assert lines[1] == pro._code_block_prefix_lines[1]
+    assert lines[2] == pro._code_block_prefix_lines[2]
 
 
 def test_metadata(json_dumps_folder):
