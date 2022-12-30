@@ -94,8 +94,7 @@ class TM1ProcessFile(TM1LinecodeFile):
         data = self._codeblock_to_json_str(self.get_data_code())
         epilog = self._codeblock_to_json_str(self.get_epilog_code())
 
-        security_access = self.parse_single_int(self._get_line_by_code(1217))
-        security_access = security_access == 1
+        security_access = self._get_security_access()
 
         parameters = self._get_parameters()
         variables = self._get_variables()
@@ -231,6 +230,15 @@ class TM1ProcessFile(TM1LinecodeFile):
             datasource["dataSourceNameForServer"] = self.parse_single_string(self._get_line_by_code(586))
 
         return datasource
+
+    def _get_security_access(self) -> bool:
+
+        security_access = self.parse_single_int(self._get_line_by_code(1217))
+
+        if security_access == 1:
+            return True
+        else:
+            return False
 
     @staticmethod
     def _codeblock_to_json_str(lines: list[str]) -> str:
