@@ -252,14 +252,14 @@ def test_empty_process(json_dumps_folder):
     # assert json_out["UIData"] == json_expected["UIData"]
 
     # should be empty
-    assert json_expected["DataSource"] == json_out["DataSource"]
+    assert json_out["DataSource"] == {"Type": "None"}
 
     # These work, an empty list is what is expected
     assert json_out["Parameters"] == json_expected["Parameters"]
     assert json_out["Variables"] == json_expected["Variables"]
 
     # this I have looked at yet
-    # assert json_out["VariablesUIData"] == json_expected["VariablesUIData"]
+    assert json_out["VariablesUIData"] == json_expected["VariablesUIData"]
 
 
 def test_prolog_only_process(json_dumps_folder):

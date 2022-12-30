@@ -16,8 +16,6 @@ class TM1ProcessFile(TM1LinecodeFile):
     # three line auto generated code where code tabs are empty
     _code_block_prefix_lines = ["", "#****Begin: Generated Statements***", "#****End: Generated Statements****"]
 
-    _datasource_type_mapping = {"NULL": "None", "CHARACTERDELIMITED": "ASCII"}
-
     _type_mapping = {1: "Numeric", 2: "String"}
 
     def __init__(self, path: Path):
@@ -200,34 +198,34 @@ class TM1ProcessFile(TM1LinecodeFile):
 
     def _get_datasource(self) -> dict:
 
-        # On processes with a datasource, the correct json
-        # seems to be this
         datasource = {"Type": "None"}
 
         # need to come up with a mapping for all types
         datasource_type = self.parse_single_string(self._get_line_by_code(562))
 
-        datasource_type_json = self._datasource_type_mapping[datasource_type]
-        if datasource_type_json:
-            datasource["Type"] = datasource_type_json
-
-        # if we didn't find a mapping, return an empty datasource dict
-        if datasource["Type"] == "None":
+        # we need to handle this differently for different source types
+        if not datasource_type or datasource_type == "NULL":
             return datasource
+        else:
+            # if we have some sort of source, I guess we have the names
 
-        # I'm going to assume the delimiter type is always "Character" when source type is ASCII
-        # obviously need to map other types if necessary
-        if datasource_type_json == "ASCII":
-            datasource["asciiDelimiterType"] = "Character"
+            if datasource_type == "CHARACTERDELIMITED":
+                datasource["Type"] = "ASCII"
+                # Does this need to be included for others?
+                datasource["asciiDelimiterType"] = "Character"
+                datasource["asciiDecimalSeparator"] = self.parse_single_string(self._get_line_by_code(588))
+                datasource["asciiDelimiterChar"] = self.parse_single_string(self._get_line_by_code(567))
 
-        datasource["asciiDecimalSeparator"] = self.parse_single_string(self._get_line_by_code(588))
-        datasource["asciiDelimiterChar"] = self.parse_single_string(self._get_line_by_code(567))
+                datasource["asciiHeaderRecords"] = self.parse_single_int(self._get_line_by_code(569))
+                datasource["asciiQuoteCharacter"] = self.parse_single_string(self._get_line_by_code(568))
+                datasource["asciiThousandSeparator"] = self.parse_single_string(self._get_line_by_code(589))
+            elif datasource_type == "VIEW":
+                datasource["Type"] = "TM1CubeView"
+            elif datasource_type == "SUBSET":
+                datasource["Type"] = "TM1DimensionSubset"
 
-        datasource["asciiHeaderRecords"] = self.parse_single_int(self._get_line_by_code(569))
-        datasource["asciiQuoteCharacter"] = self.parse_single_string(self._get_line_by_code(568))
-        datasource["asciiThousandSeparator"] = self.parse_single_string(self._get_line_by_code(589))
-        datasource["dataSourceNameForClient"] = self.parse_single_string(self._get_line_by_code(585))
-        datasource["dataSourceNameForServer"] = self.parse_single_string(self._get_line_by_code(586))
+            datasource["dataSourceNameForClient"] = self.parse_single_string(self._get_line_by_code(585))
+            datasource["dataSourceNameForServer"] = self.parse_single_string(self._get_line_by_code(586))
 
         return datasource
 
