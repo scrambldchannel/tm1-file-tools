@@ -57,6 +57,22 @@ def test_to_json(json_dumps_folder):
     assert json_out["Variables"][0]["Type"] == "String"
 
 
+def test_json_edge_cases(json_dumps_folder):
+
+    # create pro object from the file
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
+
+    json_out_str = pro._to_json()
+
+    json_out = json.loads(json_out_str)
+
+    # UIData
+
+    assert json_out.get("UIData")
+
+    assert "VariablesUIData" in json_out.keys()
+
+
 def test_get_parameters(json_dumps_folder):
 
     # create pro object from the file

@@ -111,9 +111,12 @@ class TM1ProcessFile(TM1LinecodeFile):
             "DataProcedure": data,
             "EpilogProcedure": epilog,
             "HasSecurityAccess": security_access,
+            # Is it always this? Does it actually matter?
+            "UIData": "CubeAction=1511\fDataAction=1503\fCubeLogChanges=0\f",
             "Parameters": parameters,
             "Variables": variables,
             "DataSource": datasource,
+            "VariablesUIData": [],
         }
 
         return json.dumps(json_dump, sort_keys=sort_keys, indent=4)
