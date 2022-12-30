@@ -95,6 +95,34 @@ def test_get_variables(json_dumps_folder, proc):
     assert vars == json_expected["Variables"]
 
 
+@pytest.mark.parametrize("proc", sample_procs)
+def test_get_datasource(json_dumps_folder, proc):
+
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", f"{proc}.pro"))
+
+    datasource = pro._get_datasource()
+
+    assert datasource
+
+    with open(Path.joinpath(json_dumps_folder, "processes", f"{proc}.json"), "r") as f:
+        expected_json_str = f.read()
+
+    expected_json = json.loads(expected_json_str)
+
+    assert datasource == expected_json.get("DataSource")
+
+
+@pytest.mark.parametrize("proc", sample_procs)
+def test_to_valid_json(json_dumps_folder, proc):
+
+    # create pro object from the file
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", f"{proc}.pro"))
+
+    json_out_str = pro._to_json()
+
+    assert json.loads(json_out_str)
+
+
 def test_codeblock_to_json(json_dumps_folder):
 
     pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
@@ -183,23 +211,6 @@ def test_epilog_code_block(json_dumps_folder):
     assert lines[1] == pro._code_block_prefix_lines[1]
     assert lines[2] == pro._code_block_prefix_lines[2]
     assert len(lines) == 21
-
-
-@pytest.mark.parametrize("proc", sample_procs)
-def test_get_datasource(json_dumps_folder, proc):
-
-    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", f"{proc}.pro"))
-
-    datasource = pro._get_datasource()
-
-    assert datasource
-
-    with open(Path.joinpath(json_dumps_folder, "processes", f"{proc}.json"), "r") as f:
-        expected_json_str = f.read()
-
-    expected_json = json.loads(expected_json_str)
-
-    assert datasource == expected_json.get("DataSource")
 
 
 def test_empty_process(json_dumps_folder):
