@@ -96,6 +96,11 @@ class TM1ProcessFile(TM1LinecodeFile):
 
         security_access = self._get_security_access()
 
+        # Is it always this? Does it actually matter?
+
+        ui_data = self._get_ui_data()
+        var_ui_data = self._get_var_ui_data()
+
         parameters = self._get_parameters()
         variables = self._get_variables()
 
@@ -108,12 +113,12 @@ class TM1ProcessFile(TM1LinecodeFile):
             "DataProcedure": data,
             "EpilogProcedure": epilog,
             "HasSecurityAccess": security_access,
-            # Is it always this? Does it actually matter?
-            "UIData": "CubeAction=1511\fDataAction=1503\fCubeLogChanges=0\f",
+            "UIData": ui_data,
             "Parameters": parameters,
             "Variables": variables,
             "DataSource": datasource,
-            "VariablesUIData": [],
+            # this will need to be fixed
+            "VariablesUIData": var_ui_data,
         }
 
         return json.dumps(json_dump, sort_keys=sort_keys, indent=4)
@@ -239,6 +244,16 @@ class TM1ProcessFile(TM1LinecodeFile):
             return True
         else:
             return False
+
+    def _get_ui_data(self) -> str:
+
+        # Is this always the same?
+        return "CubeAction=1511\fDataAction=1503\fCubeLogChanges=0\f"
+
+    def _get_var_ui_data(self) -> str:
+
+        # this isn't working, see failing test_variable_ui_data
+        return []
 
     @staticmethod
     def _codeblock_to_json_str(lines: list[str]) -> str:
