@@ -7,29 +7,12 @@ from tm1filetools.files import TM1CfgFile
 
 def test_is_valid(cfg_folder):
 
-    f = TM1CfgFile(Path.joinpath(cfg_folder, "tm1s.cfg"))
+    f = TM1CfgFile(Path.joinpath(cfg_folder, "non_existent.cfg"))
 
     assert not f.is_valid()
 
-    # need to create the section
-    f.config.add_section(f._section)
-    assert not f.is_valid()
+    f = TM1CfgFile(Path.joinpath(cfg_folder, "minimal.cfg"))
 
-    param = "ServerName"
-    value = "Chimpy's Food Planner"
-    f.set_parameter(param, value)
-    assert not f.is_valid()
-
-    param = "DataBaseDirectory"
-    value = r"..\data"
-    f.set_parameter(param, value)
-    assert not f.is_valid()
-
-    param = "PortNumber"
-    value = "12345"
-    f.set_parameter(param, value)
-
-    # now it should be good
     assert f.is_valid()
 
 
