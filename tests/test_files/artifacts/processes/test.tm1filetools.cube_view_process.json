@@ -1,0 +1,44 @@
+{
+    "Name": "test.tm1filetools.cube_view_process",
+    "PrologProcedure": "#****Begin: Generated Statements***\r\n#****End: Generated Statements****",
+    "MetadataProcedure": "#****Begin: Generated Statements***\r\n#****End: Generated Statements****",
+    "DataProcedure": "#****Begin: Generated Statements***\r\n#****End: Generated Statements****",
+    "EpilogProcedure": "#****Begin: Generated Statements***\r\n#****End: Generated Statements****",
+    "HasSecurityAccess": false,
+    "UIData": "CubeAction=1511\fDataAction=1503\fCubeLogChanges=0\f",
+    "DataSource": {
+        "Type": "TM1CubeView",
+        "dataSourceNameForClient": "}ClientGroups",
+        "dataSourceNameForServer": "}ClientGroups",
+        "view": "Test"
+    },
+    "Parameters": [],
+    "Variables": [
+        {
+            "Name": "vClient",
+            "Type": "String",
+            "Position": 1,
+            "StartByte": 0,
+            "EndByte": 0
+        },
+        {
+            "Name": "vGroup",
+            "Type": "String",
+            "Position": 2,
+            "StartByte": 0,
+            "EndByte": 0
+        },
+        {
+            "Name": "vValue",
+            "Type": "String",
+            "Position": 3,
+            "StartByte": 0,
+            "EndByte": 0
+        }
+    ],
+    "VariablesUIData": [
+        "VarType=32\\fColType=827\\f",
+        "VarType=32\\fColType=827\\f",
+        "VarType=32\\fColType=827\\f"
+    ]
+}
