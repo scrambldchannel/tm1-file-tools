@@ -50,8 +50,15 @@ def test_get_model_procs(test_folder):
 
     procs = ft.get_procs()
 
+    assert len(procs) == 2
+
     assert any(p.stem == "dingo" for p in procs)
     assert all(p.stem != "}fraggle" for p in procs)
+
+    # with explicit param
+    model_procs = ft.get_procs(model=True)
+
+    assert procs == model_procs
 
 
 def test_get_control_processes(test_folder):
