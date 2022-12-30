@@ -16,9 +16,9 @@ def test_is_valid(cfg_folder):
     assert f.is_valid()
 
 
-def test_read_and_write(test_folder):
+def test_read_and_write(cfg_folder):
 
-    f = TM1CfgFile(Path.joinpath(test_folder, "tm1s.cfg"))
+    f = TM1CfgFile(Path.joinpath(cfg_folder, "tm1s.cfg"))
 
     # need to create the section
     f.config.add_section(f._section)
@@ -35,6 +35,6 @@ def test_read_and_write(test_folder):
 
     # also re-open file to check it's been written to disk
 
-    f2 = TM1CfgFile(Path.joinpath(test_folder, "tm1s.cfg"))
+    f2 = TM1CfgFile(Path.joinpath(cfg_folder, "tm1s.cfg"))
 
     assert f2.get_parameter(param) == value
