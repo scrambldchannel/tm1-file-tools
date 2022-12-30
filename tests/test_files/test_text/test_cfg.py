@@ -1,14 +1,13 @@
 from pathlib import Path
 
-import pytest
-
 from tm1filetools.files import TM1CfgFile
 
+# import pytest
 
-@pytest.mark.skip("Failing, probably down to fixture re-factor")
-def test_is_valid(invalid_config_folder):
 
-    f = TM1CfgFile(Path.joinpath(invalid_config_folder, "tm1s.cfg"))
+def test_is_valid(cfg_folder):
+
+    f = TM1CfgFile(Path.joinpath(cfg_folder, "tm1s.cfg"))
 
     assert not f.is_valid()
 

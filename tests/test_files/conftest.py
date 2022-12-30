@@ -27,35 +27,35 @@ def view_folder():
     return path
 
 
-# @pytest.fixture(scope="function")
-# def config_folder(tmp_path_factory):
+@pytest.fixture(scope="function")
+def cfg_folder(tmp_path_factory):
 
-#     path = Path.joinpath(Path.cwd(), "tests", "test_files", "artifacts", "cfg")
+    path = Path.joinpath(Path.cwd(), "tests", "test_files", "artifacts", "cfg")
 
-#     return path
+    return path
 
-#     # f.write_text(cfg)
+    # f.write_text(cfg)
 
-#     # f = d / "bad_login.ini"
+    # f = d / "bad_login.ini"
 
-#     # cfg = r"""[local]
-#     # address = 192.168.0.111
-#     # user = admin
-#     # password = apple
-#     # """
+    # cfg = r"""[local]
+    # address = 192.168.0.111
+    # user = admin
+    # password = apple
+    # """
 
-#     # f.write_text(cfg)
+    # f.write_text(cfg)
 
-#     # f = d / "messy_login.ini"
+    # f = d / "messy_login.ini"
 
-#     # cfg = r"""[messy]
-#     # address = 192.168.0.111
-#     # port = 18081
-#     # user = admin
-#     # password = apple
-#     # irrelevant = koala
-#     # """
+    # cfg = r"""[messy]
+    # address = 192.168.0.111
+    # port = 18081
+    # user = admin
+    # password = apple
+    # irrelevant = koala
+    # """
 
-#     # f.write_text(cfg)
+    # f.write_text(cfg)
 
-#     # return d
+    # return d
