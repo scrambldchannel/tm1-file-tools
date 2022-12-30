@@ -1,11 +1,11 @@
 {
     "Name": "test.tm1filetools.dim_subset_process",
-    "PrologProcedure": "\\r\\n#****Begin: Generated Statements***\\r\\n#****End: Generated Statements****",
-    "MetadataProcedure": "\\r\\n#****Begin: Generated Statements***\\r\\n#****End: Generated Statements****",
-    "DataProcedure": "\\r\\n#****Begin: Generated Statements***\\r\\n#****End: Generated Statements****\\r\\n\\r\\n\\r\\nAsciiOutput(\'Debug.csv\', vClient);\\r\\n",
-    "EpilogProcedure": "\\r\\n#****Begin: Generated Statements***\\r\\n#****End: Generated Statements****",
+    "PrologProcedure": "#****Begin: Generated Statements***\r\n#****End: Generated Statements****",
+    "MetadataProcedure": "#****Begin: Generated Statements***\r\n#****End: Generated Statements****",
+    "DataProcedure": "#****Begin: Generated Statements***\r\n#****End: Generated Statements****",
+    "EpilogProcedure": "#****Begin: Generated Statements***\r\n#****End: Generated Statements****",
     "HasSecurityAccess": false,
-    "UIData": "CubeAction=1511\\fDataAction=1503\\fCubeLogChanges=0\\f",
+    "UIData": "CubeAction=1511\fDataAction=1503\fCubeLogChanges=0\f",
     "DataSource": {
         "Type": "TM1DimensionSubset",
         "dataSourceNameForClient": "}Clients",

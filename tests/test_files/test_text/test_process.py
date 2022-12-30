@@ -5,70 +5,36 @@ import pytest
 
 from tm1filetools.files import TM1ProcessFile
 
+sample_procs = [
+    "new_process",
+    "test.tm1filetools.cube_view_process",
+    "test.tm1filetools.dim_subset_process",
+    "test.tm1filetools.empty_process",
+    "test.tm1filetools.epilog_only_process",
+    "test.tm1filetools.prolog_only_process",
+]
 
-def test_init(test_folder):
 
-    p = TM1ProcessFile(Path.joinpath(test_folder, "copy data from my cube.pro"))
+@pytest.mark.parametrize("proc", sample_procs)
+def test_init(json_dumps_folder, proc):
+
+    p = TM1ProcessFile(Path.joinpath(json_dumps_folder, f"{proc}.pro"))
 
     assert p
     assert p.suffix == "pro"
 
 
-def test_to_json(json_dumps_folder):
+@pytest.mark.parametrize("proc", sample_procs)
+def test_ui_data(json_dumps_folder, proc):
 
     # create pro object from the file
-    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
-
-    json_out_str = pro._to_json()
-
-    with open(Path.joinpath(json_dumps_folder, "processes", "new_process.json"), "r") as f:
-        expected_json_str = f.read()
-
-    json_expected = json.loads(expected_json_str)
-
-    assert json_out_str
-
-    json_out = json.loads(json_out_str)
-
-    assert json_out["Name"] == "new process"
-    assert json_out["Name"] == json_expected["Name"]
-
-    assert json_out["PrologProcedure"][0] == json_expected["PrologProcedure"][0]
-    assert json_out["PrologProcedure"][5] == json_expected["PrologProcedure"][5]
-    assert json_out["PrologProcedure"][12] == json_expected["PrologProcedure"][12]
-
-    assert json_out["MetadataProcedure"] == json_expected["MetadataProcedure"]
-    assert json_out["DataProcedure"] == json_expected["DataProcedure"]
-    assert json_out["EpilogProcedure"] == json_expected["EpilogProcedure"]
-
-    assert json_out["HasSecurityAccess"] is False
-    assert json_out["HasSecurityAccess"] == json_expected["HasSecurityAccess"]
-
-    assert json_out["Parameters"][0]["Name"] == "pPeriod"
-    assert json_out["Parameters"][1]["Name"] == "pVersion"
-    assert json_out["Parameters"][2]["Name"] == "pScenario"
-
-    assert json_out["Parameters"][0]["Type"] == "String"
-    assert json_out["Parameters"][1]["Type"] == "String"
-    assert json_out["Parameters"][2]["Type"] == "String"
-
-    assert json_out["Parameters"][0]["Value"] == "All"
-    assert json_out["Parameters"][0]["Prompt"] == ""
-
-    assert json_out["Variables"][0]["Name"] == "vPeriod"
-    assert json_out["Variables"][0]["Type"] == "String"
-
-
-def test_ui_data(json_dumps_folder):
-
-    # create pro object from the file
-    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", f"{proc}.pro"))
 
     json_out_str = pro._to_json()
 
     json_out = json.loads(json_out_str)
 
-    with open(Path.joinpath(json_dumps_folder, "processes", "new_process.json"), "r") as f:
+    with open(Path.joinpath(json_dumps_folder, "processes", f"{proc}.json"), "r") as f:
         expected_json_str = f.read()
 
     expected_json = json.loads(expected_json_str)
@@ -79,16 +45,17 @@ def test_ui_data(json_dumps_folder):
 
 
 @pytest.mark.skip("Failing")
-def test_variable_ui_data(json_dumps_folder):
+@pytest.mark.parametrize("proc", sample_procs)
+def test_variable_ui_data(json_dumps_folder, proc):
 
     # create pro object from the file
-    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", f"{proc}.pro"))
 
     json_out_str = pro._to_json()
 
     json_out = json.loads(json_out_str)
 
-    with open(Path.joinpath(json_dumps_folder, "processes", "new_process.json"), "r") as f:
+    with open(Path.joinpath(json_dumps_folder, "processes", f"{proc}.json"), "r") as f:
         expected_json_str = f.read()
 
     expected_json = json.loads(expected_json_str)
@@ -96,40 +63,36 @@ def test_variable_ui_data(json_dumps_folder):
     assert json_out.get("VariablesUIData") == expected_json.get("VariablesUIData")
 
 
-def test_get_parameters(json_dumps_folder):
+@pytest.mark.parametrize("proc", sample_procs)
+def test_get_parameters(json_dumps_folder, proc):
 
     # create pro object from the file
-    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", f"{proc}.pro"))
 
     params = pro._get_parameters()
 
-    with open(Path.joinpath(json_dumps_folder, "processes", "new_process.json"), "r") as f:
+    with open(Path.joinpath(json_dumps_folder, "processes", f"{proc}.json"), "r") as f:
         expected_json_str = f.read()
 
     json_expected = json.loads(expected_json_str)
 
-    assert params[0] == json_expected["Parameters"][0]
-    assert params[1] == json_expected["Parameters"][1]
-    assert params[2] == json_expected["Parameters"][2]
+    assert params == json_expected["Parameters"]
 
 
-def test_get_variables(json_dumps_folder):
+@pytest.mark.parametrize("proc", sample_procs)
+def test_get_variables(json_dumps_folder, proc):
 
     # create pro object from the file
-    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", f"{proc}.pro"))
 
     vars = pro._get_variables()
 
-    with open(Path.joinpath(json_dumps_folder, "processes", "new_process.json"), "r") as f:
+    with open(Path.joinpath(json_dumps_folder, "processes", f"{proc}.json"), "r") as f:
         expected_json_str = f.read()
 
     json_expected = json.loads(expected_json_str)
 
-    assert vars[0] == json_expected["Variables"][0]
-    assert vars[1] == json_expected["Variables"][1]
-    assert vars[2] == json_expected["Variables"][2]
-    assert vars[3] == json_expected["Variables"][3]
-    assert vars[4] == json_expected["Variables"][4]
+    assert vars == json_expected["Variables"]
 
 
 def test_codeblock_to_json(json_dumps_folder):
@@ -222,29 +185,21 @@ def test_epilog_code_block(json_dumps_folder):
     assert len(lines) == 21
 
 
-def test_get_datasource(json_dumps_folder):
+@pytest.mark.parametrize("proc", sample_procs)
+def test_get_datasource(json_dumps_folder, proc):
 
-    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", f"{proc}.pro"))
 
     datasource = pro._get_datasource()
 
     assert datasource
 
-    assert datasource["Type"] == "ASCII"
+    with open(Path.joinpath(json_dumps_folder, "processes", f"{proc}.json"), "r") as f:
+        expected_json_str = f.read()
 
-    assert (
-        datasource["dataSourceNameForClient"]
-        == "C:\\Users\\alexander.sutcliffe\\git\\planning_v2\\imports\\cCurrency_20221104.csv"  # noqa
-    )
-    assert datasource["dataSourceNameForServer"] == "..\\imports\\cCurrency_20221104.csv"
+    expected_json = json.loads(expected_json_str)
 
-    assert datasource["asciiDecimalSeparator"] == "."
-    assert datasource["asciiDelimiterChar"] == ","
-    assert datasource["asciiDelimiterType"] == "Character"
-
-    assert datasource["asciiHeaderRecords"] == 0
-    assert datasource["asciiQuoteCharacter"] == '"'
-    assert datasource["asciiThousandSeparator"] == ","
+    assert datasource == expected_json.get("DataSource")
 
 
 def test_empty_process(json_dumps_folder):
@@ -357,3 +312,48 @@ def test_epilog_only_process(json_dumps_folder):
     assert json_out["Variables"] == json_expected["Variables"]
 
     assert json_out["VariablesUIData"] == json_expected["VariablesUIData"]
+
+
+def test_to_json(json_dumps_folder):
+
+    # create pro object from the file
+    pro = TM1ProcessFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
+
+    json_out_str = pro._to_json()
+
+    with open(Path.joinpath(json_dumps_folder, "processes", "new_process.json"), "r") as f:
+        expected_json_str = f.read()
+
+    json_expected = json.loads(expected_json_str)
+
+    assert json_out_str
+
+    json_out = json.loads(json_out_str)
+
+    assert json_out["Name"] == "new process"
+    assert json_out["Name"] == json_expected["Name"]
+
+    assert json_out["PrologProcedure"][0] == json_expected["PrologProcedure"][0]
+    assert json_out["PrologProcedure"][5] == json_expected["PrologProcedure"][5]
+    assert json_out["PrologProcedure"][12] == json_expected["PrologProcedure"][12]
+
+    assert json_out["MetadataProcedure"] == json_expected["MetadataProcedure"]
+    assert json_out["DataProcedure"] == json_expected["DataProcedure"]
+    assert json_out["EpilogProcedure"] == json_expected["EpilogProcedure"]
+
+    assert json_out["HasSecurityAccess"] is False
+    assert json_out["HasSecurityAccess"] == json_expected["HasSecurityAccess"]
+
+    assert json_out["Parameters"][0]["Name"] == "pPeriod"
+    assert json_out["Parameters"][1]["Name"] == "pVersion"
+    assert json_out["Parameters"][2]["Name"] == "pScenario"
+
+    assert json_out["Parameters"][0]["Type"] == "String"
+    assert json_out["Parameters"][1]["Type"] == "String"
+    assert json_out["Parameters"][2]["Type"] == "String"
+
+    assert json_out["Parameters"][0]["Value"] == "All"
+    assert json_out["Parameters"][0]["Prompt"] == ""
+
+    assert json_out["Variables"][0]["Name"] == "vPeriod"
+    assert json_out["Variables"][0]["Type"] == "String"

@@ -221,8 +221,11 @@ class TM1ProcessFile(TM1LinecodeFile):
                 datasource["asciiThousandSeparator"] = self.parse_single_string(self._get_line_by_code(589))
             elif datasource_type == "VIEW":
                 datasource["Type"] = "TM1CubeView"
+                datasource["view"] = self.parse_single_string(self._get_line_by_code(570))
+
             elif datasource_type == "SUBSET":
                 datasource["Type"] = "TM1DimensionSubset"
+                datasource["subset"] = self.parse_single_string(self._get_line_by_code(571))
 
             datasource["dataSourceNameForClient"] = self.parse_single_string(self._get_line_by_code(585))
             datasource["dataSourceNameForServer"] = self.parse_single_string(self._get_line_by_code(586))
