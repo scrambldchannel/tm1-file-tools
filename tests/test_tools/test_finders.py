@@ -41,8 +41,6 @@ def test_find_procs(test_folder):
 
     assert len(ft._proc_files) == 3
 
-    assert ft._proc_files[0].stem == "dingo"
-
     assert any(s.stem == "dingo" for s in ft._proc_files)
     assert all(s.stem != "womble" for s in ft._proc_files)
 
