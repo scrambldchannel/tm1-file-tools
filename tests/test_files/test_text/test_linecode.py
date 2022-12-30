@@ -52,8 +52,6 @@ def test_get_lines_by_index(test_folder):
 
 def test_parse_single_int():
 
-    # pro = TM1LinecodeFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
-
     line = "601,100"
 
     assert TM1LinecodeFile.parse_single_int(line) == 100
@@ -89,24 +87,3 @@ def test_parse_key_value_pair_int():
     line = "pLogging,1"
 
     assert TM1LinecodeFile.parse_key_value_pair_int(line=line) == {"key": "pLogging", "value": 1}
-
-
-def test_get_multiline_block(json_dumps_folder):
-
-    # create pro object from the file
-    pro = TM1LinecodeFile(Path.joinpath(json_dumps_folder, "processes", "new_process.pro"))
-
-    lines = pro._get_multiline_block(linecode=572)
-
-    # lines should be correct here
-    assert len(lines) == 48
-
-    assert lines[0] == ""
-    assert lines[2] == "#****End: Generated Statements****"
-    assert lines[4] == "#####  LOGGING"
-
-    # what was I checking here?
-    assert lines[-1] == ""
-
-    # check indent
-    assert lines[40] == "   'pCubeLogging', 0,"

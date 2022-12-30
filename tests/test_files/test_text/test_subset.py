@@ -79,45 +79,45 @@ def test_move_to_public(test_folder):
     assert f.public
 
 
-def test_single_static_subset(json_dumps_folder):
+def test_single_static_subset(sub_folder):
 
     subset = "test.tm1filetools.single_element_static_subset"
 
-    sub = TM1SubsetFile(Path.joinpath(json_dumps_folder, "subsets", f"{subset}.sub"))
+    sub = TM1SubsetFile(Path.joinpath(sub_folder, f"{subset}.sub"))
 
     assert sub
 
-    with open(Path.joinpath(json_dumps_folder, "subsets", f"{subset}.json"), "r") as f:
+    with open(Path.joinpath(sub_folder, f"{subset}.json"), "r") as f:
         expected_json_str = f.read()
 
     assert expected_json_str
 
 
-def test_multi_static_subset(json_dumps_folder):
+def test_multi_static_subset(sub_folder):
 
     subset = "test.tm1filetools.multi_element_static_subset"
 
-    sub = TM1SubsetFile(Path.joinpath(json_dumps_folder, "subsets", f"{subset}.sub"))
+    sub = TM1SubsetFile(Path.joinpath(sub_folder, f"{subset}.sub"))
 
     assert sub
 
     assert sub._get_mdx() is None
 
-    with open(Path.joinpath(json_dumps_folder, "subsets", f"{subset}.json"), "r") as f:
+    with open(Path.joinpath(sub_folder, f"{subset}.json"), "r") as f:
         expected_json_str = f.read()
 
     assert expected_json_str
 
 
-def test_mdx_subset(json_dumps_folder):
+def test_mdx_subset(sub_folder):
 
     subset = "test.tm1filetools.mdx_subset"
 
-    sub = TM1SubsetFile(Path.joinpath(json_dumps_folder, "subsets", f"{subset}.sub"))
+    sub = TM1SubsetFile(Path.joinpath(sub_folder, f"{subset}.sub"))
 
     assert sub._get_mdx() == "{TM1SUBSETALL( [}Processes] )}"
 
-    with open(Path.joinpath(json_dumps_folder, "subsets", f"{subset}.json"), "r") as f:
+    with open(Path.joinpath(sub_folder, f"{subset}.json"), "r") as f:
         expected_json_str = f.read()
 
     assert expected_json_str
@@ -150,10 +150,10 @@ def test_hierarchy_odata():
 
 
 @pytest.mark.skip("Not yet working")
-def test_get_hierarchy_odata(json_dumps_folder):
+def test_get_hierarchy_odata(sub_folder):
 
     subset = "test.tm1filetools.mdx_subset"
 
-    sub = TM1SubsetFile(Path.joinpath(json_dumps_folder, "subsets", f"{subset}.sub"))  # noqa
+    sub = TM1SubsetFile(Path.joinpath(sub_folder, f"{subset}.sub"))  # noqa
 
     expected_string = "Dimensions('}Processes')/Hierarchies('}Processes')"  # noqa
