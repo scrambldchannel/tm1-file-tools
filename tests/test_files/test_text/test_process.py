@@ -24,25 +24,25 @@ code_blocks = [
 
 
 @pytest.mark.parametrize("proc", sample_procs)
-def test_init(proc_folder, proc):
+def test_init(data_folder, proc):
 
-    p = TM1ProcessFile(Path.joinpath(proc_folder, f"{proc}.pro"))
+    p = TM1ProcessFile(Path.joinpath(data_folder, f"{proc}.pro"))
 
     assert p
     assert p.suffix == "pro"
 
 
 @pytest.mark.parametrize("proc", sample_procs)
-def test_ui_data(proc_folder, proc):
+def test_ui_data(data_folder, proc):
 
     # create pro object from the file
-    pro = TM1ProcessFile(Path.joinpath(proc_folder, f"{proc}.pro"))
+    pro = TM1ProcessFile(Path.joinpath(data_folder, f"{proc}.pro"))
 
     json_out_str = pro._to_json()
 
     json_out = json.loads(json_out_str)
 
-    with open(Path.joinpath(proc_folder, f"{proc}.json"), "r") as f:
+    with open(Path.joinpath(data_folder, f"{proc}.json"), "r") as f:
         expected_json_str = f.read()
 
     expected_json = json.loads(expected_json_str)
@@ -54,16 +54,16 @@ def test_ui_data(proc_folder, proc):
 
 @pytest.mark.skip("Failing")
 @pytest.mark.parametrize("proc", sample_procs)
-def test_variable_ui_data(proc_folder, proc):
+def test_variable_ui_data(data_folder, proc):
 
     # create pro object from the file
-    pro = TM1ProcessFile(Path.joinpath(proc_folder, f"{proc}.pro"))
+    pro = TM1ProcessFile(Path.joinpath(data_folder, f"{proc}.pro"))
 
     json_out_str = pro._to_json()
 
     json_out = json.loads(json_out_str)
 
-    with open(Path.joinpath(proc_folder, f"{proc}.json"), "r") as f:
+    with open(Path.joinpath(data_folder, f"{proc}.json"), "r") as f:
         expected_json_str = f.read()
 
     expected_json = json.loads(expected_json_str)
@@ -72,14 +72,14 @@ def test_variable_ui_data(proc_folder, proc):
 
 
 @pytest.mark.parametrize("proc", sample_procs)
-def test_get_parameters(proc_folder, proc):
+def test_get_parameters(data_folder, proc):
 
     # create pro object from the file
-    pro = TM1ProcessFile(Path.joinpath(proc_folder, f"{proc}.pro"))
+    pro = TM1ProcessFile(Path.joinpath(data_folder, f"{proc}.pro"))
 
     params = pro._get_parameters()
 
-    with open(Path.joinpath(proc_folder, f"{proc}.json"), "r") as f:
+    with open(Path.joinpath(data_folder, f"{proc}.json"), "r") as f:
         expected_json_str = f.read()
 
     json_expected = json.loads(expected_json_str)
@@ -88,14 +88,14 @@ def test_get_parameters(proc_folder, proc):
 
 
 @pytest.mark.parametrize("proc", sample_procs)
-def test_get_variables(proc_folder, proc):
+def test_get_variables(data_folder, proc):
 
     # create pro object from the file
-    pro = TM1ProcessFile(Path.joinpath(proc_folder, f"{proc}.pro"))
+    pro = TM1ProcessFile(Path.joinpath(data_folder, f"{proc}.pro"))
 
     vars = pro._get_variables()
 
-    with open(Path.joinpath(proc_folder, f"{proc}.json"), "r") as f:
+    with open(Path.joinpath(data_folder, f"{proc}.json"), "r") as f:
         expected_json_str = f.read()
 
     json_expected = json.loads(expected_json_str)
@@ -104,15 +104,15 @@ def test_get_variables(proc_folder, proc):
 
 
 @pytest.mark.parametrize("proc", sample_procs)
-def test_get_datasource(proc_folder, proc):
+def test_get_datasource(data_folder, proc):
 
-    pro = TM1ProcessFile(Path.joinpath(proc_folder, f"{proc}.pro"))
+    pro = TM1ProcessFile(Path.joinpath(data_folder, f"{proc}.pro"))
 
     datasource = pro._get_datasource()
 
     assert datasource
 
-    with open(Path.joinpath(proc_folder, f"{proc}.json"), "r") as f:
+    with open(Path.joinpath(data_folder, f"{proc}.json"), "r") as f:
         expected_json_str = f.read()
 
     expected_json = json.loads(expected_json_str)
@@ -121,10 +121,10 @@ def test_get_datasource(proc_folder, proc):
 
 
 @pytest.mark.parametrize("proc", sample_procs)
-def test_to_valid_json(proc_folder, proc):
+def test_to_valid_json(data_folder, proc):
 
     # create pro object from the file
-    pro = TM1ProcessFile(Path.joinpath(proc_folder, f"{proc}.pro"))
+    pro = TM1ProcessFile(Path.joinpath(data_folder, f"{proc}.pro"))
 
     json_out_str = pro._to_json()
 
@@ -132,9 +132,9 @@ def test_to_valid_json(proc_folder, proc):
 
 
 @pytest.mark.parametrize("proc,block", itertools.product(sample_procs, code_blocks))
-def test_multiline_block(proc_folder, proc, block):
+def test_multiline_block(data_folder, proc, block):
 
-    pro = TM1ProcessFile(Path.joinpath(proc_folder, f"{proc}.pro"))
+    pro = TM1ProcessFile(Path.joinpath(data_folder, f"{proc}.pro"))
 
     # rstrip implied
     # returns a list of strings
@@ -148,9 +148,9 @@ def test_multiline_block(proc_folder, proc, block):
 
 @pytest.mark.skip("Failing, possibly whitespace")
 @pytest.mark.parametrize("proc,block", itertools.product(sample_procs, code_blocks))
-def test_codeblock_to_json_str(proc_folder, proc, block):
+def test_codeblock_to_json_str(data_folder, proc, block):
 
-    pro = TM1ProcessFile(Path.joinpath(proc_folder, f"{proc}.pro"))
+    pro = TM1ProcessFile(Path.joinpath(data_folder, f"{proc}.pro"))
 
     # rstrip implied
     # returns a list of strings
@@ -158,7 +158,7 @@ def test_codeblock_to_json_str(proc_folder, proc, block):
 
     codeblock_json_string = pro._codeblock_to_json_str(code)
 
-    with open(Path.joinpath(proc_folder, f"{proc}.json"), "r") as f:
+    with open(Path.joinpath(data_folder, f"{proc}.json"), "r") as f:
         expected_json_str = f.read()
 
     expected_json = json.loads(expected_json_str)
@@ -169,8 +169,8 @@ def test_codeblock_to_json_str(proc_folder, proc, block):
 # below here, tests still pretty much hardcoded, try to parameterise
 
 
-def test_prolog(proc_folder):
-    pro = TM1ProcessFile(Path.joinpath(proc_folder, "new_process.pro"))
+def test_prolog(data_folder):
+    pro = TM1ProcessFile(Path.joinpath(data_folder, "new_process.pro"))
 
     lines = pro.get_prolog_code()
 
@@ -180,8 +180,8 @@ def test_prolog(proc_folder):
     assert lines[2] == pro._code_block_prefix_lines[2]
 
 
-def test_metadata(proc_folder):
-    pro = TM1ProcessFile(Path.joinpath(proc_folder, "new_process.pro"))
+def test_metadata(data_folder):
+    pro = TM1ProcessFile(Path.joinpath(data_folder, "new_process.pro"))
 
     lines = pro.get_metadata_code()
 
@@ -192,8 +192,8 @@ def test_metadata(proc_folder):
     assert lines[2] == pro._code_block_prefix_lines[2]
 
 
-def test_data_code_block(proc_folder):
-    pro = TM1ProcessFile(Path.joinpath(proc_folder, "new_process.pro"))
+def test_data_code_block(data_folder):
+    pro = TM1ProcessFile(Path.joinpath(data_folder, "new_process.pro"))
 
     lines = pro.get_data_code()
 
@@ -204,9 +204,9 @@ def test_data_code_block(proc_folder):
     assert len(lines) == 37
 
 
-def test_epilog_code_block(proc_folder):
+def test_epilog_code_block(data_folder):
 
-    pro = TM1ProcessFile(Path.joinpath(proc_folder, "new_process.pro"))
+    pro = TM1ProcessFile(Path.joinpath(data_folder, "new_process.pro"))
 
     lines = pro.get_epilog_code()
 
@@ -216,10 +216,10 @@ def test_epilog_code_block(proc_folder):
     assert len(lines) == 21
 
 
-def test_empty_process(proc_folder):
+def test_empty_process(data_folder):
 
     process = "test.tm1filetools.empty_process"
-    pro = TM1ProcessFile(Path.joinpath(proc_folder, f"{process}.pro"))
+    pro = TM1ProcessFile(Path.joinpath(data_folder, f"{process}.pro"))
 
     json_out_str = pro._to_json()
 
@@ -227,7 +227,7 @@ def test_empty_process(proc_folder):
 
     json_out = json.loads(json_out_str)
 
-    with open(Path.joinpath(proc_folder, f"{process}.json"), "r") as f:
+    with open(Path.joinpath(data_folder, f"{process}.json"), "r") as f:
         expected_json_str = f.read()
 
     json_expected = json.loads(expected_json_str)
@@ -254,10 +254,10 @@ def test_empty_process(proc_folder):
     assert json_out["VariablesUIData"] == json_expected["VariablesUIData"]
 
 
-def test_prolog_only_process(proc_folder):
+def test_prolog_only_process(data_folder):
 
     process = "test.tm1filetools.prolog_only_process"
-    pro = TM1ProcessFile(Path.joinpath(proc_folder, f"{process}.pro"))
+    pro = TM1ProcessFile(Path.joinpath(data_folder, f"{process}.pro"))
 
     json_out_str = pro._to_json()
 
@@ -265,7 +265,7 @@ def test_prolog_only_process(proc_folder):
 
     json_out = json.loads(json_out_str)
 
-    with open(Path.joinpath(proc_folder, f"{process}.json"), "r") as f:
+    with open(Path.joinpath(data_folder, f"{process}.json"), "r") as f:
         expected_json_str = f.read()
 
     json_expected = json.loads(expected_json_str)
@@ -293,10 +293,10 @@ def test_prolog_only_process(proc_folder):
     assert json_out["VariablesUIData"] == json_expected["VariablesUIData"]
 
 
-def test_epilog_only_process(proc_folder):
+def test_epilog_only_process(data_folder):
 
     process = "test.tm1filetools.epilog_only_process"
-    pro = TM1ProcessFile(Path.joinpath(proc_folder, f"{process}.pro"))
+    pro = TM1ProcessFile(Path.joinpath(data_folder, f"{process}.pro"))
 
     json_out_str = pro._to_json()
 
@@ -304,7 +304,7 @@ def test_epilog_only_process(proc_folder):
 
     json_out = json.loads(json_out_str)
 
-    with open(Path.joinpath(proc_folder, f"{process}.json"), "r") as f:
+    with open(Path.joinpath(data_folder, f"{process}.json"), "r") as f:
         expected_json_str = f.read()
 
     json_expected = json.loads(expected_json_str)
@@ -328,14 +328,14 @@ def test_epilog_only_process(proc_folder):
     assert json_out["VariablesUIData"] == json_expected["VariablesUIData"]
 
 
-def test_to_json(proc_folder):
+def test_to_json(data_folder):
 
     # create pro object from the file
-    pro = TM1ProcessFile(Path.joinpath(proc_folder, "new_process.pro"))
+    pro = TM1ProcessFile(Path.joinpath(data_folder, "new_process.pro"))
 
     json_out_str = pro._to_json()
 
-    with open(Path.joinpath(proc_folder, "new_process.json"), "r") as f:
+    with open(Path.joinpath(data_folder, "new_process.json"), "r") as f:
         expected_json_str = f.read()
 
     json_expected = json.loads(expected_json_str)

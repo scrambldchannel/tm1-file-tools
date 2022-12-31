@@ -2,10 +2,23 @@ from pathlib import Path
 
 from tm1filetools.files import TM1CfgFile
 
+# import pytest
 
-def test_read_and_write(test_folder):
 
-    f = TM1CfgFile(Path.joinpath(test_folder, "tm1s.cfg"))
+def test_is_valid(cfg_folder):
+
+    f = TM1CfgFile(Path.joinpath(cfg_folder, "non_existent.cfg"))
+
+    assert not f.is_valid()
+
+    f = TM1CfgFile(Path.joinpath(cfg_folder, "minimal.cfg"))
+
+    assert f.is_valid()
+
+
+def test_read_and_write(empty_folder):
+
+    f = TM1CfgFile(Path.joinpath(empty_folder, "temp.cfg"))
 
     # need to create the section
     f.config.add_section(f._section)
@@ -20,36 +33,9 @@ def test_read_and_write(test_folder):
 
     assert f.get_parameter(param) == value
 
-    # also re-open file to check it's been written to disk
+    # also re-open file to check it's been written
 
-    f2 = TM1CfgFile(Path.joinpath(test_folder, "tm1s.cfg"))
+    # do I run into a potential issue with fixtures here?
+    f2 = TM1CfgFile(Path.joinpath(empty_folder, "temp.cfg"))
 
     assert f2.get_parameter(param) == value
-
-
-def test_is_valid(invalid_config_folder):
-
-    f = TM1CfgFile(Path.joinpath(invalid_config_folder, "tm1s.cfg"))
-
-    assert not f.is_valid()
-
-    # need to create the section
-    f.config.add_section(f._section)
-    assert not f.is_valid()
-
-    param = "ServerName"
-    value = "Chimpy's Food Planner"
-    f.set_parameter(param, value)
-    assert not f.is_valid()
-
-    param = "DataBaseDirectory"
-    value = r"..\data"
-    f.set_parameter(param, value)
-    assert not f.is_valid()
-
-    param = "PortNumber"
-    value = "12345"
-    f.set_parameter(param, value)
-
-    # now it should be good
-    assert f.is_valid()

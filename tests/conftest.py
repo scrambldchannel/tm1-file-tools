@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 from tm1filetools.files.binary.cube import TM1AttributeCubeFile
@@ -17,9 +19,6 @@ sub_folders = ["cat", "koala"]
 view_files = ["mouse.vue", "squirrel.VUE", "}shark.vue"]
 view_folders = ["cat", "koala"]
 feeders_files = ["cat.feeders", "possum.FEEDERS"]
-# should also add in a TI process error log
-# I am unsure about how the process error string should look exactly
-log_files = ["tm1s.log", "tm1server.LOG", "TM1ProcessError_123123_myproc.log"]
 blb_files = ["emu.blb", "unicorn.blb"]
 cma_files = ["bunyip.CMA", "troll.cma"]
 junk_files = ["cat.cub.bak", "no_extension", "zzzBackup12.zip"]
@@ -96,10 +95,6 @@ def rel_config_folder(tmp_path_factory):
 
     log_dir = d / "logs"
     log_dir.mkdir()
-
-    for log in log_files:
-        f = log_dir / f"{log}"
-        f.touch()
 
     return d
 
@@ -242,68 +237,54 @@ Planning:Sales",","BP","202203","Sales","Australia","Comment","To the moon!"
         f = d / f"{c}"
         f.touch()
 
-    for lg in log_files:
-
-        f = d / f"{lg}"
-        f.touch()
-
-    # add a basic transaction log for testing
-    changelog = r""" #LOG_FORMAT=1
-#LOGID=6
-#LOGIV=
-"","20200801185011","20200801185011","Admin","S","20200722131536","20200801185011","}DimensionProperties","}dimensions","LAST_TIME_UPDATED",""
-#"","20200802084038","CubeSerialized: TM1py_tests_annotations: by Admin"
-"","20200802084728","20200802084728","Admin","N","0","6","TM1py_Tests_Cell_Cube_RPS1","e2","e3",""
-
-"""
-
-    f = d / "tm1s20200801080426.log"
-
-    f.write_text(changelog)
-
-    # return the path
     return d
 
 
 @pytest.fixture(scope="function")
-def login_config_folder(tmp_path_factory):
-    """
-    Create a folder with with a sample login config file
-    """
+def data_folder():
 
-    d = tmp_path_factory.mktemp("login")
+    path = Path.joinpath(Path.cwd(), "tests", "samples", "multiple_dirs", "data")
 
-    f = d / "good_login.ini"
+    return path
 
-    cfg = r"""[local]
-    address = 192.168.0.111
-    port = 18081
-    user = admin
-    password = apple
-    """
 
-    f.write_text(cfg)
+@pytest.fixture(scope="function")
+def log_folder():
 
-    f = d / "bad_login.ini"
+    path = Path.joinpath(Path.cwd(), "tests", "samples", "multiple_dirs", "logs")
 
-    cfg = r"""[local]
-    address = 192.168.0.111
-    user = admin
-    password = apple
-    """
+    return path
 
-    f.write_text(cfg)
 
-    f = d / "messy_login.ini"
+@pytest.fixture(scope="function")
+def cfg_folder():
 
-    cfg = r"""[messy]
-    address = 192.168.0.111
-    port = 18081
-    user = admin
-    password = apple
-    irrelevant = koala
-    """
+    path = Path.joinpath(Path.cwd(), "tests", "samples", "multiple_dirs", "cfg")
 
-    f.write_text(cfg)
+    return path
 
-    return d
+    # f.write_text(cfg)
+
+    # f = d / "bad_login.ini"
+
+    # cfg = r"""[local]
+    # address = 192.168.0.111
+    # user = admin
+    # password = apple
+    # """
+
+    # f.write_text(cfg)
+
+    # f = d / "messy_login.ini"
+
+    # cfg = r"""[messy]
+    # address = 192.168.0.111
+    # port = 18081
+    # user = admin
+    # password = apple
+    # irrelevant = koala
+    # """
+
+    # f.write_text(cfg)
+
+    # return d
