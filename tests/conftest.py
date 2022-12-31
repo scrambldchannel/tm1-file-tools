@@ -1,6 +1,6 @@
-import pytest
-
 from pathlib import Path
+
+import pytest
 
 from tm1filetools.files.binary.cube import TM1AttributeCubeFile
 from tm1filetools.files.binary.dimension import TM1AttributeDimensionFile
