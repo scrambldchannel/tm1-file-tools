@@ -1,7 +1,11 @@
 from pathlib import Path
 from typing import Optional
 
-from .linecode import TM1LinecodeFile
+from .linecode import (
+    TM1LinecodeFile,
+    TM1LinecodeRowSingleInt,
+    TM1LinecodeRowSingleString,
+)
 from .user_owned import TM1UserFile
 
 
@@ -39,7 +43,7 @@ class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
         # this is captured by key 275
         code = 275
 
-        mdx_chars = self.parse_single_int(self._get_line_by_code(code))
+        mdx_chars = TM1LinecodeRowSingleInt(self._get_line_by_code(code)).value
 
         if mdx_chars > 0:
 
@@ -55,7 +59,7 @@ class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
 
         code = 284
 
-        return self.parse_single_string(self._get_line_by_code(code))
+        return TM1LinecodeRowSingleString(self._get_line_by_code(code)).value
 
     def _to_json(self):
         """Read file and return a json representation

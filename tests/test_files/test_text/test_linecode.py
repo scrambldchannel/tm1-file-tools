@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from tm1filetools.files.text.linecode import TM1LinecodeFile
+from tm1filetools.files.text.linecode import TM1LinecodeFile, TM1LinecodeRowBase
 
 
 def test_init(test_folder):
@@ -54,10 +54,10 @@ def test_parse_single_int():
 
     line = "601,100"
 
-    assert TM1LinecodeFile.parse_single_int(line) == 100
+    assert TM1LinecodeRowBase.parse_single_int(line) == 100
 
     line = "572,48"
-    assert TM1LinecodeFile.parse_single_int(line) == 48
+    assert TM1LinecodeRowBase.parse_single_int(line) == 48
 
 
 def test_parse_single_str():

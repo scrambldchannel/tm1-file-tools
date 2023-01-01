@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from .linecode import TM1LinecodeFile
+from .linecode import TM1LinecodeFile, TM1LinecodeRowSingleInt
 
 
 class TM1ProcessFile(TM1LinecodeFile):
@@ -220,7 +220,7 @@ class TM1ProcessFile(TM1LinecodeFile):
                 datasource["asciiDecimalSeparator"] = self.parse_single_string(self._get_line_by_code(588))
                 datasource["asciiDelimiterChar"] = self.parse_single_string(self._get_line_by_code(567))
 
-                datasource["asciiHeaderRecords"] = self.parse_single_int(self._get_line_by_code(569))
+                datasource["asciiHeaderRecords"] = TM1LinecodeRowSingleInt(row=self._get_line_by_code(569)).value
                 datasource["asciiQuoteCharacter"] = self.parse_single_string(self._get_line_by_code(568))
                 datasource["asciiThousandSeparator"] = self.parse_single_string(self._get_line_by_code(589))
             elif datasource_type == "VIEW":
@@ -238,7 +238,7 @@ class TM1ProcessFile(TM1LinecodeFile):
 
     def _get_security_access(self) -> bool:
 
-        security_access = self.parse_single_int(self._get_line_by_code(1217))
+        security_access = TM1LinecodeRowSingleInt(row=self._get_line_by_code(1217)).value
 
         if security_access == 1:
             return True
