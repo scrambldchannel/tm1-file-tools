@@ -15,6 +15,23 @@ sample_procs = [
     "test.tm1filetools.prolog_only_process",
 ]
 
+mandatory_json_fields = [
+    # this list might need some tweaking
+    # i.e. do they all appear in every single process?
+    "DataProcedure",
+    "DataSource",
+    "EpilogProcedure",
+    "HasSecurityAccess",
+    "MetadataProcedure",
+    "Name",
+    "Parameters",
+    "PrologProcedure",
+    "UIData",
+    "Variables",
+    "VariablesUIData",
+]
+
+
 code_blocks = [
     {
         # prolog
@@ -148,15 +165,21 @@ def test_get_datasource(data_folder, proc_json_out_folder, proc):
     assert datasource == expected_json.get("DataSource")
 
 
-@pytest.mark.parametrize("proc", sample_procs)
-def test_to_valid_json(data_folder, proc):
+@pytest.mark.parametrize("proc,json_field", itertools.product(sample_procs, mandatory_json_fields))
+def test_to_valid_json(data_folder, proc, json_field):
 
     # create pro object from the file
     pro = TM1ProcessFile(Path.joinpath(data_folder, f"{proc}.pro"))
 
     json_out_str = pro._to_json()
 
-    assert json.loads(json_out_str)
+    json_proc = json.loads(json_out_str)
+
+    assert json_proc
+
+    # this might return an empty list, dict etc
+    # but the assumption is that each key should exist
+    assert json_proc.get(json_field) is not None
 
 
 @pytest.mark.parametrize("proc,block", itertools.product(sample_procs, code_blocks))
@@ -210,20 +233,12 @@ def test_codeblock_to_json_str(data_folder, proc_json_out_folder, proc, block):
     block_rstripped = codeblock_json_str.rstrip()
     expected_rstripped = expected_block.rstrip()
 
-    pytest.skip("Seomething not working here")
+    failing_procs = ["test.tm1filetools.dim_subset_process", "test.tm1filetools.cube_view_process"]
+
+    if proc in failing_procs:
+        pytest.skip("edge cases")
 
     assert block_rstripped[-1] == expected_rstripped[-1]
-
-    # if proc == "test.tm1filetools.cube_view_process":
-    #     pytest.skip("Edge case?")
-
-    # assert block_stripped[-1] == expected_stripped[-1]
-
-    # # test first char
-    # assert codeblock_json_str[0] == expected_block[0]
-
-    # # test last char
-    # assert codeblock_json_str[-1] == expected_json_str[-1]
 
 
 # below here, tests still pretty much hardcoded, try to parameterise
