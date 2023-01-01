@@ -263,28 +263,10 @@ def cfg_folder():
 
     return path
 
-    # f.write_text(cfg)
 
-    # f = d / "bad_login.ini"
+@pytest.fixture(scope="function")
+def json_out_folder():
 
-    # cfg = r"""[local]
-    # address = 192.168.0.111
-    # user = admin
-    # password = apple
-    # """
+    path = Path.joinpath(Path.cwd(), "tests", "samples", "json_out")
 
-    # f.write_text(cfg)
-
-    # f = d / "messy_login.ini"
-
-    # cfg = r"""[messy]
-    # address = 192.168.0.111
-    # port = 18081
-    # user = admin
-    # password = apple
-    # irrelevant = koala
-    # """
-
-    # f.write_text(cfg)
-
-    # return d
+    return path

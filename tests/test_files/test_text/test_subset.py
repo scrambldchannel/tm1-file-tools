@@ -5,6 +5,14 @@ import pytest
 
 from tm1filetools.files import TM1SubsetFile
 
+sample_subs = [
+    "test.tm1filetools.mdx_subset",
+    "test.tm1filetools.single_element_static_subset",
+    "test.tm1filetools.mdx_subset",
+    # no json for this currently
+    # "test.tm1filetools.multi_element_static_subset_alias_on"
+]
+
 
 def test_public_subset(test_folder):
 
@@ -79,7 +87,20 @@ def test_move_to_public(test_folder):
     assert f.public
 
 
-def test_single_static_subset(data_folder):
+@pytest.mark.parametrize("subset", sample_subs)
+def test_json_basic(data_folder, json_out_folder, subset):
+
+    sub = TM1SubsetFile(Path.joinpath(data_folder, f"{subset}.sub"))
+
+    assert sub
+
+    with open(Path.joinpath(json_out_folder, f"{subset}.json"), "r") as f:
+        expected_json_str = f.read()
+
+    assert expected_json_str
+
+
+def test_single_static_subset(data_folder, json_out_folder):
 
     subset = "test.tm1filetools.single_element_static_subset"
 
@@ -87,13 +108,13 @@ def test_single_static_subset(data_folder):
 
     assert sub
 
-    with open(Path.joinpath(data_folder, f"{subset}.json"), "r") as f:
+    with open(Path.joinpath(json_out_folder, f"{subset}.json"), "r") as f:
         expected_json_str = f.read()
 
     assert expected_json_str
 
 
-def test_multi_static_subset(data_folder):
+def test_multi_static_subset(data_folder, json_out_folder):
 
     subset = "test.tm1filetools.multi_element_static_subset"
 
@@ -103,13 +124,13 @@ def test_multi_static_subset(data_folder):
 
     assert sub._get_mdx() is None
 
-    with open(Path.joinpath(data_folder, f"{subset}.json"), "r") as f:
+    with open(Path.joinpath(json_out_folder, f"{subset}.json"), "r") as f:
         expected_json_str = f.read()
 
     assert expected_json_str
 
 
-def test_mdx_subset(data_folder):
+def test_mdx_subset(data_folder, json_out_folder):
 
     subset = "test.tm1filetools.mdx_subset"
 
@@ -117,7 +138,7 @@ def test_mdx_subset(data_folder):
 
     assert sub._get_mdx() == "{TM1SUBSETALL( [}Processes] )}"
 
-    with open(Path.joinpath(data_folder, f"{subset}.json"), "r") as f:
+    with open(Path.joinpath(json_out_folder, f"{subset}.json"), "r") as f:
         expected_json_str = f.read()
 
     assert expected_json_str

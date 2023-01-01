@@ -1,6 +1,26 @@
 from pathlib import Path
 
+import pytest
+
 from tm1filetools.files import TM1ViewFile
+
+sample_views = [
+    "test.tm1filetools.static_view",
+    "test.tm1filetools.static_view_with_named_title_subset",
+]
+
+
+@pytest.mark.parametrize("view", sample_views)
+def test_json_basic(data_folder, json_out_folder, view):
+
+    v = TM1ViewFile(Path.joinpath(data_folder, f"{view}.vue"))
+
+    assert v
+
+    with open(Path.joinpath(json_out_folder, f"{view}.json"), "r") as f:
+        expected_json_str = f.read()
+
+    assert expected_json_str
 
 
 def test_public_view(test_folder):
