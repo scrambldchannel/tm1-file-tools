@@ -39,9 +39,13 @@ class TM1LinecodeFile(TM1TextFile):
 
                 return list(lines)
 
-    def _get_line_by_code(self, linecode: int, rstrip=True):
+    def _get_lines_by_code(self, linecode: int, rstrip=True):
+        """
+        Return a list of lines in a file for the specific code
+        """
 
-        # Are lines ever duplicated?
+        lines = []
+
         with open(self._path, "r") as f:
 
             for line in f:
@@ -50,9 +54,16 @@ class TM1LinecodeFile(TM1TextFile):
 
                 if code == str(linecode):
                     if rstrip:
-                        return line.rstrip()
+                        lines.append(line.rstrip())
                     else:
-                        return line
+                        lines.append(line)
+
+        return lines
+
+    def _get_line_by_code(self, linecode: int, rstrip=True):
+
+        # only useful where a single line expected
+        return self._get_lines_by_code(linecode=linecode)[0]
 
     def _get_indexes_by_code(self, linecode: int):
 
