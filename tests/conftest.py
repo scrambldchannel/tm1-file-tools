@@ -262,29 +262,3 @@ def cfg_folder():
     path = Path.joinpath(Path.cwd(), "tests", "samples", "multiple_dirs", "cfg")
 
     return path
-
-    # f.write_text(cfg)
-
-    # f = d / "bad_login.ini"
-
-    # cfg = r"""[local]
-    # address = 192.168.0.111
-    # user = admin
-    # password = apple
-    # """
-
-    # f.write_text(cfg)
-
-    # f = d / "messy_login.ini"
-
-    # cfg = r"""[messy]
-    # address = 192.168.0.111
-    # port = 18081
-    # user = admin
-    # password = apple
-    # irrelevant = koala
-    # """
-
-    # f.write_text(cfg)
-
-    # return d
