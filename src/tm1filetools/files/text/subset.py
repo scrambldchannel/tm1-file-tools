@@ -24,6 +24,10 @@ class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
         # subset_name maybe a clearer API than stem?
         self.subset_name = self.stem
 
+    def is_dynamic(self) -> bool:
+
+        return True if self._get_mdx() else False
+
     def _get_mdx(self) -> Optional[str]:
         """Read file and return the MDX, if file defines a dynamic subset, or None
 
@@ -44,9 +48,10 @@ class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
             # I believe it's all on one line, not sure
             return self._get_lines_by_index(index=mdx_idx + 1)[0]
 
+        # does this code exist in a static file? Or is it just empty?
         return None
 
-    def _get_name_from_file(self):
+    def _get_name(self):
 
         code = 284
 
@@ -56,13 +61,13 @@ class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
         """Read file and return a json representation
 
         Returns:
-            A dict containing the json
+            A dict containing a json representation of the subset
 
         """
 
         json_dump = {}
 
-        name = self._get_name_from_file()
+        name = self._get_name()
 
         json_dump["Name"] = name
 
@@ -70,14 +75,10 @@ class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
         if self._get_mdx():
             json_dump["Expression"] = self._get_mdx()
 
-        # hierarchy_odata = self._get_hierarchy_odata()
-
-        # json_dump["Hierarchy@odata.bind"] = hierarchy_odata
-
         return json_dump
 
     @staticmethod
-    def _get_hierarchy_odata(dim: str, hier: str = None):
+    def _create_odata_string(dim: str, hier: str = None):
 
         # this is a fairly trivial function but may be useful more generally
         # perhaps it should be moved to a helper class?

@@ -88,19 +88,19 @@ def test_move_to_public(test_folder):
 
 
 @pytest.mark.parametrize("subset", sample_subs)
-def test_json_basic(data_folder, json_out_folder, subset):
+def test_json_basic(data_folder, subset_json_out_folder, subset):
 
     sub = TM1SubsetFile(Path.joinpath(data_folder, f"{subset}.sub"))
 
     assert sub
 
-    with open(Path.joinpath(json_out_folder, f"{subset}.json"), "r") as f:
+    with open(Path.joinpath(subset_json_out_folder, f"{subset}.json"), "r") as f:
         expected_json_str = f.read()
 
     assert expected_json_str
 
 
-def test_single_static_subset(data_folder, json_out_folder):
+def test_single_static_subset(data_folder, subset_json_out_folder):
 
     subset = "test.tm1filetools.single_element_static_subset"
 
@@ -108,13 +108,13 @@ def test_single_static_subset(data_folder, json_out_folder):
 
     assert sub
 
-    with open(Path.joinpath(json_out_folder, f"{subset}.json"), "r") as f:
+    with open(Path.joinpath(subset_json_out_folder, f"{subset}.json"), "r") as f:
         expected_json_str = f.read()
 
     assert expected_json_str
 
 
-def test_multi_static_subset(data_folder, json_out_folder):
+def test_multi_static_subset(data_folder, subset_json_out_folder):
 
     subset = "test.tm1filetools.multi_element_static_subset"
 
@@ -124,13 +124,13 @@ def test_multi_static_subset(data_folder, json_out_folder):
 
     assert sub._get_mdx() is None
 
-    with open(Path.joinpath(json_out_folder, f"{subset}.json"), "r") as f:
+    with open(Path.joinpath(subset_json_out_folder, f"{subset}.json"), "r") as f:
         expected_json_str = f.read()
 
     assert expected_json_str
 
 
-def test_mdx_subset(data_folder, json_out_folder):
+def test_mdx_subset(data_folder, subset_json_out_folder):
 
     subset = "test.tm1filetools.mdx_subset"
 
@@ -138,7 +138,7 @@ def test_mdx_subset(data_folder, json_out_folder):
 
     assert sub._get_mdx() == "{TM1SUBSETALL( [}Processes] )}"
 
-    with open(Path.joinpath(json_out_folder, f"{subset}.json"), "r") as f:
+    with open(Path.joinpath(subset_json_out_folder, f"{subset}.json"), "r") as f:
         expected_json_str = f.read()
 
     assert expected_json_str
@@ -157,24 +157,25 @@ def test_mdx_subset(data_folder, json_out_folder):
 
 def test_hierarchy_odata():
 
-    result = TM1SubsetFile._get_hierarchy_odata(dim="}Processes")
+    result = TM1SubsetFile._create_odata_string(dim="}Processes")
 
     expected_string = "Dimensions('}Processes')/Hierarchies('}Processes')"  # noqa
 
     assert result == expected_string
 
-    result = TM1SubsetFile._get_hierarchy_odata(dim="}Processes", hier="Not }Processes")
+    result = TM1SubsetFile._create_odata_string(dim="}Processes", hier="Not }Processes")
 
     expected_string = "Dimensions('}Processes')/Hierarchies('Not }Processes')"  # noqa
 
     assert result == expected_string
 
 
-@pytest.mark.skip("Not yet working")
-def test_get_hierarchy_odata(data_folder):
+# def test_get_hierarchy_odata(data_folder):
 
-    subset = "test.tm1filetools.mdx_subset"
+#     subset = "test.tm1filetools.mdx_subset"
 
-    sub = TM1SubsetFile(Path.joinpath(data_folder, f"{subset}.sub"))  # noqa
+#     sub = TM1SubsetFile(Path.joinpath(data_folder, f"{subset}.sub"))  # noqa
 
-    expected_string = "Dimensions('}Processes')/Hierarchies('}Processes')"  # noqa
+#     expected_string = "Dimensions('}Processes')/Hierarchies('}Processes')"  # noqa
+
+#     sub._get_h
