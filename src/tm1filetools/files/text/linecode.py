@@ -54,18 +54,31 @@ class TM1LinecodeFile(TM1TextFile):
                     else:
                         return line
 
-    def _get_index_by_code(self, linecode: int):
+    def _get_indexes_by_code(self, linecode: int):
 
         # Are lines ever duplicated?
+        # Yes, they are. E.g. in view files, code 7 and 270
+        # seem like they appear once for every
 
         with open(self._path, "r") as f:
+
+            indexes = []
 
             for index, line in enumerate(f):
 
                 code = line.split(self.code_delimiter)[0]
 
                 if code == str(linecode):
-                    return index
+                    indexes.append(index)
+
+        return indexes
+
+    def _get_index_by_code(self, linecode: int):
+
+        # hack to maintain backwards compatibility
+        # only use where codes exist only once
+
+        return self._get_indexes_by_code(linecode=linecode)[0]
 
     @classmethod
     def parse_single_int(cls, line: str) -> int:
