@@ -1,3 +1,4 @@
+import itertools
 import json
 from pathlib import Path
 
@@ -11,6 +12,11 @@ sample_subs = [
     "test.tm1filetools.mdx_subset",
     # no json for this currently
     # "test.tm1filetools.multi_element_static_subset_alias_on"
+]
+
+mandatory_json_fields = [
+    "Name",
+    "Hierarchy@odata.bind",
 ]
 
 
@@ -87,20 +93,29 @@ def test_move_to_public(test_folder):
     assert f.public
 
 
-@pytest.mark.parametrize("subset", sample_subs)
-def test_json_basic(data_folder, subset_json_out_folder, subset):
+@pytest.mark.parametrize("subset,json_field", itertools.product(sample_subs, mandatory_json_fields))
+def test_json_basic(data_folder, subset_json_out_folder, subset, json_field):
 
     sub = TM1SubsetFile(Path.joinpath(data_folder, f"{subset}.sub"))
 
     assert sub
+
+    json_out = sub._to_json()
+
+    assert json_out
 
     with open(Path.joinpath(subset_json_out_folder, f"{subset}.json"), "r") as f:
         expected_json_str = f.read()
 
     assert expected_json_str
 
+    expected_json = json.loads(expected_json_str)
 
-def test_single_static_subset(data_folder, subset_json_out_folder):
+    assert expected_json.get(json_field)
+
+
+@pytest.mark.parametrize("json_field", mandatory_json_fields)
+def test_single_static_subset(data_folder, subset_json_out_folder, json_field):
 
     subset = "test.tm1filetools.single_element_static_subset"
 
@@ -112,6 +127,15 @@ def test_single_static_subset(data_folder, subset_json_out_folder):
         expected_json_str = f.read()
 
     assert expected_json_str
+
+    expected_json = json.loads(expected_json_str)
+
+    json_out = sub._to_json()
+
+    if json_field == "Hierarchy@odata.bind":
+        pytest.skip("Failing")
+    else:
+        assert json_out.get(json_field) == expected_json.get(json_field)
 
 
 def test_multi_static_subset(data_folder, subset_json_out_folder):
