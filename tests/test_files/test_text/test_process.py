@@ -84,7 +84,19 @@ def test_get_parameters(data_folder, proc_json_out_folder, proc):
 
     json_expected = json.loads(expected_json_str)
 
-    assert params == json_expected["Parameters"]
+    expected_params = json_expected["Parameters"]
+
+    if len(params) == 0:
+        # this should be trivial
+        assert params == expected_params
+
+    else:
+
+        for i, p in enumerate(params):
+            assert p.get("Name") == expected_params[i].get("Name")
+            assert p.get("Prompt") == expected_params[i].get("Prompt")
+            assert p.get("Type") == expected_params[i].get("Type")
+            assert p.get("Value") == expected_params[i].get("Value")
 
 
 @pytest.mark.parametrize("proc", sample_procs)

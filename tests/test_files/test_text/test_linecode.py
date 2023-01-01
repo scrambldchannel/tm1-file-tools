@@ -79,11 +79,17 @@ def test_parse_key_value_pair_str():
 
     line = 'pPeriod,"All"'
 
-    assert TM1LinecodeFile.parse_key_value_pair_string(line=line) == {"key": "pPeriod", "value": "All"}
+    key, value = TM1LinecodeRowBase.parse_key_value_pair_string(line=line)
+
+    assert key == "pPeriod"
+    assert value == "All"
 
 
 def test_parse_key_value_pair_int():
 
     line = "pLogging,1"
 
-    assert TM1LinecodeFile.parse_key_value_pair_int(line=line) == {"key": "pLogging", "value": 1}
+    key, value = TM1LinecodeRowBase.parse_key_value_pair_int(line=line)
+
+    assert key == "pLogging"
+    assert value == 1

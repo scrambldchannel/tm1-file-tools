@@ -3,6 +3,7 @@ from pathlib import Path
 
 from .linecode import (
     TM1LinecodeFile,
+    TM1LinecodeRowKeyValueString,
     TM1LinecodeRowSingleInt,
     TM1LinecodeRowSingleString,
 )
@@ -146,14 +147,13 @@ class TM1ProcessFile(TM1LinecodeFile):
 
         for idx, name in enumerate(names):
 
-            # these are single ints on the line
+            # # these are single ints on the line
             datatype = self._type_mapping[int(self._get_lines_by_index(index=idx_datatype + idx + 1)[0])]
 
-            hint = self.parse_key_value_pair_string(self._get_lines_by_index(index=idx_hint + idx + 1)[0])["value"]
+            # # this isn't easy to read :shrug:
+            hint = TM1LinecodeRowKeyValueString(self._get_lines_by_index(index=idx_hint + idx + 1)[0]).value
 
-            default = self.parse_key_value_pair_string(self._get_lines_by_index(index=idx_default + idx + 1)[0])[
-                "value"
-            ]
+            default = TM1LinecodeRowKeyValueString(self._get_lines_by_index(index=idx_default + idx + 1)[0]).value
 
             params.append(
                 {
