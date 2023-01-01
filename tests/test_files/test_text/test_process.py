@@ -174,7 +174,6 @@ def test_multiline_block(data_folder, proc, block):
     # what else can be usefylly tested here?
 
 
-@pytest.mark.skip("Failing, whitespace")
 @pytest.mark.parametrize("proc,block", itertools.product(sample_procs, code_blocks))
 def test_codeblock_to_json_str(data_folder, proc_json_out_folder, proc, block):
 
@@ -182,26 +181,40 @@ def test_codeblock_to_json_str(data_folder, proc_json_out_folder, proc, block):
 
     code = pro._get_multiline_block(linecode=block["linecode"])
 
+    json_field = block["json_field"]
+
     codeblock_json_str = pro._codeblock_to_json_str(code)
+
+    assert codeblock_json_str
 
     with open(Path.joinpath(proc_json_out_folder, f"{proc}.json"), "r") as f:
         expected_json_str = f.read()
 
-    expected_json_str = json.loads(expected_json_str).get(block["json_field"])
+    expected_json = json.loads(expected_json_str)
 
-    assert codeblock_json_str
-    assert expected_json_str
+    assert expected_json
 
-    assert len(codeblock_json_str) > 0
-    assert len(expected_json_str) > 0
+    expected_block: str = expected_json.get(json_field)
 
-    # test first char
-    assert codeblock_json_str[0] == expected_json_str[0]
+    assert expected_block
 
-    # test last char
-    assert codeblock_json_str[-1] == expected_json_str[-1]
+    assert type(codeblock_json_str) == type(expected_block)
 
-    # assert codeblock_json_string == expected_json.get(block["json_field"])
+    # # check that they're equivalent outside of trailing whitespace
+
+    block_stripped = codeblock_json_str.strip()
+    expected_stripped = expected_block.strip()
+
+    assert block_stripped[0] == expected_stripped[0]
+
+    pytest.skip("Trailing chars?")
+    assert block_stripped[-1] == expected_stripped[-1]
+
+    # # test first char
+    # assert codeblock_json_str[0] == expected_block[0]
+
+    # # test last char
+    # assert codeblock_json_str[-1] == expected_json_str[-1]
 
 
 # below here, tests still pretty much hardcoded, try to parameterise
