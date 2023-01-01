@@ -11,13 +11,13 @@ sample_views = [
 
 
 @pytest.mark.parametrize("view", sample_views)
-def test_json_basic(data_folder, json_out_folder, view):
+def test_json_basic(data_folder, view_json_out_folder, view):
 
     v = TM1ViewFile(Path.joinpath(data_folder, f"{view}.vue"))
 
     assert v
 
-    with open(Path.joinpath(json_out_folder, f"{view}.json"), "r") as f:
+    with open(Path.joinpath(view_json_out_folder, f"{view}.json"), "r") as f:
         expected_json_str = f.read()
 
     assert expected_json_str

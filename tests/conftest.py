@@ -270,3 +270,27 @@ def json_out_folder():
     path = Path.joinpath(Path.cwd(), "tests", "samples", "json_out")
 
     return path
+
+
+@pytest.fixture(scope="function")
+def subset_json_out_folder():
+
+    path = Path.joinpath(Path.cwd(), "tests", "samples", "json_out", "subsets")
+
+    return path
+
+
+@pytest.fixture(scope="function")
+def view_json_out_folder():
+
+    path = Path.joinpath(Path.cwd(), "tests", "samples", "json_out", "views")
+
+    return path
+
+
+@pytest.fixture(scope="function")
+def proc_json_out_folder():
+
+    path = Path.joinpath(Path.cwd(), "tests", "samples", "json_out", "procs")
+
+    return path
