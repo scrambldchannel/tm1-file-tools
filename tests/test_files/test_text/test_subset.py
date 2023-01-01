@@ -79,7 +79,7 @@ def test_move_to_public(test_folder):
     assert f.public
 
 
-def test_single_static_subset(data_folder):
+def test_single_static_subset(data_folder, json_out_folder):
 
     subset = "test.tm1filetools.single_element_static_subset"
 
@@ -87,13 +87,13 @@ def test_single_static_subset(data_folder):
 
     assert sub
 
-    with open(Path.joinpath(data_folder, f"{subset}.json"), "r") as f:
+    with open(Path.joinpath(json_out_folder, f"{subset}.json"), "r") as f:
         expected_json_str = f.read()
 
     assert expected_json_str
 
 
-def test_multi_static_subset(data_folder):
+def test_multi_static_subset(data_folder, json_out_folder):
 
     subset = "test.tm1filetools.multi_element_static_subset"
 
@@ -103,13 +103,13 @@ def test_multi_static_subset(data_folder):
 
     assert sub._get_mdx() is None
 
-    with open(Path.joinpath(data_folder, f"{subset}.json"), "r") as f:
+    with open(Path.joinpath(json_out_folder, f"{subset}.json"), "r") as f:
         expected_json_str = f.read()
 
     assert expected_json_str
 
 
-def test_mdx_subset(data_folder):
+def test_mdx_subset(data_folder, json_out_folder):
 
     subset = "test.tm1filetools.mdx_subset"
 
@@ -117,7 +117,7 @@ def test_mdx_subset(data_folder):
 
     assert sub._get_mdx() == "{TM1SUBSETALL( [}Processes] )}"
 
-    with open(Path.joinpath(data_folder, f"{subset}.json"), "r") as f:
+    with open(Path.joinpath(json_out_folder, f"{subset}.json"), "r") as f:
         expected_json_str = f.read()
 
     assert expected_json_str

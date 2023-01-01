@@ -262,3 +262,11 @@ def cfg_folder():
     path = Path.joinpath(Path.cwd(), "tests", "samples", "multiple_dirs", "cfg")
 
     return path
+
+
+@pytest.fixture(scope="function")
+def json_out_folder():
+
+    path = Path.joinpath(Path.cwd(), "tests", "samples", "json_out")
+
+    return path
