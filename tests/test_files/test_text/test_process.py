@@ -241,10 +241,8 @@ def test_codeblock_to_json_str(data_folder, proc_json_out_folder, proc, block):
     assert block_rstripped[-1] == expected_rstripped[-1]
 
 
-# below here, tests still pretty much hardcoded, try to parameterise
+def test_code_blocks(data_folder):
 
-
-def test_prolog(data_folder):
     pro = TM1ProcessFile(Path.joinpath(data_folder, "new_process.pro"))
 
     lines = pro.get_prolog_code()
@@ -254,10 +252,6 @@ def test_prolog(data_folder):
     assert lines[1] == pro._code_block_prefix_lines[1]
     assert lines[2] == pro._code_block_prefix_lines[2]
 
-
-def test_metadata(data_folder):
-    pro = TM1ProcessFile(Path.joinpath(data_folder, "new_process.pro"))
-
     lines = pro.get_metadata_code()
 
     assert len(lines) == 3
@@ -266,10 +260,6 @@ def test_metadata(data_folder):
     assert lines[1] == pro._code_block_prefix_lines[1]
     assert lines[2] == pro._code_block_prefix_lines[2]
 
-
-def test_data(data_folder):
-    pro = TM1ProcessFile(Path.joinpath(data_folder, "new_process.pro"))
-
     lines = pro.get_data_code()
 
     assert lines[0] == pro._code_block_prefix_lines[0]
@@ -277,11 +267,6 @@ def test_data(data_folder):
     assert lines[2] == pro._code_block_prefix_lines[2]
 
     assert len(lines) == 37
-
-
-def test_epilog(data_folder):
-
-    pro = TM1ProcessFile(Path.joinpath(data_folder, "new_process.pro"))
 
     lines = pro.get_epilog_code()
 
