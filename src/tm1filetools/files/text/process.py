@@ -1,7 +1,12 @@
 import json
 from pathlib import Path
 
-from .linecode import TM1LinecodeFile
+from .linecode import (
+    TM1LinecodeFile,
+    TM1LinecodeRowKeyValueString,
+    TM1LinecodeRowSingleInt,
+    TM1LinecodeRowSingleString,
+)
 
 
 class TM1ProcessFile(TM1LinecodeFile):
@@ -87,7 +92,7 @@ class TM1ProcessFile(TM1LinecodeFile):
 
     def _to_json(self, sort_keys: bool = True, rstrip: bool = True):
 
-        name = self.parse_single_string(self._get_line_by_code(602))
+        name = TM1LinecodeRowSingleString(self._get_line_by_code(602)).value
 
         prolog = self._codeblock_to_json_str(self.get_prolog_code())
         metadata = self._codeblock_to_json_str(self.get_metadata_code())
@@ -142,14 +147,13 @@ class TM1ProcessFile(TM1LinecodeFile):
 
         for idx, name in enumerate(names):
 
-            # these are single ints on the line
+            # # these are single ints on the line
             datatype = self._type_mapping[int(self._get_lines_by_index(index=idx_datatype + idx + 1)[0])]
 
-            hint = self.parse_key_value_pair_string(self._get_lines_by_index(index=idx_hint + idx + 1)[0])["value"]
+            # # this isn't easy to read :shrug:
+            hint = TM1LinecodeRowKeyValueString(self._get_lines_by_index(index=idx_hint + idx + 1)[0]).value
 
-            default = self.parse_key_value_pair_string(self._get_lines_by_index(index=idx_default + idx + 1)[0])[
-                "value"
-            ]
+            default = TM1LinecodeRowKeyValueString(self._get_lines_by_index(index=idx_default + idx + 1)[0]).value
 
             params.append(
                 {
@@ -205,7 +209,7 @@ class TM1ProcessFile(TM1LinecodeFile):
         datasource = {"Type": "None"}
 
         # need to come up with a mapping for all types
-        datasource_type = self.parse_single_string(self._get_line_by_code(562))
+        datasource_type = TM1LinecodeRowSingleString(self._get_line_by_code(562)).value
 
         # we need to handle this differently for different source types
         if not datasource_type or datasource_type == "NULL":
@@ -217,28 +221,28 @@ class TM1ProcessFile(TM1LinecodeFile):
                 datasource["Type"] = "ASCII"
                 # Does this need to be included for others?
                 datasource["asciiDelimiterType"] = "Character"
-                datasource["asciiDecimalSeparator"] = self.parse_single_string(self._get_line_by_code(588))
-                datasource["asciiDelimiterChar"] = self.parse_single_string(self._get_line_by_code(567))
+                datasource["asciiDecimalSeparator"] = TM1LinecodeRowSingleString(self._get_line_by_code(588)).value
+                datasource["asciiDelimiterChar"] = TM1LinecodeRowSingleString(self._get_line_by_code(567)).value
 
-                datasource["asciiHeaderRecords"] = self.parse_single_int(self._get_line_by_code(569))
-                datasource["asciiQuoteCharacter"] = self.parse_single_string(self._get_line_by_code(568))
-                datasource["asciiThousandSeparator"] = self.parse_single_string(self._get_line_by_code(589))
+                datasource["asciiHeaderRecords"] = TM1LinecodeRowSingleInt(row=self._get_line_by_code(569)).value
+                datasource["asciiQuoteCharacter"] = TM1LinecodeRowSingleString(self._get_line_by_code(568)).value
+                datasource["asciiThousandSeparator"] = TM1LinecodeRowSingleString(self._get_line_by_code(589)).value
             elif datasource_type == "VIEW":
                 datasource["Type"] = "TM1CubeView"
-                datasource["view"] = self.parse_single_string(self._get_line_by_code(570))
+                datasource["view"] = TM1LinecodeRowSingleString(self._get_line_by_code(570)).value
 
             elif datasource_type == "SUBSET":
                 datasource["Type"] = "TM1DimensionSubset"
-                datasource["subset"] = self.parse_single_string(self._get_line_by_code(571))
+                datasource["subset"] = TM1LinecodeRowSingleString(self._get_line_by_code(571)).value
 
-            datasource["dataSourceNameForClient"] = self.parse_single_string(self._get_line_by_code(585))
-            datasource["dataSourceNameForServer"] = self.parse_single_string(self._get_line_by_code(586))
+            datasource["dataSourceNameForClient"] = TM1LinecodeRowSingleString(self._get_line_by_code(585)).value
+            datasource["dataSourceNameForServer"] = TM1LinecodeRowSingleString(self._get_line_by_code(586)).value
 
         return datasource
 
     def _get_security_access(self) -> bool:
 
-        security_access = self.parse_single_int(self._get_line_by_code(1217))
+        security_access = TM1LinecodeRowSingleInt(row=self._get_line_by_code(1217)).value
 
         if security_access == 1:
             return True

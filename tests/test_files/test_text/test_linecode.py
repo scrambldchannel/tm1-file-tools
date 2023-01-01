@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from tm1filetools.files.text.linecode import TM1LinecodeFile
+from tm1filetools.files.text.linecode import TM1LinecodeFile, TM1LinecodeRowBase
 
 
 def test_init(test_folder):
@@ -54,36 +54,42 @@ def test_parse_single_int():
 
     line = "601,100"
 
-    assert TM1LinecodeFile.parse_single_int(line) == 100
+    assert TM1LinecodeRowBase.parse_single_int(line) == 100
 
     line = "572,48"
-    assert TM1LinecodeFile.parse_single_int(line) == 48
+    assert TM1LinecodeRowBase.parse_single_int(line) == 48
 
 
 def test_parse_single_str():
 
     line = '602,"my zany process"'
 
-    assert TM1LinecodeFile.parse_single_string(line=line) == "my zany process"
+    assert TM1LinecodeRowBase.parse_single_string(line=line) == "my zany process"
 
     line = '602,"my, zany process"'
 
-    assert TM1LinecodeFile.parse_single_string(line=line) == "my, zany process"
+    assert TM1LinecodeRowBase.parse_single_string(line=line) == "my, zany process"
 
     line = '602,"my, zany process"'
 
-    assert TM1LinecodeFile.parse_single_string(line=line) == "my, zany process"
+    assert TM1LinecodeRowBase.parse_single_string(line=line) == "my, zany process"
 
 
 def test_parse_key_value_pair_str():
 
     line = 'pPeriod,"All"'
 
-    assert TM1LinecodeFile.parse_key_value_pair_string(line=line) == {"key": "pPeriod", "value": "All"}
+    key, value = TM1LinecodeRowBase.parse_key_value_pair_string(line=line)
+
+    assert key == "pPeriod"
+    assert value == "All"
 
 
 def test_parse_key_value_pair_int():
 
     line = "pLogging,1"
 
-    assert TM1LinecodeFile.parse_key_value_pair_int(line=line) == {"key": "pLogging", "value": 1}
+    key, value = TM1LinecodeRowBase.parse_key_value_pair_int(line=line)
+
+    assert key == "pLogging"
+    assert value == 1

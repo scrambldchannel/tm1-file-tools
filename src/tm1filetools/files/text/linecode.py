@@ -4,6 +4,115 @@ from pathlib import Path
 from .text import TM1TextFile
 
 
+class TM1LinecodeRowBase:
+
+    """Representation of a single line in the line code file log"""
+
+    # think this constant
+    _code_delimiter = ","
+    _code_quote = '"'
+
+    def __init__(self, row: str):
+
+        self._row = row
+
+    @classmethod
+    def parse_single_int(cls, line: str) -> int:
+        """
+        Read a line with a code and a single int value and return the value only
+        """
+
+        _, value = line.split(cls._code_delimiter)
+
+        # in some cases, we may have nothing there, rather than a 0
+        # e.g. the mdx line of a static subset
+
+        if value:
+            return int(value)
+        else:
+            return 0
+
+    @classmethod
+    def parse_single_string(cls, line: str) -> str:
+        """
+        Read a value string containing a single string and return the value without quotes
+        """
+
+        chunks = line.split(cls._code_delimiter)
+
+        value = str.join(",", chunks[1:])
+
+        # hack for getting the delimiter - will need to be done better
+        if value == '""""':
+            return '"'
+
+        return value.strip(cls._code_quote)
+
+    @classmethod
+    def parse_key_value_pair_string(cls, line: str):
+
+        # e.g. 'pPeriod,"All"'
+
+        key = line.split(cls._code_delimiter)[0]
+        value = str.join("", line.split(cls._code_delimiter)[1:]).strip(cls._code_quote)
+
+        return key, value
+
+    @classmethod
+    def parse_key_value_pair_int(cls, line: str):
+
+        # e.g. 'pLogging,0'
+
+        key = line.split(cls._code_delimiter)[0]
+        value = int(line.split(cls._code_delimiter)[1])
+
+        return key, value
+
+
+class TM1LinecodeRowSingleInt(TM1LinecodeRowBase):
+
+    """Representation of a single line in the line code file log"""
+
+    def __init__(self, row: str):
+
+        super().__init__(row)
+
+        self.value: int = self.parse_single_int(row)
+
+
+class TM1LinecodeRowSingleString(TM1LinecodeRowBase):
+
+    """Representation of a single line in the line code file log"""
+
+    def __init__(self, row: str):
+
+        super().__init__(row)
+
+        self.value: int = self.parse_single_string(row)
+
+
+class TM1LinecodeRowKeyValueString(TM1LinecodeRowBase):
+
+    """Representation of a single line in the line code file log"""
+
+    def __init__(self, row: str):
+
+        super().__init__(row)
+
+        self.key, self.value = self.parse_key_value_pair_string(row)
+
+
+class TM1LinecodeRowKeyValueInt(TM1LinecodeRowBase):
+
+    """Representation of a single line in the line code file log"""
+
+    def __init__(self, row: str):
+
+        super().__init__(row)
+
+        self.key, self.value = self.parse_key_value_pair_int(row)
+
+
 # Can perhaps make these abstract classes
 class TM1LinecodeFile(TM1TextFile):
     """
@@ -13,12 +122,7 @@ class TM1LinecodeFile(TM1TextFile):
 
     """
 
-    # That is the separator used in lines, not say the datasource
-    # I think it's always a comma but need to check
-    code_delimiter = ","
-
-    # likewise, I think the strings in the code itself are always delimited by double quotes
-    code_quote = '"'
+    _code_delimiter = ","
 
     # A couple more constants that simply writing special chars to json
     single_quote_json = "'"
@@ -27,6 +131,15 @@ class TM1LinecodeFile(TM1TextFile):
     def __init__(self, path: Path):
 
         super().__init__(path)
+
+    def reader(self, linecode=None, start_offset=0, end_offset=1):
+
+        # the idea here is to have a generic generator that returns a row obj for each line
+
+        with open(self._path, "r") as f:
+            for row in f:
+
+                yield TM1LinecodeRowBase(row)
 
     def _get_lines_by_index(self, index: int, line_count: int = 1, rstrip=True):
 
@@ -50,7 +163,7 @@ class TM1LinecodeFile(TM1TextFile):
 
             for line in f:
 
-                code = line.split(self.code_delimiter)[0]
+                code = line.split(self._code_delimiter)[0]
 
                 if code == str(linecode):
                     if rstrip:
@@ -77,7 +190,7 @@ class TM1LinecodeFile(TM1TextFile):
 
             for index, line in enumerate(f):
 
-                code = line.split(self.code_delimiter)[0]
+                code = line.split(self._code_delimiter)[0]
 
                 if code == str(linecode):
                     indexes.append(index)
@@ -90,58 +203,6 @@ class TM1LinecodeFile(TM1TextFile):
         # only use where codes exist only once
 
         return self._get_indexes_by_code(linecode=linecode)[0]
-
-    @classmethod
-    def parse_single_int(cls, line: str) -> int:
-        """
-        Read a line with a code and a single int value and return the value only
-        """
-
-        _, value = line.split(cls.code_delimiter)
-
-        # in some cases, we may have nothing there, rather than a 0
-        # e.g. the mdx line of a static subset
-
-        if value:
-            return int(value)
-        else:
-            return 0
-
-    @classmethod
-    def parse_single_string(cls, line: str) -> str:
-        """
-        Read a value string containing a single string and return the value without quotes
-        """
-
-        chunks = line.split(cls.code_delimiter)
-
-        value = str.join(",", chunks[1:])
-
-        # hack for getting the delimiter - will need to be done better
-        if value == '""""':
-            return '"'
-
-        return value.strip(cls.code_quote)
-
-    @classmethod
-    def parse_key_value_pair_string(cls, line: str):
-
-        # e.g. 'pPeriod,"All"'
-
-        key = line.split(cls.code_delimiter)[0]
-        value = str.join("", line.split(cls.code_delimiter)[1:]).strip(cls.code_quote)
-
-        return {"key": key, "value": value}
-
-    @classmethod
-    def parse_key_value_pair_int(cls, line: str):
-
-        # e.g. 'pLogging,0'
-
-        key = line.split(cls.code_delimiter)[0]
-        value = int(line.split(cls.code_delimiter)[1])
-
-        return {"key": key, "value": value}
 
     def _get_multiline_block(self, linecode: int, rstrip: bool = True):
         """
@@ -162,8 +223,9 @@ class TM1LinecodeFile(TM1TextFile):
         line = self._get_line_by_code(linecode)
 
         # parse the line to get the number of lines
-        line_count = self.parse_single_int(line)
+        # hack
+        row = TM1LinecodeRowSingleInt(line)
 
-        lines = self._get_lines_by_index(index=index + 1, line_count=line_count, rstrip=rstrip)
+        lines = self._get_lines_by_index(index=index + 1, line_count=row.value, rstrip=rstrip)
 
         return lines
