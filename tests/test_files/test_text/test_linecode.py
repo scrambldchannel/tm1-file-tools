@@ -64,15 +64,15 @@ def test_parse_single_str():
 
     line = '602,"my zany process"'
 
-    assert TM1LinecodeFile.parse_single_string(line=line) == "my zany process"
+    assert TM1LinecodeRowBase.parse_single_string(line=line) == "my zany process"
 
     line = '602,"my, zany process"'
 
-    assert TM1LinecodeFile.parse_single_string(line=line) == "my, zany process"
+    assert TM1LinecodeRowBase.parse_single_string(line=line) == "my, zany process"
 
     line = '602,"my, zany process"'
 
-    assert TM1LinecodeFile.parse_single_string(line=line) == "my, zany process"
+    assert TM1LinecodeRowBase.parse_single_string(line=line) == "my, zany process"
 
 
 def test_parse_key_value_pair_str():

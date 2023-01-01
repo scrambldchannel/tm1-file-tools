@@ -168,22 +168,6 @@ class TM1LinecodeFile(TM1TextFile):
         return self._get_indexes_by_code(linecode=linecode)[0]
 
     @classmethod
-    def parse_single_string(cls, line: str) -> str:
-        """
-        Read a value string containing a single string and return the value without quotes
-        """
-
-        chunks = line.split(cls.code_delimiter)
-
-        value = str.join(",", chunks[1:])
-
-        # hack for getting the delimiter - will need to be done better
-        if value == '""""':
-            return '"'
-
-        return value.strip(cls.code_quote)
-
-    @classmethod
     def parse_key_value_pair_string(cls, line: str):
 
         # e.g. 'pPeriod,"All"'
