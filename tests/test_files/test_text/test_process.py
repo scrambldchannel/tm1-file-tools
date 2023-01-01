@@ -202,13 +202,22 @@ def test_codeblock_to_json_str(data_folder, proc_json_out_folder, proc, block):
 
     # # check that they're equivalent outside of trailing whitespace
 
-    block_stripped = codeblock_json_str.strip()
-    expected_stripped = expected_block.strip()
+    block_lstripped = codeblock_json_str.lstrip()
+    expected_lstripped = expected_block.lstrip()
 
-    assert block_stripped[0] == expected_stripped[0]
+    assert block_lstripped[0] == expected_lstripped[0]
 
-    pytest.skip("Trailing chars?")
-    assert block_stripped[-1] == expected_stripped[-1]
+    block_rstripped = codeblock_json_str.rstrip()
+    expected_rstripped = expected_block.rstrip()
+
+    pytest.skip("Seomething not working here")
+
+    assert block_rstripped[-1] == expected_rstripped[-1]
+
+    # if proc == "test.tm1filetools.cube_view_process":
+    #     pytest.skip("Edge case?")
+
+    # assert block_stripped[-1] == expected_stripped[-1]
 
     # # test first char
     # assert codeblock_json_str[0] == expected_block[0]
