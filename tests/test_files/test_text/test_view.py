@@ -1,3 +1,5 @@
+import itertools
+import json
 from pathlib import Path
 
 import pytest
@@ -9,9 +11,19 @@ sample_views = [
     "test.tm1filetools.static_view_with_named_title_subset",
 ]
 
+mandatory_json_fields = [
+    "Name",
+    "Columns",
+    "Rows",
+    "Titles",
+    "SuppressEmptyColumns",
+    "SuppressEmptyRows",
+    "FormatString",
+]
 
-@pytest.mark.parametrize("view", sample_views)
-def test_json_basic(data_folder, view_json_out_folder, view):
+
+@pytest.mark.parametrize("view,json_field", itertools.product(sample_views, mandatory_json_fields))
+def test_json(data_folder, view_json_out_folder, view, json_field):
 
     v = TM1ViewFile(Path.joinpath(data_folder, f"{view}.vue"))
 
@@ -21,6 +33,16 @@ def test_json_basic(data_folder, view_json_out_folder, view):
         expected_json_str = f.read()
 
     assert expected_json_str
+
+    json_out = v._to_json()
+
+    expected_json = json.loads(expected_json_str)
+
+    # only name working for now
+    if json_field != "Name":
+        pytest.skip("Not yet implemented")
+
+    assert json_out[json_field] == expected_json[json_field]
 
 
 def test_public_view(test_folder):
