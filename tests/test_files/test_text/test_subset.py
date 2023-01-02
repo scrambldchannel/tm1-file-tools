@@ -111,7 +111,10 @@ def test_json_basic(data_folder, subset_json_out_folder, subset, json_field):
 
     expected_json = json.loads(expected_json_str)
 
-    assert expected_json.get(json_field)
+    if json_field == "Hierarchy@odata.bind":
+        pytest.skip("Not yet implemented")
+    else:
+        assert json_out.get(json_field) == expected_json.get(json_field)
 
 
 @pytest.mark.parametrize("json_field", mandatory_json_fields)
@@ -133,12 +136,13 @@ def test_single_static_subset(data_folder, subset_json_out_folder, json_field):
     json_out = sub._to_json()
 
     if json_field == "Hierarchy@odata.bind":
-        pytest.skip("Failing")
+        pytest.skip("Not yet implemented")
     else:
         assert json_out.get(json_field) == expected_json.get(json_field)
 
 
-def test_multi_static_subset(data_folder, subset_json_out_folder):
+@pytest.mark.parametrize("json_field", mandatory_json_fields)
+def test_multi_static_subset(data_folder, subset_json_out_folder, json_field):
 
     subset = "test.tm1filetools.multi_element_static_subset"
 
@@ -151,10 +155,18 @@ def test_multi_static_subset(data_folder, subset_json_out_folder):
     with open(Path.joinpath(subset_json_out_folder, f"{subset}.json"), "r") as f:
         expected_json_str = f.read()
 
-    assert expected_json_str
+    expected_json = json.loads(expected_json_str)
+
+    json_out = sub._to_json()
+
+    if json_field == "Hierarchy@odata.bind":
+        pytest.skip("Not yet implemented")
+    else:
+        assert json_out.get(json_field) == expected_json.get(json_field)
 
 
-def test_mdx_subset(data_folder, subset_json_out_folder):
+@pytest.mark.parametrize("json_field", mandatory_json_fields)
+def test_mdx_subset(data_folder, subset_json_out_folder, json_field):
 
     subset = "test.tm1filetools.mdx_subset"
 
@@ -173,13 +185,13 @@ def test_mdx_subset(data_folder, subset_json_out_folder):
 
     assert json_out["Expression"] == sub._get_mdx()
 
-    assert json_out["Name"] == subset
+    if json_field == "Hierarchy@odata.bind":
+        pytest.skip("Not yet implemented")
+    else:
+        assert json_out.get(json_field) == expected_json.get(json_field)
 
-    assert json_out["Name"] == expected_json["Name"]
-    assert json_out["Expression"] == expected_json["Expression"]
 
-
-def test_hierarchy_odata():
+def test_create_odata_string():
 
     result = TM1SubsetFile._create_odata_string(dim="}Processes")
 
@@ -192,14 +204,3 @@ def test_hierarchy_odata():
     expected_string = "Dimensions('}Processes')/Hierarchies('Not }Processes')"  # noqa
 
     assert result == expected_string
-
-
-# def test_get_hierarchy_odata(data_folder):
-
-#     subset = "test.tm1filetools.mdx_subset"
-
-#     sub = TM1SubsetFile(Path.joinpath(data_folder, f"{subset}.sub"))  # noqa
-
-#     expected_string = "Dimensions('}Processes')/Hierarchies('}Processes')"  # noqa
-
-#     sub._get_h
