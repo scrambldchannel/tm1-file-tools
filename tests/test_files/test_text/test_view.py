@@ -6,6 +6,9 @@ import pytest
 
 from tm1filetools.files import TM1ViewFile
 
+# we'll need to rethink this if we put vues in multiple folders
+sample_view_path = "}StatsByProcess}vues"
+
 sample_views = [
     "test.tm1filetools.static_view",
     "test.tm1filetools.static_view_with_named_title_subset",
@@ -25,7 +28,7 @@ mandatory_json_fields = [
 @pytest.mark.parametrize("view,json_field", itertools.product(sample_views, mandatory_json_fields))
 def test_json(data_folder, view_json_out_folder, view, json_field):
 
-    v = TM1ViewFile(Path.joinpath(data_folder, f"{view}.vue"))
+    v = TM1ViewFile(Path.joinpath(data_folder, sample_view_path, f"{view}.vue"))
 
     assert v
 
