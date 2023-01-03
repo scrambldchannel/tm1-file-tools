@@ -1,11 +1,7 @@
 from pathlib import Path
 from typing import Optional
 
-from .linecode import (
-    TM1LinecodeFile,
-    TM1LinecodeRowSingleInt,
-    TM1LinecodeRowSingleString,
-)
+from .linecode import TM1LinecodeFile
 from .user_owned import TM1UserFile
 
 
@@ -22,8 +18,12 @@ class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
 
         super().__init__(path)
 
+        # these might all be better passed as parameters
+        # as I'm not sure they can be derived from the
+        # file contents
         self.dimension = self._get_object_name()
         self.public = public
+        # this might be better passed as a parameter
         self.owner = self._get_owner_name()
         # subset_name maybe a clearer API than stem?
         self.subset_name = self.stem
@@ -43,7 +43,7 @@ class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
         # this is captured by key 275
         code = 275
 
-        mdx_chars = TM1LinecodeRowSingleInt(self._get_line_by_code(code)).value
+        mdx_chars = self._get_int_val_by_code(code)
 
         if mdx_chars > 0:
 
@@ -59,7 +59,14 @@ class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
 
         code = 284
 
-        return TM1LinecodeRowSingleString(self._get_line_by_code(code)).value
+        return self._get_str_val_by_code(code)
+
+    def _get_timestamp(self):
+
+        code = 11
+
+        # we should convert this to datetime or something
+        return self._get_str_val_by_code(code)
 
     def _to_json(self):
         """Read file and return a json representation
@@ -69,20 +76,66 @@ class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
 
         """
 
-        json_dump = {}
-
         name = self._get_name()
 
-        json_dump["Name"] = name
+        # this is a bit flawed but I haven't got an example of a
+        # hierarchy aware subset to hand :shrug:
+        hier_odata = self._create_odata_hier_string(dim=self.dimension)
+
+        json_dump = {
+            # these two fields always appear
+            "Name": name,
+            "Hierarchy@odata.bind": hier_odata,
+        }
 
         # if the file contains an mdx expression, add it
-        if self._get_mdx():
+        if self.is_dynamic():
             json_dump["Expression"] = self._get_mdx()
+        else:
+            json_dump["Elements@odata.bind"] = self._get_element_odata()
 
         return json_dump
 
+    def get_elements(self):
+        """
+        Returns a list of the elements in a static subset
+
+        Returns None if the subset is dynamic
+        """
+
+        if self.is_dynamic():
+            return None
+        else:
+            # for static subsets, code 270 gives an int with the number of elements
+            # then each element is listed on the lines below
+
+            code = 270
+
+            el_count = self._get_int_val_by_code(code)
+
+            # index of first element line
+            ix = self._get_index_by_code(code) + 1
+
+            elements = self._get_lines_by_index(index=ix, line_count=el_count)
+
+            return elements
+
+    def _get_element_odata(self):
+
+        elements = self.get_elements()
+
+        odata_out = []
+
+        for el in elements:
+
+            odata = self._create_odata_element_string(dim=self.dimension, el=el)
+
+            odata_out.append(odata)
+
+        return odata_out
+
     @staticmethod
-    def _create_odata_string(dim: str, hier: str = None):
+    def _create_odata_hier_string(dim: str, hier: str = None):
 
         # this is a fairly trivial function but may be useful more generally
         # perhaps it should be moved to a helper class?
@@ -96,3 +149,13 @@ class TM1SubsetFile(TM1UserFile, TM1LinecodeFile):
             hier = dim
 
         return f"Dimensions('{dim}')/Hierarchies('{hier}')"
+
+    @staticmethod
+    def _create_odata_element_string(dim: str, el: str, hier: str = None):
+
+        # perhaps it should be moved to a helper class?
+
+        if hier is None:
+            hier = dim
+
+        return f"Dimensions('{dim}')/Hierarchies('{hier}')/Elements('{el}')"

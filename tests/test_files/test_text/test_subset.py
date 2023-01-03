@@ -12,14 +12,15 @@ sample_sub_path = "}Processes}subs"
 sample_subs = [
     "test.tm1filetools.mdx_subset",
     "test.tm1filetools.single_element_static_subset",
-    "test.tm1filetools.mdx_subset",
     # no json for this currently
     # "test.tm1filetools.multi_element_static_subset_alias_on"
 ]
 
-mandatory_json_fields = [
+json_fields = [
     "Name",
     "Hierarchy@odata.bind",
+    "Elements@odata.bind",
+    "Expression",
 ]
 
 
@@ -96,7 +97,7 @@ def test_move_to_public(test_folder):
     assert f.public
 
 
-@pytest.mark.parametrize("subset,json_field", itertools.product(sample_subs, mandatory_json_fields))
+@pytest.mark.parametrize("subset,json_field", itertools.product(sample_subs, json_fields))
 def test_json(data_folder, subset_json_out_folder, subset, json_field):
 
     sub = TM1SubsetFile(Path.joinpath(data_folder, sample_sub_path, f"{subset}.sub"))
@@ -114,13 +115,15 @@ def test_json(data_folder, subset_json_out_folder, subset, json_field):
 
     expected_json = json.loads(expected_json_str)
 
-    if json_field == "Hierarchy@odata.bind":
-        pytest.skip("Not yet implemented")
+    if sub.is_dynamic() and json_field == "Elements@odata.bind":
+        assert json_field not in sub._to_json()
+    elif not sub.is_dynamic() and json_field == "Expression":
+        assert json_field not in sub._to_json()
     else:
         assert json_out.get(json_field) == expected_json.get(json_field)
 
 
-@pytest.mark.parametrize("json_field", mandatory_json_fields)
+@pytest.mark.parametrize("json_field", json_fields)
 def test_single_static_subset(data_folder, subset_json_out_folder, json_field):
 
     subset = "test.tm1filetools.single_element_static_subset"
@@ -138,13 +141,13 @@ def test_single_static_subset(data_folder, subset_json_out_folder, json_field):
 
     json_out = sub._to_json()
 
-    if json_field == "Hierarchy@odata.bind":
-        pytest.skip("Not yet implemented")
-    else:
-        assert json_out.get(json_field) == expected_json.get(json_field)
+    # if json_field == "Hierarchy@odata.bind":
+    #     pytest.skip("Not yet implemented")
+    # else:
+    assert json_out.get(json_field) == expected_json.get(json_field)
 
 
-@pytest.mark.parametrize("json_field", mandatory_json_fields)
+@pytest.mark.parametrize("json_field", json_fields)
 def test_multi_static_subset(data_folder, subset_json_out_folder, json_field):
 
     subset = "test.tm1filetools.multi_element_static_subset"
@@ -162,13 +165,13 @@ def test_multi_static_subset(data_folder, subset_json_out_folder, json_field):
 
     json_out = sub._to_json()
 
-    if json_field == "Hierarchy@odata.bind":
-        pytest.skip("Not yet implemented")
-    else:
-        assert json_out.get(json_field) == expected_json.get(json_field)
+    # if json_field == "Hierarchy@odata.bind":
+    #     pytest.skip("Not yet implemented")
+    # else:
+    assert json_out.get(json_field) == expected_json.get(json_field)
 
 
-@pytest.mark.parametrize("json_field", mandatory_json_fields)
+@pytest.mark.parametrize("json_field", json_fields)
 def test_mdx_subset(data_folder, subset_json_out_folder, json_field):
 
     subset = "test.tm1filetools.mdx_subset"
@@ -188,21 +191,52 @@ def test_mdx_subset(data_folder, subset_json_out_folder, json_field):
 
     assert json_out["Expression"] == sub._get_mdx()
 
-    if json_field == "Hierarchy@odata.bind":
-        pytest.skip("Not yet implemented")
-    else:
-        assert json_out.get(json_field) == expected_json.get(json_field)
+    assert json_out.get(json_field) == expected_json.get(json_field)
 
 
-def test_create_odata_string():
+def test_get_elements(data_folder):
 
-    result = TM1SubsetFile._create_odata_string(dim="}Processes")
+    subset = "test.tm1filetools.mdx_subset"
+
+    sub = TM1SubsetFile(Path.joinpath(data_folder, sample_sub_path, f"{subset}.sub"))
+
+    assert not sub.get_elements()
+
+    subset = "test.tm1filetools.single_element_static_subset"
+
+    sub = TM1SubsetFile(Path.joinpath(data_folder, sample_sub_path, f"{subset}.sub"))
+
+    elements = sub.get_elements()
+    assert len(elements) == 1
+    assert elements[0] == "test.tm1filetools.empty_process"
+
+    subset = "test.tm1filetools.single_element_static_subset"
+
+    sub = TM1SubsetFile(Path.joinpath(data_folder, sample_sub_path, f"{subset}.sub"))
+
+    elements = sub.get_elements()
+    assert len(elements) == 1
+    assert elements[0] == "test.tm1filetools.empty_process"
+
+    subset = "test.tm1filetools.multi_element_static_subset"
+
+    sub = TM1SubsetFile(Path.joinpath(data_folder, sample_sub_path, f"{subset}.sub"))
+
+    elements = sub.get_elements()
+    assert len(elements) == 3
+    assert elements[0] == "test.tm1filetools.empty_process"
+    assert elements[-1] == "test.tm1filetools.prolog_only_process"
+
+
+def test_create_odata_hier_string():
+
+    result = TM1SubsetFile._create_odata_hier_string(dim="}Processes")
 
     expected_string = "Dimensions('}Processes')/Hierarchies('}Processes')"  # noqa
 
     assert result == expected_string
 
-    result = TM1SubsetFile._create_odata_string(dim="}Processes", hier="Not }Processes")
+    result = TM1SubsetFile._create_odata_hier_string(dim="}Processes", hier="Not }Processes")
 
     expected_string = "Dimensions('}Processes')/Hierarchies('Not }Processes')"  # noqa
 

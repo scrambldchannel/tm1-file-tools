@@ -176,7 +176,25 @@ class TM1LinecodeFile(TM1TextFile):
     def _get_line_by_code(self, linecode: int, rstrip=True):
 
         # only useful where a single line expected
-        return self._get_lines_by_code(linecode=linecode)[0]
+        return self._get_lines_by_code(linecode=linecode, rstrip=rstrip)[0]
+
+    def _get_int_val_by_code(self, linecode: int):
+
+        row = TM1LinecodeRowSingleInt(self._get_lines_by_code(linecode=linecode)[0])
+
+        return row.value
+
+    def _get_str_val_by_code(self, linecode: int):
+
+        row = TM1LinecodeRowSingleString(self._get_lines_by_code(linecode=linecode)[0])
+
+        return row.value
+
+    def _get_str_key_val_by_code(self, linecode: int):
+
+        row = TM1LinecodeRowKeyValueString(self._get_lines_by_code(linecode=linecode)[0])
+
+        return row.value
 
     def _get_indexes_by_code(self, linecode: int):
 

@@ -1,12 +1,7 @@
 import json
 from pathlib import Path
 
-from .linecode import (
-    TM1LinecodeFile,
-    TM1LinecodeRowKeyValueString,
-    TM1LinecodeRowSingleInt,
-    TM1LinecodeRowSingleString,
-)
+from .linecode import TM1LinecodeFile, TM1LinecodeRowKeyValueString
 
 
 class TM1ProcessFile(TM1LinecodeFile):
@@ -92,7 +87,7 @@ class TM1ProcessFile(TM1LinecodeFile):
 
     def _to_json(self, sort_keys: bool = True, rstrip: bool = True):
 
-        name = TM1LinecodeRowSingleString(self._get_line_by_code(602)).value
+        name = self._get_str_val_by_code(602)
 
         prolog = self._codeblock_to_json_str(self.get_prolog_code())
         metadata = self._codeblock_to_json_str(self.get_metadata_code())
@@ -209,7 +204,7 @@ class TM1ProcessFile(TM1LinecodeFile):
         datasource = {"Type": "None"}
 
         # need to come up with a mapping for all types
-        datasource_type = TM1LinecodeRowSingleString(self._get_line_by_code(562)).value
+        datasource_type = self._get_str_val_by_code(562)
 
         # we need to handle this differently for different source types
         if not datasource_type or datasource_type == "NULL":
@@ -221,28 +216,28 @@ class TM1ProcessFile(TM1LinecodeFile):
                 datasource["Type"] = "ASCII"
                 # Does this need to be included for others?
                 datasource["asciiDelimiterType"] = "Character"
-                datasource["asciiDecimalSeparator"] = TM1LinecodeRowSingleString(self._get_line_by_code(588)).value
-                datasource["asciiDelimiterChar"] = TM1LinecodeRowSingleString(self._get_line_by_code(567)).value
+                datasource["asciiDecimalSeparator"] = self._get_str_val_by_code(588)
+                datasource["asciiDelimiterChar"] = self._get_str_val_by_code(567)
 
-                datasource["asciiHeaderRecords"] = TM1LinecodeRowSingleInt(row=self._get_line_by_code(569)).value
-                datasource["asciiQuoteCharacter"] = TM1LinecodeRowSingleString(self._get_line_by_code(568)).value
-                datasource["asciiThousandSeparator"] = TM1LinecodeRowSingleString(self._get_line_by_code(589)).value
+                datasource["asciiHeaderRecords"] = self._get_int_val_by_code(569)
+                datasource["asciiQuoteCharacter"] = self._get_str_val_by_code(568)
+                datasource["asciiThousandSeparator"] = self._get_str_val_by_code(589)
             elif datasource_type == "VIEW":
                 datasource["Type"] = "TM1CubeView"
-                datasource["view"] = TM1LinecodeRowSingleString(self._get_line_by_code(570)).value
+                datasource["view"] = self._get_str_val_by_code(570)
 
             elif datasource_type == "SUBSET":
                 datasource["Type"] = "TM1DimensionSubset"
-                datasource["subset"] = TM1LinecodeRowSingleString(self._get_line_by_code(571)).value
+                datasource["subset"] = self._get_str_val_by_code(571)
 
-            datasource["dataSourceNameForClient"] = TM1LinecodeRowSingleString(self._get_line_by_code(585)).value
-            datasource["dataSourceNameForServer"] = TM1LinecodeRowSingleString(self._get_line_by_code(586)).value
+            datasource["dataSourceNameForClient"] = self._get_str_val_by_code(585)
+            datasource["dataSourceNameForServer"] = self._get_str_val_by_code(586)
 
         return datasource
 
     def _get_security_access(self) -> bool:
 
-        security_access = TM1LinecodeRowSingleInt(row=self._get_line_by_code(1217)).value
+        security_access = self._get_int_val_by_code(1217)
 
         if security_access == 1:
             return True
