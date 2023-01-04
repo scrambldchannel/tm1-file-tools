@@ -31,15 +31,20 @@ def test_find_rules(test_folder):
     assert all(r.stem != "basilisk" for r in ft._rules_files)
 
 
-def test_find_procs(test_folder):
+def test_find_procs(empty_folder):
 
-    ft = TM1FileTool(test_folder)
+    f = empty_folder / "dingo.pro"
+    f.touch()
+    f = empty_folder / "wombat.pro"
+    f.touch()
+
+    ft = TM1FileTool(empty_folder)
 
     assert not ft._proc_files
 
     ft._find_procs()
 
-    assert len(ft._proc_files) == 3
+    assert len(ft._proc_files) == 2
 
     assert any(s.stem == "dingo" for s in ft._proc_files)
     assert all(s.stem != "womble" for s in ft._proc_files)
@@ -75,9 +80,12 @@ def test_find_feeders(test_folder):
     assert all(f.stem != "dragon" for f in ft._feeders_files)
 
 
-def test_find_chores(test_folder):
+def test_find_chores(empty_folder):
 
-    ft = TM1FileTool(test_folder)
+    f = empty_folder / "quokka.Cho"
+    f.touch()
+
+    ft = TM1FileTool(empty_folder)
 
     ft._find_chores()
 
@@ -85,9 +93,14 @@ def test_find_chores(test_folder):
     assert all(f.stem != "brown_snake" for f in ft._chore_files)
 
 
-def test_find_blb(test_folder):
+def test_find_blbs(empty_folder):
 
-    ft = TM1FileTool(test_folder)
+    f = empty_folder / "kangaroo.blb"
+    f.touch()
+    f = empty_folder / "emu.blb"
+    f.touch()
+
+    ft = TM1FileTool(empty_folder)
 
     ft._find_blbs()
 

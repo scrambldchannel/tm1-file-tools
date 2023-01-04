@@ -60,12 +60,17 @@ def test_delete_all_orphans(test_folder):
     # assert total_orphans - deleted_orphans == 0
 
 
-def test_delete_all_feeders(test_folder):
+def test_delete_all_feeders(empty_folder):
 
-    ft = TM1FileTool(test_folder)
+    f = empty_folder / "goanna.feeders"
+    f.touch()
+    f = empty_folder / "koala.feeders"
+    f.touch()
+
+    ft = TM1FileTool(empty_folder)
 
     feeders = len(ft.get_feeders())
-    assert feeders > 0
+    assert feeders == 2
 
     count = ft.delete_all_feeders()
 
@@ -74,12 +79,17 @@ def test_delete_all_feeders(test_folder):
     assert feeders - count == 0
 
 
-def test_delete_all_blbs(test_folder):
+def test_delete_all_blbs(empty_folder):
 
-    ft = TM1FileTool(test_folder)
+    f = empty_folder / "goanna.blb"
+    f.touch()
+    f = empty_folder / "possum.BLB"
+    f.touch()
+
+    ft = TM1FileTool(empty_folder)
 
     blbs = len(ft.get_blbs())
-    assert blbs > 0
+    assert blbs == 2
 
     count = ft.delete_all_blbs()
 
@@ -88,12 +98,22 @@ def test_delete_all_blbs(test_folder):
     assert blbs - count == 0
 
 
-def test_delete_all_pre_get(test_folder):
+def test_delete_all_pre_get(empty_folder):
 
     # ensure each delete method will run a "find" first
+    f = empty_folder / "goanna.blb"
+    f.touch()
+    f = empty_folder / "possum.BLB"
+    f.touch()
+    # orphan feeder
+    f = empty_folder / "possum.feeders"
+    f.touch()
+    # orphan rules file
+    f = empty_folder / "goanna.rux"
+    f.touch()
 
-    ft = TM1FileTool(test_folder)
+    ft = TM1FileTool(empty_folder)
 
-    assert ft.delete_all_blbs() > 0
-    assert ft.delete_all_orphans() > 0
-    assert ft.delete_all_feeders() > 0
+    assert ft.delete_all_blbs() == 2
+    assert ft.delete_all_feeders() == 1
+    assert ft.delete_orphan_rules() == 1

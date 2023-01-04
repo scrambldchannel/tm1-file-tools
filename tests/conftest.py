@@ -12,14 +12,11 @@ dim_attributes = ["koala.dim", "kangaroo.dim"]
 cub_files = ["cat.cub", "dog.CUB"]
 cub_attributes = ["koala.cub", "humphrey.CUB"]
 rux_files = ["dog.ruX", "giraffe.rux", "rux_1.rux"]
-process_files = ["dingo.PRO", "wombat.pro", "}fraggle.pRO"]
-cho_files = ["quokka.cho", "black_SNAKE.cho", "}brown_snake.cHO"]
 sub_files = ["platypus.sub", "donkey.SUB", "}dolphin.suB"]
 sub_folders = ["cat", "koala"]
 view_files = ["mouse.vue", "squirrel.VUE", "}shark.vue"]
 view_folders = ["cat", "koala"]
 feeders_files = ["cat.feeders", "possum.FEEDERS"]
-blb_files = ["emu.blb", "unicorn.blb"]
 junk_files = ["cat.cub.bak", "no_extension", "zzzBackup12.zip"]
 
 
@@ -56,11 +53,6 @@ def test_folder(tmp_path_factory):
     for df in dim_files:
 
         f = d / f"{df}"
-        f.touch()
-
-    for b in blb_files:
-
-        f = d / f"{b}"
         f.touch()
 
     for fd in feeders_files:
@@ -126,16 +118,6 @@ def test_folder(tmp_path_factory):
     for j in junk_files:
 
         f = d / j
-        f.touch()
-
-    for p in process_files:
-
-        f = d / f"{p}"
-        f.touch()
-
-    for c in cho_files:
-
-        f = d / f"{c}"
         f.touch()
 
     return d
