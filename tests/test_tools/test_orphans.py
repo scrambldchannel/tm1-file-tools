@@ -64,6 +64,11 @@ def test_orphan_views(test_folder):
 
 def test_orphan_feeders(test_folder):
 
+    f = test_folder / "cat.feeders"
+    f.touch()
+    f = test_folder / "possum.feeders"
+    f.touch()
+
     ft = TM1FileTool(test_folder)
 
     orphans = ft.get_orphan_feeders()

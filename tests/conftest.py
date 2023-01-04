@@ -11,26 +11,11 @@ dim_files = ["koala.DIM", "possum.dim"]
 dim_attributes = ["koala.dim", "kangaroo.dim"]
 cub_files = ["cat.cub", "dog.CUB"]
 cub_attributes = ["koala.cub", "humphrey.CUB"]
-rux_files = ["dog.ruX", "giraffe.rux", "rux_1.rux"]
-process_files = ["dingo.PRO", "wombat.pro", "}fraggle.pRO"]
-cho_files = ["quokka.cho", "black_SNAKE.cho", "}brown_snake.cHO"]
+rux_files = ["dog.ruX", "giraffe.rux"]
 sub_files = ["platypus.sub", "donkey.SUB", "}dolphin.suB"]
 sub_folders = ["cat", "koala"]
 view_files = ["mouse.vue", "squirrel.VUE", "}shark.vue"]
 view_folders = ["cat", "koala"]
-feeders_files = ["cat.feeders", "possum.FEEDERS"]
-blb_files = ["emu.blb", "unicorn.blb"]
-cma_files = ["bunyip.CMA", "troll.cma"]
-junk_files = ["cat.cub.bak", "no_extension", "zzzBackup12.zip"]
-
-
-@pytest.fixture(scope="function")
-def empty_folder(tmp_path_factory):
-    """
-    Create an empty folder for testing
-    """
-
-    return tmp_path_factory.mktemp("data")
 
 
 @pytest.fixture(scope="function")
@@ -54,46 +39,9 @@ def test_folder(tmp_path_factory):
         f = d / f"{r}"
         f.touch()
 
-    # add sample ruxes
-    rux_1 = r"""
-
-Skipcheck ;
-
-[] = STET;
-FEEDERS    ;
-"""
-    f = d / "rux_1.ruX"
-
-    f.write_text(rux_1)
-
     for df in dim_files:
 
         f = d / f"{df}"
-        f.touch()
-
-    for b in blb_files:
-
-        f = d / f"{b}"
-        f.touch()
-
-    for c in cma_files:
-
-        f = d / f"{c}"
-        f.touch()
-
-    # add sample cma
-    cma = r""""Planning:Sales",","BP","202201","Sales","Australia","Amount",200
-Planning:Sales",","BP","202202","Sales","Australia","Amount",300
-Planning:Sales",","BP","202203","Sales","Australia","Amount",500
-Planning:Sales",","BP","202203","Sales","Australia","Comment","To the moon!"
-"""
-    f = d / "Sales.cma"
-
-    f.write_text(cma)
-
-    for fd in feeders_files:
-
-        f = d / f"{fd}"
         f.touch()
 
     # create dir for subsets
@@ -151,28 +99,13 @@ Planning:Sales",","BP","202203","Sales","Australia","Comment","To the moon!"
         f = d / f"{ca}"
         f.touch()
 
-    for j in junk_files:
-
-        f = d / j
-        f.touch()
-
-    for p in process_files:
-
-        f = d / f"{p}"
-        f.touch()
-
-    for c in cho_files:
-
-        f = d / f"{c}"
-        f.touch()
-
     return d
 
 
 @pytest.fixture(scope="function")
 def data_folder():
 
-    path = Path.joinpath(Path.cwd(), "tests", "samples", "multiple_dirs", "data")
+    path = Path.joinpath(Path.cwd(), "tests", "samples", "server", "data")
 
     return path
 
@@ -180,7 +113,16 @@ def data_folder():
 @pytest.fixture(scope="function")
 def log_folder():
 
-    path = Path.joinpath(Path.cwd(), "tests", "samples", "multiple_dirs", "logs")
+    path = Path.joinpath(Path.cwd(), "tests", "samples", "server", "logs")
+
+    return path
+
+
+@pytest.fixture(scope="function")
+def export_folder():
+
+    # this is an arbitrary folder for cmas
+    path = Path.joinpath(Path.cwd(), "tests", "samples", "server", "exports")
 
     return path
 
@@ -189,14 +131,6 @@ def log_folder():
 def cfg_folder():
 
     path = Path.joinpath(Path.cwd(), "tests", "samples", "config_files")
-
-    return path
-
-
-@pytest.fixture(scope="function")
-def json_out_folder():
-
-    path = Path.joinpath(Path.cwd(), "tests", "samples", "json_out")
 
     return path
 

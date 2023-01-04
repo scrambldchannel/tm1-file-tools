@@ -3,46 +3,36 @@ from pathlib import Path
 from tm1filetools.files.text.cma import TM1CMAFile
 
 
-def test_get_delimiter(test_folder):
+def test_get_delimiter(export_folder):
 
-    f = TM1CMAFile(Path.joinpath(test_folder, "test.cma"))
+    f = TM1CMAFile(Path.joinpath(export_folder, "nofile.cma"))
 
     assert not f._get_delimiter()
     assert not f.delimiter
 
-    f._path.touch()
-
-    f.write('"Planning:Sales Planning","202301","Software","Germany",1000000')
+    f = TM1CMAFile(Path.joinpath(export_folder, "Sales_2022.cma"))
 
     assert f._get_delimiter() == ","
-    assert not f.delimiter
 
 
-def test_get_cube(test_folder):
+def test_get_cube(export_folder):
 
-    f = TM1CMAFile(Path.joinpath(test_folder, "test.cma"))
+    f = TM1CMAFile(Path.joinpath(export_folder, "test.cma"))
 
     assert not f._get_cube()
     assert not f.cube
 
-    f._path.touch()
-
-    f.write('"Planning:Sales Planning","202301","Software","Germany",1000000')
-
-    assert f._get_cube() == "Sales Planning"
+    f = TM1CMAFile(Path.joinpath(export_folder, "Sales_2022.cma"))
+    assert f._get_cube() == "Sales"
 
 
-def test_reader(test_folder):
+def test_reader(export_folder):
 
-    f = TM1CMAFile(Path.joinpath(test_folder, "test.cma"))
-
-    f._path.touch()
-
-    f.write('"Planning:Sales Planning","202301","Software","Germany",1000000')
+    f = TM1CMAFile(Path.joinpath(export_folder, "Sales_2022.cma"))
 
     row = next(f.reader())
 
-    assert row.val_n == 1000000
+    assert row.val_n == 200
     assert not row.val_s
 
 
@@ -76,24 +66,11 @@ def test_parse_els():
     assert els[4] == "Value"
 
 
-def test_el_filter(test_folder):
+def test_el_filter(export_folder):
 
-    el_str = "202301"
+    el_str = ":202301"
 
-    f = TM1CMAFile(Path.joinpath(test_folder, "test.cma"))
-
-    f._path.touch()
-
-    f.write('"Planning:Sales Planning","202301","Software","Germany",1000000')
-
-    rows = []
-    for row in f.reader(el_filter=el_str):
-
-        rows.append(row)
-
-    assert len(rows) == 1
-
-    el_str = "202302"
+    f = TM1CMAFile(Path.joinpath(export_folder, "Sales_2022.cma"))
 
     rows = []
     for row in f.reader(el_filter=el_str):
@@ -102,16 +79,16 @@ def test_el_filter(test_folder):
 
     assert len(rows) == 0
 
+    el_str = ":202203"
 
-def test_el_filter_multi_length(test_folder):
+    rows = []
+    for row in f.reader(el_filter=el_str):
 
-    el_str = ":Software"
+        rows.append(row)
 
-    f = TM1CMAFile(Path.joinpath(test_folder, "test.cma"))
+    assert len(rows) == 2
 
-    f._path.touch()
-
-    f.write('"Planning:Sales Planning","202301","Software","Germany",1000000')
+    el_str = ":202203:::Comment"
 
     rows = []
     for row in f.reader(el_filter=el_str):
@@ -119,21 +96,3 @@ def test_el_filter_multi_length(test_folder):
         rows.append(row)
 
     assert len(rows) == 1
-
-    el_str = "::Germany"
-
-    rows = []
-    for row in f.reader(el_filter=el_str):
-
-        rows.append(row)
-
-    assert len(rows) == 1
-
-    el_str = ":Hardware:"
-
-    rows = []
-    for row in f.reader(el_filter=el_str):
-
-        rows.append(row)
-
-    assert len(rows) == 0

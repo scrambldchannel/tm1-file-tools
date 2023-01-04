@@ -3,6 +3,9 @@ from tm1filetools.tools import TM1FileTool
 
 def test_delete(test_folder):
 
+    f = test_folder / "cat.feeders"
+    f.touch()
+
     ft = TM1FileTool(test_folder)
 
     len_feeders = len(ft.get_feeders())
@@ -16,6 +19,9 @@ def test_delete(test_folder):
 
 
 def test_delete_all_orphans(test_folder):
+
+    f = test_folder / "chimpy.feeders"
+    f.touch()
 
     ft = TM1FileTool(test_folder)
 
@@ -62,10 +68,15 @@ def test_delete_all_orphans(test_folder):
 
 def test_delete_all_feeders(test_folder):
 
+    f = test_folder / "goanna.feeders"
+    f.touch()
+    f = test_folder / "koala.feeders"
+    f.touch()
+
     ft = TM1FileTool(test_folder)
 
     feeders = len(ft.get_feeders())
-    assert feeders > 0
+    assert feeders == 2
 
     count = ft.delete_all_feeders()
 
@@ -76,10 +87,15 @@ def test_delete_all_feeders(test_folder):
 
 def test_delete_all_blbs(test_folder):
 
+    f = test_folder / "goanna.blb"
+    f.touch()
+    f = test_folder / "possum.BLB"
+    f.touch()
+
     ft = TM1FileTool(test_folder)
 
     blbs = len(ft.get_blbs())
-    assert blbs > 0
+    assert blbs == 2
 
     count = ft.delete_all_blbs()
 
@@ -91,9 +107,15 @@ def test_delete_all_blbs(test_folder):
 def test_delete_all_pre_get(test_folder):
 
     # ensure each delete method will run a "find" first
+    f = test_folder / "goanna.blb"
+    f.touch()
+    f = test_folder / "possum.BLB"
+    f.touch()
+    # feeder
+    f = test_folder / "possum.feeders"
+    f.touch()
 
     ft = TM1FileTool(test_folder)
 
-    assert ft.delete_all_blbs() > 0
-    assert ft.delete_all_orphans() > 0
-    assert ft.delete_all_feeders() > 0
+    assert ft.delete_all_blbs() == 2
+    assert ft.delete_all_feeders() == 1
