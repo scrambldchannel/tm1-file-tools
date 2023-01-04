@@ -1,14 +1,19 @@
 from tm1filetools.tools import TM1FileTool
 
 
-def test_case_insensitive_glob(test_folder):
+def test_case_insensitive_glob(empty_folder):
 
     # pretty trivial tests but do seem to work
-    # i.e. an empty list is false
-    assert list(TM1FileTool._case_insensitive_glob(path=test_folder, pattern="tm1s.cfg"))
-    assert not list(TM1FileTool._case_insensitive_glob(path=test_folder, pattern="THIS_FILE_DOES_NOT_EXIST"))
-    assert list(TM1FileTool._case_insensitive_glob(path=test_folder, pattern="tm1s.CFG"))
-    assert list(TM1FileTool._case_insensitive_glob(path=test_folder, pattern="TM1s.cFg"))
+
+    assert not list(TM1FileTool._case_insensitive_glob(path=empty_folder, pattern="tm1s.cfg"))
+
+    f = empty_folder / "tm1s.cfg"
+    f.touch()
+
+    assert list(TM1FileTool._case_insensitive_glob(path=empty_folder, pattern="tm1s.cfg"))
+    assert not list(TM1FileTool._case_insensitive_glob(path=empty_folder, pattern="THIS_FILE_DOES_NOT_EXIST"))
+    assert list(TM1FileTool._case_insensitive_glob(path=empty_folder, pattern="tm1s.CFG"))
+    assert list(TM1FileTool._case_insensitive_glob(path=empty_folder, pattern="TM1s.cFg"))
 
 
 def test_find_files_by_suffix(test_folder):
