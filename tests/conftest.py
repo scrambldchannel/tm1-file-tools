@@ -17,7 +17,6 @@ sub_folders = ["cat", "koala"]
 view_files = ["mouse.vue", "squirrel.VUE", "}shark.vue"]
 view_folders = ["cat", "koala"]
 feeders_files = ["cat.feeders", "possum.FEEDERS"]
-junk_files = ["cat.cub.bak", "no_extension", "zzzBackup12.zip"]
 
 
 @pytest.fixture(scope="function")
@@ -113,11 +112,6 @@ def test_folder(tmp_path_factory):
         ca = TM1AttributeCubeFile.prefix + ca
 
         f = d / f"{ca}"
-        f.touch()
-
-    for j in junk_files:
-
-        f = d / j
         f.touch()
 
     return d

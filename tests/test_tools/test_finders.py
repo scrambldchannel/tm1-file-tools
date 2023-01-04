@@ -108,9 +108,14 @@ def test_find_blbs(empty_folder):
     assert all(blb.stem != "bunyip" for blb in ft._blb_files)
 
 
-def test_find_non_tm1(test_folder):
+def test_find_non_tm1(empty_folder):
 
-    ft = TM1FileTool(test_folder)
+    f = empty_folder / "cat.cub.bak"
+    f.touch()
+    f = empty_folder / "cat.cub"
+    f.touch()
+
+    ft = TM1FileTool(empty_folder)
 
     ft._find_non_tm1()
 
