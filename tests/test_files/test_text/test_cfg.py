@@ -16,9 +16,9 @@ def test_is_valid(cfg_folder):
     assert f.is_valid()
 
 
-def test_read_and_write(empty_folder):
+def test_read_and_write(test_folder):
 
-    f = TM1CfgFile(Path.joinpath(empty_folder, "temp.cfg"))
+    f = TM1CfgFile(Path.joinpath(test_folder, "temp.cfg"))
 
     # need to create the section
     f.config.add_section(f._section)
@@ -36,6 +36,6 @@ def test_read_and_write(empty_folder):
     # also re-open file to check it's been written
 
     # do I run into a potential issue with fixtures here?
-    f2 = TM1CfgFile(Path.joinpath(empty_folder, "temp.cfg"))
+    f2 = TM1CfgFile(Path.joinpath(test_folder, "temp.cfg"))
 
     assert f2.get_parameter(param) == value

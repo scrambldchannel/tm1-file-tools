@@ -44,14 +44,14 @@ def test_get_control_cubes(test_folder):
     assert all(c.stem != "koala" for c in cubes)
 
 
-def test_get_model_procs(empty_folder):
+def test_get_model_procs(test_folder):
 
-    f = empty_folder / "}fraggle.pRo"
+    f = test_folder / "}fraggle.pRo"
     f.touch()
-    f = empty_folder / "dingo.pro"
+    f = test_folder / "dingo.pro"
     f.touch()
 
-    ft = TM1FileTool(empty_folder)
+    ft = TM1FileTool(test_folder)
 
     procs = ft.get_procs()
 
@@ -66,14 +66,14 @@ def test_get_model_procs(empty_folder):
     assert procs == model_procs
 
 
-def test_get_control_processes(empty_folder):
+def test_get_control_processes(test_folder):
 
-    f = empty_folder / "}fraggle.pRo"
+    f = test_folder / "}fraggle.pRo"
     f.touch()
-    f = empty_folder / "dingo.pro"
+    f = test_folder / "dingo.pro"
     f.touch()
 
-    ft = TM1FileTool(empty_folder)
+    ft = TM1FileTool(test_folder)
 
     procs = ft.get_procs(model=False, control=True)
 
@@ -123,14 +123,14 @@ def test_get_control_views(test_folder):
     assert all(v.stem != "donkey" for v in views)
 
 
-def test_get_model_chores(empty_folder):
+def test_get_model_chores(test_folder):
 
-    f = empty_folder / "quokka.Cho"
+    f = test_folder / "quokka.Cho"
     f.touch()
-    f = empty_folder / "}brown_snake.cho"
+    f = test_folder / "}brown_snake.cho"
     f.touch()
 
-    ft = TM1FileTool(empty_folder)
+    ft = TM1FileTool(test_folder)
 
     chores = ft.get_chores()
 
@@ -139,14 +139,14 @@ def test_get_model_chores(empty_folder):
     assert all(c.stem != "}brown_snake" for c in chores)
 
 
-def test_get_control_chores(empty_folder):
+def test_get_control_chores(test_folder):
 
-    f = empty_folder / "quokka.Cho"
+    f = test_folder / "quokka.Cho"
     f.touch()
-    f = empty_folder / "}brown_snake.cho"
+    f = test_folder / "}brown_snake.cho"
     f.touch()
 
-    ft = TM1FileTool(empty_folder)
+    ft = TM1FileTool(test_folder)
 
     chores = ft.get_chores(model=False, control=True)
 
@@ -154,14 +154,14 @@ def test_get_control_chores(empty_folder):
     assert all(c.stem != "quokka" for c in chores)
 
 
-def test_get_blbs(empty_folder):
+def test_get_blbs(test_folder):
 
-    f = empty_folder / "emu.blb"
+    f = test_folder / "emu.blb"
     f.touch()
-    f = empty_folder / "kangaroo.blb"
+    f = test_folder / "kangaroo.blb"
     f.touch()
 
-    ft = TM1FileTool(empty_folder)
+    ft = TM1FileTool(test_folder)
 
     blbs = ft.get_blbs(control=True)
 
@@ -170,14 +170,14 @@ def test_get_blbs(empty_folder):
     assert all(b.stem != "}shark" for b in blbs)
 
 
-def test_get_cmas(empty_folder):
+def test_get_cmas(test_folder):
 
-    f = empty_folder / "bunyip.cma"
+    f = test_folder / "bunyip.cma"
     f.touch()
-    f = empty_folder / "magpie.CMA"
+    f = test_folder / "magpie.CMA"
     f.touch()
 
-    ft = TM1FileTool(empty_folder)
+    ft = TM1FileTool(test_folder)
 
     cmas = ft.get_cmas()
 

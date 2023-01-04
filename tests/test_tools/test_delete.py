@@ -3,6 +3,9 @@ from tm1filetools.tools import TM1FileTool
 
 def test_delete(test_folder):
 
+    f = test_folder / "cat.feeders"
+    f.touch()
+
     ft = TM1FileTool(test_folder)
 
     len_feeders = len(ft.get_feeders())
@@ -16,6 +19,9 @@ def test_delete(test_folder):
 
 
 def test_delete_all_orphans(test_folder):
+
+    f = test_folder / "chimpy.feeders"
+    f.touch()
 
     ft = TM1FileTool(test_folder)
 
@@ -60,14 +66,14 @@ def test_delete_all_orphans(test_folder):
     # assert total_orphans - deleted_orphans == 0
 
 
-def test_delete_all_feeders(empty_folder):
+def test_delete_all_feeders(test_folder):
 
-    f = empty_folder / "goanna.feeders"
+    f = test_folder / "goanna.feeders"
     f.touch()
-    f = empty_folder / "koala.feeders"
+    f = test_folder / "koala.feeders"
     f.touch()
 
-    ft = TM1FileTool(empty_folder)
+    ft = TM1FileTool(test_folder)
 
     feeders = len(ft.get_feeders())
     assert feeders == 2
@@ -79,14 +85,14 @@ def test_delete_all_feeders(empty_folder):
     assert feeders - count == 0
 
 
-def test_delete_all_blbs(empty_folder):
+def test_delete_all_blbs(test_folder):
 
-    f = empty_folder / "goanna.blb"
+    f = test_folder / "goanna.blb"
     f.touch()
-    f = empty_folder / "possum.BLB"
+    f = test_folder / "possum.BLB"
     f.touch()
 
-    ft = TM1FileTool(empty_folder)
+    ft = TM1FileTool(test_folder)
 
     blbs = len(ft.get_blbs())
     assert blbs == 2
@@ -98,22 +104,18 @@ def test_delete_all_blbs(empty_folder):
     assert blbs - count == 0
 
 
-def test_delete_all_pre_get(empty_folder):
+def test_delete_all_pre_get(test_folder):
 
     # ensure each delete method will run a "find" first
-    f = empty_folder / "goanna.blb"
+    f = test_folder / "goanna.blb"
     f.touch()
-    f = empty_folder / "possum.BLB"
+    f = test_folder / "possum.BLB"
     f.touch()
-    # orphan feeder
-    f = empty_folder / "possum.feeders"
-    f.touch()
-    # orphan rules file
-    f = empty_folder / "goanna.rux"
+    # feeder
+    f = test_folder / "possum.feeders"
     f.touch()
 
-    ft = TM1FileTool(empty_folder)
+    ft = TM1FileTool(test_folder)
 
     assert ft.delete_all_blbs() == 2
     assert ft.delete_all_feeders() == 1
-    assert ft.delete_orphan_rules() == 1

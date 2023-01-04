@@ -3,13 +3,13 @@ from pathlib import Path
 from tm1filetools.files import TM1TextFile
 
 
-def test_read_and_write(empty_folder):
+def test_read_and_write(test_folder):
 
     # extension doesn't actually matter
-    f = empty_folder / "emu.txt"
+    f = test_folder / "emu.txt"
     f.touch()
 
-    f = TM1TextFile(Path.joinpath(empty_folder, "emu.txt"))
+    f = TM1TextFile(Path.joinpath(test_folder, "emu.txt"))
 
     assert f.read() == ""
 

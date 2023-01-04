@@ -7,25 +7,25 @@ from tm1filetools.files import TM1CfgFile
 from tm1filetools.tools.cfgfiletool import TM1CfgFileTool
 
 
-def test_get_config_file(empty_folder):
+def test_get_config_file(test_folder):
 
-    ft = TM1CfgFileTool(path=empty_folder)
+    ft = TM1CfgFileTool(path=test_folder)
 
     assert not ft.config_file
 
-    f = empty_folder / "tm1s.cfg"
+    f = test_folder / "tm1s.cfg"
     f.touch()
 
-    ft = TM1CfgFileTool(path=empty_folder)
+    ft = TM1CfgFileTool(path=test_folder)
 
     assert ft.config_file
 
     assert isinstance(ft.config_file, TM1CfgFile)
 
 
-def test_get_paths_no_cfg(empty_folder):
+def test_get_paths_no_cfg(test_folder):
 
-    ft = TM1CfgFileTool(path=empty_folder)
+    ft = TM1CfgFileTool(path=test_folder)
 
     assert ft._get_data_path_param() is None
     assert ft.get_log_path() is None

@@ -16,16 +16,6 @@ sub_files = ["platypus.sub", "donkey.SUB", "}dolphin.suB"]
 sub_folders = ["cat", "koala"]
 view_files = ["mouse.vue", "squirrel.VUE", "}shark.vue"]
 view_folders = ["cat", "koala"]
-feeders_files = ["cat.feeders", "possum.FEEDERS"]
-
-
-@pytest.fixture(scope="function")
-def empty_folder(tmp_path_factory):
-    """
-    Create an empty folder for testing
-    """
-
-    return tmp_path_factory.mktemp("data")
 
 
 @pytest.fixture(scope="function")
@@ -52,11 +42,6 @@ def test_folder(tmp_path_factory):
     for df in dim_files:
 
         f = d / f"{df}"
-        f.touch()
-
-    for fd in feeders_files:
-
-        f = d / f"{fd}"
         f.touch()
 
     # create dir for subsets

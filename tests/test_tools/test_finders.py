@@ -31,14 +31,14 @@ def test_find_rules(test_folder):
     assert all(r.stem != "basilisk" for r in ft._rules_files)
 
 
-def test_find_procs(empty_folder):
+def test_find_procs(test_folder):
 
-    f = empty_folder / "dingo.pro"
+    f = test_folder / "dingo.pro"
     f.touch()
-    f = empty_folder / "wombat.pro"
+    f = test_folder / "wombat.pro"
     f.touch()
 
-    ft = TM1FileTool(empty_folder)
+    ft = TM1FileTool(test_folder)
 
     assert not ft._proc_files
 
@@ -72,6 +72,11 @@ def test_find_views(test_folder):
 
 def test_find_feeders(test_folder):
 
+    f = test_folder / "cat.feeders"
+    f.touch()
+    f = test_folder / "dragon_fruit.blb"
+    f.touch()
+
     ft = TM1FileTool(test_folder)
 
     ft._find_feeders()
@@ -80,12 +85,12 @@ def test_find_feeders(test_folder):
     assert all(f.stem != "dragon" for f in ft._feeders_files)
 
 
-def test_find_chores(empty_folder):
+def test_find_chores(test_folder):
 
-    f = empty_folder / "quokka.Cho"
+    f = test_folder / "quokka.Cho"
     f.touch()
 
-    ft = TM1FileTool(empty_folder)
+    ft = TM1FileTool(test_folder)
 
     ft._find_chores()
 
@@ -93,14 +98,14 @@ def test_find_chores(empty_folder):
     assert all(f.stem != "brown_snake" for f in ft._chore_files)
 
 
-def test_find_blbs(empty_folder):
+def test_find_blbs(test_folder):
 
-    f = empty_folder / "kangaroo.blb"
+    f = test_folder / "kangaroo.blb"
     f.touch()
-    f = empty_folder / "emu.blb"
+    f = test_folder / "emu.blb"
     f.touch()
 
-    ft = TM1FileTool(empty_folder)
+    ft = TM1FileTool(test_folder)
 
     ft._find_blbs()
 
@@ -108,14 +113,14 @@ def test_find_blbs(empty_folder):
     assert all(blb.stem != "bunyip" for blb in ft._blb_files)
 
 
-def test_find_non_tm1(empty_folder):
+def test_find_non_tm1(test_folder):
 
-    f = empty_folder / "cat.cub.bak"
+    f = test_folder / "cat.cub.bak"
     f.touch()
-    f = empty_folder / "cat.cub"
+    f = test_folder / "cat.cub"
     f.touch()
 
-    ft = TM1FileTool(empty_folder)
+    ft = TM1FileTool(test_folder)
 
     ft._find_non_tm1()
 
