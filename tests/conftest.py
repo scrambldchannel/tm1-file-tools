@@ -172,7 +172,7 @@ Planning:Sales",","BP","202203","Sales","Australia","Comment","To the moon!"
 @pytest.fixture(scope="function")
 def data_folder():
 
-    path = Path.joinpath(Path.cwd(), "tests", "samples", "multiple_dirs", "data")
+    path = Path.joinpath(Path.cwd(), "tests", "samples", "server", "data")
 
     return path
 
@@ -180,7 +180,7 @@ def data_folder():
 @pytest.fixture(scope="function")
 def log_folder():
 
-    path = Path.joinpath(Path.cwd(), "tests", "samples", "multiple_dirs", "logs")
+    path = Path.joinpath(Path.cwd(), "tests", "samples", "server", "logs")
 
     return path
 
