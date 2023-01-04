@@ -26,108 +26,73 @@ def test_get_cube(export_folder):
     assert f._get_cube() == "Sales"
 
 
-# def test_reader(test_folder):
+def test_reader(export_folder):
 
-#     f = TM1CMAFile(Path.joinpath(test_folder, "test.cma"))
+    f = TM1CMAFile(Path.joinpath(export_folder, "Sales_2022.cma"))
 
-#     f._path.touch()
+    row = next(f.reader())
 
-#     f.write('"Planning:Sales Planning","202301","Software","Germany",1000000')
-
-#     row = next(f.reader())
-
-#     assert row.val_n == 1000000
-#     assert not row.val_s
+    assert row.val_n == 200
+    assert not row.val_s
 
 
-# def test_parse_els():
+def test_parse_els():
 
-#     el_str = "202301:Software:Germany"
+    el_str = "202301:Software:Germany"
 
-#     els = TM1CMAFile._parse_els(el_str)
+    els = TM1CMAFile._parse_els(el_str)
 
-#     assert len(els) == 3
+    assert len(els) == 3
 
-#     assert els[0] == "202301"
+    assert els[0] == "202301"
 
-#     el_str = "202302:Hardware:Australia::"
+    el_str = "202302:Hardware:Australia::"
 
-#     els = TM1CMAFile._parse_els(el_str)
+    els = TM1CMAFile._parse_els(el_str)
 
-#     # two trailing els should have been dropped
-#     assert len(els) == 3
+    # two trailing els should have been dropped
+    assert len(els) == 3
 
-#     assert els[1] == "Hardware"
+    assert els[1] == "Hardware"
 
-#     el_str = "202302:Hardware:Australia::Value"
+    el_str = "202302:Hardware:Australia::Value"
 
-#     els = TM1CMAFile._parse_els(el_str)
+    els = TM1CMAFile._parse_els(el_str)
 
-#     assert len(els) == 5
+    assert len(els) == 5
 
-#     # empty value should be retained to preserve index of value
-#     assert els[3] == ""
-#     assert els[4] == "Value"
-
-
-# def test_el_filter(test_folder):
-
-#     el_str = "202301"
-
-#     f = TM1CMAFile(Path.joinpath(test_folder, "test.cma"))
-
-#     f._path.touch()
-
-#     f.write('"Planning:Sales Planning","202301","Software","Germany",1000000')
-
-#     rows = []
-#     for row in f.reader(el_filter=el_str):
-
-#         rows.append(row)
-
-#     assert len(rows) == 1
-
-#     el_str = "202302"
-
-#     rows = []
-#     for row in f.reader(el_filter=el_str):
-
-#         rows.append(row)
-
-#     assert len(rows) == 0
+    # empty value should be retained to preserve index of value
+    assert els[3] == ""
+    assert els[4] == "Value"
 
 
-# def test_el_filter_multi_length(test_folder):
+def test_el_filter(export_folder):
 
-#     el_str = ":Software"
+    el_str = ":202301"
 
-#     f = TM1CMAFile(Path.joinpath(test_folder, "test.cma"))
+    f = TM1CMAFile(Path.joinpath(export_folder, "Sales_2022.cma"))
 
-#     f._path.touch()
+    rows = []
+    for row in f.reader(el_filter=el_str):
 
-#     f.write('"Planning:Sales Planning","202301","Software","Germany",1000000')
+        rows.append(row)
 
-#     rows = []
-#     for row in f.reader(el_filter=el_str):
+    assert len(rows) == 0
 
-#         rows.append(row)
+    el_str = ":202203"
 
-#     assert len(rows) == 1
+    rows = []
+    for row in f.reader(el_filter=el_str):
 
-#     el_str = "::Germany"
+        rows.append(row)
 
-#     rows = []
-#     for row in f.reader(el_filter=el_str):
+    assert len(rows) == 2
 
-#         rows.append(row)
+    el_str = ":202203:::Comment"
 
-#     assert len(rows) == 1
+    rows = []
+    for row in f.reader(el_filter=el_str):
 
-#     el_str = ":Hardware:"
+        rows.append(row)
 
-#     rows = []
-#     for row in f.reader(el_filter=el_str):
-
-#         rows.append(row)
-
-#     assert len(rows) == 0
+    assert len(rows) == 1
