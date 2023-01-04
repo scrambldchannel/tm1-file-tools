@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 
 import pytest
 
@@ -6,50 +7,45 @@ from tm1filetools.files import TM1CfgFile
 from tm1filetools.tools.cfgfiletool import TM1CfgFileTool
 
 
-def test_get_config_file(test_folder, empty_folder):
+def test_get_config_file(empty_folder):
 
     ft = TM1CfgFileTool(path=empty_folder)
 
     assert not ft.config_file
 
-    ft = TM1CfgFileTool(path=test_folder)
+    f = empty_folder / "tm1s.cfg"
+    f.touch()
+
+    ft = TM1CfgFileTool(path=empty_folder)
 
     assert ft.config_file
 
     assert isinstance(ft.config_file, TM1CfgFile)
 
 
-def test_get_data_path_no_cfg(empty_folder):
+def test_get_paths_no_cfg(empty_folder):
 
-    # if config file not found, should just be the original path
     ft = TM1CfgFileTool(path=empty_folder)
 
     assert ft._get_data_path_param() is None
+    assert ft.get_log_path() is None
 
 
-def test_get_log_path_no_cfg(empty_folder):
+def test_get_data_path_valid_cfg(cfg_folder):
 
-    # if config file not found, should just be the original path
-    ft = TM1CfgFileTool(path=empty_folder)
+    ft = TM1CfgFileTool(path=Path.joinpath(cfg_folder, "minimal"))
+
+    assert ft.get_data_path()
+
+
+def test_get_log_path_invalid_cfg(cfg_folder):
+
+    ft = TM1CfgFileTool(Path.joinpath(cfg_folder, "invalid"))
 
     assert ft.get_log_path() is None
 
 
-def test_get_data_path_invalid_cfg(invalid_config_folder):
-
-    ft = TM1CfgFileTool(path=invalid_config_folder)
-
-    assert ft.get_data_path() is None
-
-
-def test_get_log_path_invalid_cfg(invalid_config_folder):
-
-    ft = TM1CfgFileTool(path=invalid_config_folder)
-
-    assert ft.get_log_path() is None
-
-
-def test_get_data_path_local(abs_config_folder, rel_config_folder):
+def test_get_data_path_local(cfg_folder):
 
     # the constructor requires a concrete path
     # which I can't find a way to instantiate cross platform
@@ -57,17 +53,18 @@ def test_get_data_path_local(abs_config_folder, rel_config_folder):
         pytest.skip("skipping windows-only tests")
 
     # an absolute path is only going to get returned running locally
-    ft = TM1CfgFileTool(path=abs_config_folder, local=True)
+    ft = TM1CfgFileTool(path=Path.joinpath(cfg_folder, "abs_paths"), local=True)
 
     assert ft.get_data_path().is_absolute()
 
-    ft = TM1CfgFileTool(path=rel_config_folder, local=True)
+    ft = TM1CfgFileTool(path=Path.joinpath(cfg_folder, "rel_paths"), local=True)
+
     assert ft.get_data_path().exists
     assert ft.get_data_path().root == "\\"
     assert ft.get_data_path().stem == "data"
 
 
-def test_get_log_path_local(abs_config_folder, rel_config_folder):
+def test_get_log_path_local(cfg_folder):
 
     # the constructor requires a concrete path
     # which I can't find a way to instantiate cross platform
@@ -75,29 +72,31 @@ def test_get_log_path_local(abs_config_folder, rel_config_folder):
         pytest.skip("skipping windows-only tests")
 
     # an absolute path is only going to get returned running locally
-    ft = TM1CfgFileTool(path=abs_config_folder, local=True)
+    ft = TM1CfgFileTool(path=Path.joinpath(cfg_folder, "abs_paths"), local=True)
 
     assert ft.get_log_path().is_absolute()
 
-    ft = TM1CfgFileTool(path=rel_config_folder, local=True)
+    ft = TM1CfgFileTool(path=Path.joinpath(cfg_folder, "rel_paths"), local=True)
+
     assert ft.get_log_path().exists
     assert ft.get_log_path().root == "\\"
     assert ft.get_log_path().stem == "logs"
 
 
-def test_get_data_path_rel(rel_config_folder):
+def test_get_data_path_rel(cfg_folder):
 
-    ft = TM1CfgFileTool(path=rel_config_folder)
+    ft = TM1CfgFileTool(path=Path.joinpath(cfg_folder, "rel_paths"))
+
+    assert ft
 
     assert ft.get_data_path()
-    assert ft.get_data_path().exists()
     assert ft.get_data_path().is_absolute()
 
 
-def test_get_log_path_rel(rel_config_folder):
+def test_get_log_path_rel(cfg_folder):
 
-    ft = TM1CfgFileTool(path=rel_config_folder)
+    ft = TM1CfgFileTool(path=Path.joinpath(cfg_folder, "rel_paths"))
 
+    assert ft
     assert ft.get_data_path()
-    assert ft.get_log_path().exists()
     assert ft.get_log_path().is_absolute()

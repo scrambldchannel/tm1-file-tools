@@ -34,72 +34,6 @@ def empty_folder(tmp_path_factory):
 
 
 @pytest.fixture(scope="function")
-def invalid_config_folder(tmp_path_factory):
-    """
-    Create a folder with an invalid config file
-    """
-
-    d = tmp_path_factory.mktemp("data")
-
-    f = d / "tm1s.cfg"
-    f.write_text("[NOSECTION]")
-
-    return d
-
-
-@pytest.fixture(scope="function")
-def abs_config_folder(tmp_path_factory):
-    """
-    Create a folder with an absolute path
-    """
-
-    d = tmp_path_factory.mktemp("data")
-
-    f = d / "tm1s.cfg"
-
-    cfg = r"""[TM1S]
-    DataBaseDirectory = c:\TM1\data
-    LoggingDirectory = c:\TM1\logs
-    """
-
-    f.write_text(cfg)
-
-    # also create the data
-
-    return d
-
-
-@pytest.fixture(scope="function")
-def rel_config_folder(tmp_path_factory):
-    """
-    Create a folder with an absolute path
-    """
-
-    d = tmp_path_factory.mktemp("data")
-
-    f = d / "tm1s.cfg"
-
-    # still don't think this is working...
-
-    cfg = r"""[TM1S]
-    DataBaseDirectory = .\data
-    LoggingDirectory = .\logs
-
-    """
-
-    f.write_text(cfg)
-
-    # also create the directories
-    data_dir = d / "data"
-    data_dir.mkdir()
-
-    log_dir = d / "logs"
-    log_dir.mkdir()
-
-    return d
-
-
-@pytest.fixture(scope="function")
 def test_folder(tmp_path_factory):
     """
     Create a bunch of temp files that can be used to test the filesys functions with session scope
@@ -107,11 +41,6 @@ def test_folder(tmp_path_factory):
 
     # create a temp path
     d = tmp_path_factory.mktemp("data")
-
-    # create cfg file
-
-    f = d / "tm1s.cfg"
-    f.touch()
 
     # create the temp files
 
@@ -259,7 +188,7 @@ def log_folder():
 @pytest.fixture(scope="function")
 def cfg_folder():
 
-    path = Path.joinpath(Path.cwd(), "tests", "samples", "multiple_dirs", "cfg")
+    path = Path.joinpath(Path.cwd(), "tests", "samples", "config_files")
 
     return path
 

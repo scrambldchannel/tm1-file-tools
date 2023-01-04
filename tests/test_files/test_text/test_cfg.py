@@ -11,7 +11,7 @@ def test_is_valid(cfg_folder):
 
     assert not f.is_valid()
 
-    f = TM1CfgFile(Path.joinpath(cfg_folder, "minimal.cfg"))
+    f = TM1CfgFile(Path.joinpath(cfg_folder, "minimal", "tm1s.cfg"))
 
     assert f.is_valid()
 
