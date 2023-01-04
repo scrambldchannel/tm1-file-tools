@@ -144,11 +144,17 @@ def test_get_blbs(test_folder):
     assert all(b.stem != "}shark" for b in blbs)
 
 
-def test_get_cmas(test_folder):
+def test_get_cmas(empty_folder):
 
-    ft = TM1FileTool(test_folder)
+    f = empty_folder / "bunyip.cma"
+    f.touch()
+    f = empty_folder / "magpie.CMA"
+    f.touch()
+
+    ft = TM1FileTool(empty_folder)
 
     cmas = ft.get_cmas()
 
     assert any(c.stem == "bunyip" for c in cmas)
-    assert all(c.stem != "magpie" for c in cmas)
+    assert any(c.stem == "magpie" for c in cmas)
+    assert all(c.stem != "goanna" for c in cmas)

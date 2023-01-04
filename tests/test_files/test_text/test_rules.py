@@ -11,16 +11,15 @@ def test_init(test_folder):
     assert f.suffix == "ruX"
 
 
-def test_feeders(test_folder):
+def test_feeders(data_folder):
 
-    f = TM1RulesFile(Path.joinpath(test_folder, "rux_1.ruX"))
+    f = TM1RulesFile(Path.joinpath(data_folder, "skipcheck_feeders.rux"))
 
-    feeders = f.has_feeders()
-    assert feeders
+    assert f.has_feeders()
 
 
-def test_skipcheck(test_folder):
+def test_skipcheck(data_folder):
 
-    f = TM1RulesFile(Path.joinpath(test_folder, "rux_1.ruX"))
+    f = TM1RulesFile(Path.joinpath(data_folder, "skipcheck_feeders.rux"))
 
     assert f.has_skipcheck()

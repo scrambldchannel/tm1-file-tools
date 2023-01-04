@@ -20,7 +20,6 @@ view_files = ["mouse.vue", "squirrel.VUE", "}shark.vue"]
 view_folders = ["cat", "koala"]
 feeders_files = ["cat.feeders", "possum.FEEDERS"]
 blb_files = ["emu.blb", "unicorn.blb"]
-cma_files = ["bunyip.CMA", "troll.cma"]
 junk_files = ["cat.cub.bak", "no_extension", "zzzBackup12.zip"]
 
 
@@ -54,18 +53,6 @@ def test_folder(tmp_path_factory):
         f = d / f"{r}"
         f.touch()
 
-    # add sample ruxes
-    rux_1 = r"""
-
-Skipcheck ;
-
-[] = STET;
-FEEDERS    ;
-"""
-    f = d / "rux_1.ruX"
-
-    f.write_text(rux_1)
-
     for df in dim_files:
 
         f = d / f"{df}"
@@ -75,21 +62,6 @@ FEEDERS    ;
 
         f = d / f"{b}"
         f.touch()
-
-    for c in cma_files:
-
-        f = d / f"{c}"
-        f.touch()
-
-    # add sample cma
-    cma = r""""Planning:Sales",","BP","202201","Sales","Australia","Amount",200
-Planning:Sales",","BP","202202","Sales","Australia","Amount",300
-Planning:Sales",","BP","202203","Sales","Australia","Amount",500
-Planning:Sales",","BP","202203","Sales","Australia","Comment","To the moon!"
-"""
-    f = d / "Sales.cma"
-
-    f.write_text(cma)
 
     for fd in feeders_files:
 
@@ -186,17 +158,18 @@ def log_folder():
 
 
 @pytest.fixture(scope="function")
-def cfg_folder():
+def export_folder():
 
-    path = Path.joinpath(Path.cwd(), "tests", "samples", "config_files")
+    # this is an arbitrary folder for cmas
+    path = Path.joinpath(Path.cwd(), "tests", "samples", "server", "exports")
 
     return path
 
 
 @pytest.fixture(scope="function")
-def json_out_folder():
+def cfg_folder():
 
-    path = Path.joinpath(Path.cwd(), "tests", "samples", "json_out")
+    path = Path.joinpath(Path.cwd(), "tests", "samples", "config_files")
 
     return path
 
