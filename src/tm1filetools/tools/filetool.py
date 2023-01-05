@@ -3,14 +3,12 @@ from typing import List, Optional
 
 from tm1filetools.files import (
     NonTM1File,
-    TM1AttributeDimensionFile,
     TM1BLBFile,
     TM1ChoreFile,
     TM1CMAFile,
     TM1DimensionFile,
     TM1FeedersFile,
     TM1LogFile,
-    TM1ProcessFile,
     TM1RulesFile,
     TM1SubsetFile,
     TM1ViewFile,
@@ -25,6 +23,7 @@ from .base import TM1BaseFileTool
 from .cubetool import TM1CubeFileTool
 from .dimtool import TM1DimensionFileTool
 from .logfiletool import TM1LogFileTool
+from .processtool import TM1ProcessFileTool
 from .rulestool import TM1RulesFileTool
 
 
@@ -56,8 +55,8 @@ class TM1FileTool:
 
         # core code files
         self.rules: TM1RulesFileTool = TM1RulesFileTool(self._data_path)
+        self.processes: TM1ProcessFileTool = TM1ProcessFileTool(self._data_path)
 
-        self._proc_files: Optional[list] = None
         # other model files
         self._sub_files: Optional[list] = None
         self._view_files: Optional[list] = None
@@ -75,8 +74,6 @@ class TM1FileTool:
         Do a full scan of the dir(s) and populate all lists of files
         """
 
-        self._find_rules()
-        self._find_procs()
         self._find_subs()
         self._find_views()
         self._find_feeders()
@@ -87,22 +84,6 @@ class TM1FileTool:
         self._find_non_tm1()
 
     # getters for all file types
-
-    def get_procs(self, model: bool = True, control: bool = False) -> List[TM1ProcessFile]:
-        """Returns list of all TI process files
-
-        Args:
-            model: Return model procs (i.e. not prefixed with "}")
-            control: Return control procs (i.e. prefixed with "}")
-
-        Returns:
-            List of proc files
-        """
-
-        if self._proc_files is None:
-            self._find_procs()
-
-        return self._filter_model_and_or_control(self._proc_files, model=model, control=control)
 
     def get_subs(self, model: bool = True, control: bool = False) -> List[TM1SubsetFile]:
         """Returns list of all dimension subset files
@@ -196,21 +177,6 @@ class TM1FileTool:
 
         return self._cma_files
 
-    # specific control object getters
-
-    def get_attr_dims(self) -> List[TM1AttributeDimensionFile]:
-        """Returns list of all attribute dim files
-
-        Returns:
-            List of attribute dim files
-        """
-
-        return [
-            TM1AttributeDimensionFile(d._path)
-            for d in self.dimensions.get_control_dims()
-            if d.name.lower().find(d.attribute_prefix.lower()) == 0
-        ]
-
     # orphan getters
 
     def get_orphan_attr_cubes(self):
@@ -230,12 +196,12 @@ class TM1FileTool:
         """Returns list of rules files that don't have corresponding cube files
 
         Returns:
-            List of rules files
+            List of rules filesgggg
         """
 
         return [
             r
-            for r in self.rules.get_all_rules()
+            for r in self.rules.get_all()
             if r.stem.lower() not in [c.stem.lower() for c in self.cubes.get_all_cubes()]
         ]
 
@@ -248,7 +214,7 @@ class TM1FileTool:
 
         return [
             a
-            for a in self.get_attr_dims()
+            for a in self.dimensions.get_attr_dims()
             if a.strip_prefix().lower() not in [d.stem.lower() for d in self.dimensions.get_model_dims()]
         ]
 
@@ -464,14 +430,6 @@ class TM1FileTool:
         return count
 
     # finders for different file types
-
-    def _find_rules(self):
-
-        self._rules_files = [TM1RulesFile(r) for r in self._find_files(TM1RulesFile.suffix)]
-
-    def _find_procs(self):
-
-        self._proc_files = [TM1ProcessFile(f) for f in self._find_files(TM1ProcessFile.suffix)]
 
     def _find_subs(self):
 

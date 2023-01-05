@@ -35,7 +35,7 @@ class TM1RulesFileTool(TM1BaseFileTool):
 
             yield rules_file
 
-    def get_all_rules(self) -> List[TM1RulesFile]:
+    def get_all(self) -> List[TM1RulesFile]:
         """Returns a list of all the rules files found
 
         Returns:
@@ -44,7 +44,7 @@ class TM1RulesFileTool(TM1BaseFileTool):
 
         return [c for c in self._files(control=True)]
 
-    def get_model_rules(self) -> List[TM1RulesFile]:
+    def get_all_model(self) -> List[TM1RulesFile]:
         """Returns a list of all the model rules files found
 
         Returns:
@@ -53,7 +53,7 @@ class TM1RulesFileTool(TM1BaseFileTool):
 
         return [r for r in self._files()]
 
-    def get_control_rules(self) -> List[TM1RulesFile]:
+    def get_all_control(self) -> List[TM1RulesFile]:
         """Returns a list of all the model rules files found
 
         Returns:

@@ -1,43 +1,6 @@
 from tm1filetools.tools import TM1FileTool
 
 
-def test_get_model_procs(test_folder):
-
-    f = test_folder / "}fraggle.pRo"
-    f.touch()
-    f = test_folder / "dingo.pro"
-    f.touch()
-
-    ft = TM1FileTool(test_folder)
-
-    procs = ft.get_procs()
-
-    assert len(procs) == 1
-
-    assert any(p.stem == "dingo" for p in procs)
-    assert all(p.stem != "}fraggle" for p in procs)
-
-    # with explicit param
-    model_procs = ft.get_procs(model=True)
-
-    assert procs == model_procs
-
-
-def test_get_control_processes(test_folder):
-
-    f = test_folder / "}fraggle.pRo"
-    f.touch()
-    f = test_folder / "dingo.pro"
-    f.touch()
-
-    ft = TM1FileTool(test_folder)
-
-    procs = ft.get_procs(model=False, control=True)
-
-    assert any(p.stem == "}fraggle" for p in procs)
-    assert all(p.stem != "dingo" for p in procs)
-
-
 def test_get_model_subs(test_folder):
 
     ft = TM1FileTool(test_folder)
