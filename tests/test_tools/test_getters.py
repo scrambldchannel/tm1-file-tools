@@ -1,6 +1,6 @@
 # import pytest
 
-from tm1filetools.files import TM1AttributeCubeFile, TM1AttributeDimensionFile
+from tm1filetools.files import TM1AttributeDimensionFile
 from tm1filetools.tools import TM1FileTool
 
 
@@ -22,26 +22,6 @@ def test_get_control_dims(test_folder):
 
     assert any(d.stem == f"{TM1AttributeDimensionFile.prefix}koala" for d in dims)
     assert all(d.stem != "koala" for d in dims)
-
-
-def test_get_model_cubes(test_folder):
-
-    ft = TM1FileTool(test_folder)
-
-    cubes = ft.get_cubes()
-
-    assert any(c.stem == "cat" for c in cubes)
-    assert all(c.stem != f"{TM1AttributeCubeFile.prefix}cat" for c in cubes)
-
-
-def test_get_control_cubes(test_folder):
-
-    ft = TM1FileTool(test_folder)
-
-    cubes = ft.get_cubes(model=False, control=True)
-
-    assert any(c.stem == f"{TM1AttributeCubeFile.prefix}koala" for c in cubes)
-    assert all(c.stem != "koala" for c in cubes)
 
 
 def test_get_model_procs(test_folder):

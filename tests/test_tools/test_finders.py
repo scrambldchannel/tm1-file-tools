@@ -11,16 +11,6 @@ def test_find_dims(test_folder):
     assert all(d.stem != "bunyip" for d in ft._dim_files)
 
 
-def test_find_cubes(test_folder):
-
-    ft = TM1FileTool(test_folder)
-
-    ft._find_cubes()
-
-    assert any(c.stem == "cat" for c in ft._cube_files)
-    assert all(c.stem != "unicorn" for c in ft._cube_files)
-
-
 def test_find_rules(test_folder):
 
     ft = TM1FileTool(test_folder)

@@ -3,12 +3,10 @@ from typing import List, Optional
 
 from tm1filetools.files import (
     NonTM1File,
-    TM1AttributeCubeFile,
     TM1AttributeDimensionFile,
     TM1BLBFile,
     TM1ChoreFile,
     TM1CMAFile,
-    TM1CubeFile,
     TM1DimensionFile,
     TM1FeedersFile,
     TM1LogFile,
@@ -17,11 +15,14 @@ from tm1filetools.files import (
     TM1SubsetFile,
     TM1ViewFile,
 )
+
+# what do I need this for?
 from tm1filetools.files.base import TM1File
 
 from .base import TM1BaseFileTool
+from .cubetool import TM1CubeFileTool
 
-# from .cfgfiletool import TM1CfgFileTool
+# import specific tools
 from .logfiletool import TM1LogFileTool
 
 
@@ -45,11 +46,14 @@ class TM1FileTool(TM1BaseFileTool):
 
         self.logfile_tool: TM1LogFileTool = TM1LogFileTool(self._log_path)
 
+        # refactor api e.g. have cube tool instance as cubes
+
+        self.cubes: TM1CubeFileTool = TM1CubeFileTool(self._data_path)
+
         # Fetch lists of files on demand
 
         # core model files
         self._dim_files: Optional[list] = None
-        self._cube_files: Optional[list] = None
         # core code files
         self._rules_files: Optional[list] = None
         self._proc_files: Optional[list] = None
@@ -71,7 +75,6 @@ class TM1FileTool(TM1BaseFileTool):
         """
 
         self._find_dims()
-        self._find_cubes()
         self._find_rules()
         self._find_procs()
         self._find_subs()
@@ -99,22 +102,6 @@ class TM1FileTool(TM1BaseFileTool):
             self._find_dims()
 
         return self._filter_model_and_or_control(self._dim_files, model=model, control=control)
-
-    def get_cubes(self, model: bool = True, control: bool = False) -> List[TM1CubeFile]:
-        """Returns list of all cube files
-
-        Args:
-            model: Return model cubes (i.e. not prefixed with "}")
-            control: Return control cubes (i.e. prefixed with "}")
-
-        Returns:
-            List of cube files
-        """
-
-        if self._cube_files is None:
-            self._find_cubes()
-
-        return self._filter_model_and_or_control(self._cube_files, model=model, control=control)
 
     def get_rules(self, model: bool = True, control: bool = False) -> List[TM1RulesFile]:
         """Returns list of all cube rules files
@@ -255,18 +242,20 @@ class TM1FileTool(TM1BaseFileTool):
             if d.name.lower().find(d.attribute_prefix.lower()) == 0
         ]
 
-    def get_attr_cubes(self) -> List[TM1AttributeCubeFile]:
-        """Returns list of all attribute cube files
+    # orphan getters
+
+    def get_orphan_attr_cubes(self):
+        """Returns list of attribute cube files that don't have corresponding dim files
 
         Returns:
-            List of attribute cube files
+            List of cube files
         """
 
         return [
-            TM1AttributeCubeFile(c._path) for c in self.get_cubes(control=True) if c.name.find(c.attribute_prefix) == 0
+            a
+            for a in self.cubes.get_attr_cubes()
+            if a.strip_prefix().lower() not in [d.stem.lower() for d in self.get_dims(control=True)]
         ]
-
-    # orphan getters
 
     def get_orphan_rules(self) -> List[TM1RulesFile]:
         """Returns list of rules files that don't have corresponding cube files
@@ -275,7 +264,9 @@ class TM1FileTool(TM1BaseFileTool):
             List of rules files
         """
 
-        return [r for r in self.get_rules() if r.stem.lower() not in [c.stem.lower() for c in self.get_cubes()]]
+        return [
+            r for r in self.get_rules() if r.stem.lower() not in [c.stem.lower() for c in self.cubes.get_all_cubes()]
+        ]
 
     def get_orphan_attr_dims(self) -> List[TM1DimensionFile]:
         """Returns list of attribute dim files that don't have corresponding dim files
@@ -286,19 +277,6 @@ class TM1FileTool(TM1BaseFileTool):
 
         return [
             a for a in self.get_attr_dims() if a.strip_prefix().lower() not in [d.stem.lower() for d in self.get_dims()]
-        ]
-
-    def get_orphan_attr_cubes(self) -> List[TM1CubeFile]:
-        """Returns list of attribute cube files that don't have corresponding dim files
-
-        Returns:
-            List of cube files
-        """
-
-        return [
-            a
-            for a in self.get_attr_cubes()
-            if a.strip_prefix().lower() not in [d.stem.lower() for d in self.get_dims(control=True)]
         ]
 
     def get_orphan_subs(self) -> List[TM1SubsetFile]:
@@ -324,7 +302,7 @@ class TM1FileTool(TM1BaseFileTool):
         return [
             v
             for v in self.get_views(control=True)
-            if v.cube.lower() not in [c.stem.lower() for c in self.get_cubes(control=True)]
+            if v.cube.lower() not in [c.stem.lower() for c in self.cubes.get_all_cubes()]
         ]
 
     def get_orphan_feeders(self) -> List[TM1FeedersFile]:
@@ -337,7 +315,7 @@ class TM1FileTool(TM1BaseFileTool):
         return [
             f
             for f in self.get_feeders(control=True)
-            if f.stem.lower() not in [c.stem.lower() for c in self.get_cubes(control=True)]
+            if f.stem.lower() not in [c.stem.lower() for c in self.cubes.get_all_cubes()]
         ]
 
     # to deprecate
@@ -482,8 +460,6 @@ class TM1FileTool(TM1BaseFileTool):
         for c in self.get_orphan_attr_cubes():
             c.delete()
 
-        self._find_cubes()
-
         return count
 
     def delete_orphan_views(self) -> int:
@@ -539,10 +515,6 @@ class TM1FileTool(TM1BaseFileTool):
         """
 
         self._dim_files = [TM1DimensionFile(d) for d in self._find_files(TM1DimensionFile.suffix)]
-
-    def _find_cubes(self):
-
-        self._cube_files = [TM1CubeFile(c) for c in self._find_files(TM1CubeFile.suffix)]
 
     def _find_rules(self):
 
