@@ -1,55 +1,6 @@
 from tm1filetools.tools import TM1FileTool
 
 
-def test_find_dims(test_folder):
-
-    ft = TM1FileTool(test_folder)
-
-    ft._find_dims()
-
-    assert any(d.stem == "koala" for d in ft._dim_files)
-    assert all(d.stem != "bunyip" for d in ft._dim_files)
-
-
-def test_find_cubes(test_folder):
-
-    ft = TM1FileTool(test_folder)
-
-    ft._find_cubes()
-
-    assert any(c.stem == "cat" for c in ft._cube_files)
-    assert all(c.stem != "unicorn" for c in ft._cube_files)
-
-
-def test_find_rules(test_folder):
-
-    ft = TM1FileTool(test_folder)
-
-    ft._find_rules()
-
-    assert any(r.stem == "dog" for r in ft._rules_files)
-    assert all(r.stem != "basilisk" for r in ft._rules_files)
-
-
-def test_find_procs(test_folder):
-
-    f = test_folder / "dingo.pro"
-    f.touch()
-    f = test_folder / "wombat.pro"
-    f.touch()
-
-    ft = TM1FileTool(test_folder)
-
-    assert not ft._proc_files
-
-    ft._find_procs()
-
-    assert len(ft._proc_files) == 2
-
-    assert any(s.stem == "dingo" for s in ft._proc_files)
-    assert all(s.stem != "womble" for s in ft._proc_files)
-
-
 def test_find_subs(test_folder):
 
     ft = TM1FileTool(test_folder)

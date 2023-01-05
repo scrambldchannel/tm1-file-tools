@@ -27,6 +27,10 @@ class TM1BaseFileTool:
 
     """
 
+    # populate with empty string so that we can try adding
+    # a basic generator to search for files
+    suffix = ""
+
     suffixes = [
         TM1BLBFile.suffix,
         TM1CfgFile.suffix,
@@ -45,7 +49,22 @@ class TM1BaseFileTool:
 
         self._path: Path = None
 
-        self._path = None
+    def _files(self, model=True, control=False):
+        """
+        A generator that returns all files with the desired extension and filtering
+        """
+
+        for f in self._case_insensitive_glob(self._path, f"*.{self.suffix}"):
+
+            is_control = f.stem.startswith("}")
+
+            if not model and not is_control:
+                continue
+
+            if not control and is_control:
+                continue
+
+            yield f
 
     @staticmethod
     def _case_insensitive_glob(path: Path, pattern: str, recursive: bool = False):
