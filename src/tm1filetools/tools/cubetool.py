@@ -1,9 +1,11 @@
 from pathlib import Path
 from typing import List, Union
 
-from tm1filetools.files.binary.cube import TM1CellSecurityCubeFile  # noqa
-from tm1filetools.files.binary.cube import TM1PicklistCubeFile  # noqa
-from tm1filetools.files.binary.cube import TM1AttributeCubeFile, TM1CubeFile
+from tm1filetools.files.binary.cube import (
+    TM1AttributeCubeFile,
+    TM1CellSecurityCubeFile,
+    TM1CubeFile,
+)
 
 from .base import TM1BaseFileTool
 
@@ -14,7 +16,6 @@ class TM1CubeFileTool(TM1BaseFileTool):
 
     """
 
-    # this can be moved to a parent class or something
     suffix = TM1CubeFile.suffix
 
     def __init__(self, path: Path):
@@ -86,16 +87,3 @@ class TM1CubeFileTool(TM1BaseFileTool):
         """
 
         return [c for c in self._files(model=False, control=True)]
-
-    def get_orphan_attr_cubes(self):
-        """Returns list of attribute cube files that don't have corresponding dim files
-
-        Returns:
-            List of cube files
-        """
-
-        return [
-            a
-            for a in self.cubes.get_attr_cubes()
-            if a.strip_prefix().lower() not in [d.stem.lower() for d in self.get_dims(control=True)]
-        ]
