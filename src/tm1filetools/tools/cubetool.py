@@ -22,31 +22,6 @@ class TM1CubeFileTool(TM1BaseFileTool):
 
         self._path: Path = path
 
-    def _files(self, model=True, control=False):
-        """
-        A generator that returns all cubes with filters applied
-        """
-
-        for cub in self._case_insensitive_glob(self._path, f"*.{TM1CubeFile.suffix}"):
-
-            cube_file = TM1CubeFile(cub)
-
-            if not model and not cube_file.is_control:
-                continue
-
-            if not control and cube_file.is_control:
-                continue
-
-            # attempt to derive subclass
-
-            if not cube_file.is_control:
-
-                yield cube_file
-
-            elif cube_file.name.startswith(TM1AttributeCubeFile.attribute_prefix):
-
-                yield TM1AttributeCubeFile(cub)
-
     def get_all(self) -> List[Union[TM1CubeFile, TM1AttributeCubeFile, TM1CellSecurityCubeFile]]:
         """Returns a list of all the cube files found
 
@@ -65,7 +40,7 @@ class TM1CubeFileTool(TM1BaseFileTool):
 
         return [
             # I'm also sort of repeating this condition twice...
-            c
+            self._determine_cube_type(c)
             for c in self._files(model=False, control=True)
             if c.name.startswith(TM1AttributeCubeFile.attribute_prefix)
         ]
@@ -77,7 +52,8 @@ class TM1CubeFileTool(TM1BaseFileTool):
             List of cube files
         """
 
-        return [c for c in self._files()]
+        # no need to check, these will always be normal cubes
+        return [TM1CubeFile(c) for c in self._files()]
 
     def get_all_control(self) -> List[Union[TM1CubeFile, TM1AttributeCubeFile, TM1CellSecurityCubeFile]]:
         """Returns a list of all the model cube files found
@@ -86,4 +62,15 @@ class TM1CubeFileTool(TM1BaseFileTool):
             List of cube files
         """
 
-        return [c for c in self._files(model=False, control=True)]
+        return [self._determine_cube_type(c) for c in self._files(model=False, control=True)]
+
+    @staticmethod
+    def _determine_cube_type(c):
+
+        # obviously need to add further logic if we want to use more subclasses
+        if c.stem.startswith(TM1AttributeCubeFile.attribute_prefix):
+
+            return TM1AttributeCubeFile(c)
+
+        else:
+            return TM1CubeFile(c)

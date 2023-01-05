@@ -18,23 +18,6 @@ class TM1RulesFileTool(TM1BaseFileTool):
 
         self._path: Path = path
 
-    def _files(self, model=True, control=False):
-        """
-        A generator that returns all ruless with filters applied
-        """
-
-        for rux in self._case_insensitive_glob(self._path, f"*.{self.suffix}"):
-
-            rules_file = TM1RulesFile(rux)
-
-            if not model and not rules_file.is_control:
-                continue
-
-            if not control and rules_file.is_control:
-                continue
-
-            yield rules_file
-
     def get_all(self) -> List[TM1RulesFile]:
         """Returns a list of all the rules files found
 
@@ -42,7 +25,7 @@ class TM1RulesFileTool(TM1BaseFileTool):
             List of rules files
         """
 
-        return [c for c in self._files(control=True)]
+        return [TM1RulesFile(r) for r in self._files(control=True)]
 
     def get_all_model(self) -> List[TM1RulesFile]:
         """Returns a list of all the model rules files found
@@ -51,7 +34,7 @@ class TM1RulesFileTool(TM1BaseFileTool):
             List of rules files
         """
 
-        return [r for r in self._files()]
+        return [TM1RulesFile(r) for r in self._files()]
 
     def get_all_control(self) -> List[TM1RulesFile]:
         """Returns a list of all the model rules files found
@@ -60,4 +43,4 @@ class TM1RulesFileTool(TM1BaseFileTool):
             List of rules files
         """
 
-        return [r for r in self._files(model=False, control=True)]
+        return [TM1RulesFile(r) for r in self._files(model=False, control=True)]

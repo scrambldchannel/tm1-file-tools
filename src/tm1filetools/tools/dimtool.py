@@ -22,31 +22,6 @@ class TM1DimensionFileTool(TM1BaseFileTool):
 
         self._path: Path = path
 
-    def _files(self, model=True, control=False):
-        """
-        A generator that returns all dimensions with filters applied
-        """
-
-        for cub in self._case_insensitive_glob(self._path, f"*.{TM1DimensionFile.suffix}"):
-
-            dim_file = TM1DimensionFile(cub)
-
-            if not model and not dim_file.is_control:
-                continue
-
-            if not control and dim_file.is_control:
-                continue
-
-            # attempt to derive subclass
-
-            if dim_file.name.startswith(TM1AttributeDimensionFile.attribute_prefix):
-
-                yield TM1AttributeDimensionFile(cub)
-
-            else:
-
-                yield dim_file
-
     def get_all(self) -> List[Union[TM1DimensionFile, TM1AttributeDimensionFile]]:
         """Returns a list of all the dim files found
 
@@ -65,9 +40,9 @@ class TM1DimensionFileTool(TM1BaseFileTool):
 
         return [
             # I'm also sort of repeating this condition twice...
-            c
-            for c in self._files(model=False, control=True)
-            if c.name.startswith(TM1AttributeDimensionFile.attribute_prefix)
+            self._determine_dim_type(d)
+            for d in self._files(model=False, control=True)
+            if d.name.startswith(TM1AttributeDimensionFile.attribute_prefix)
         ]
 
     def get_all_model(self) -> List[TM1DimensionFile]:
@@ -77,7 +52,7 @@ class TM1DimensionFileTool(TM1BaseFileTool):
             List of cube files
         """
 
-        return [d for d in self._files()]
+        return [TM1DimensionFile(d) for d in self._files()]
 
     def get_all_control(self) -> List[Union[TM1DimensionFile, TM1AttributeDimensionFile]]:
         """Returns a list of all the control dim files found
@@ -86,17 +61,15 @@ class TM1DimensionFileTool(TM1BaseFileTool):
             List of dim files
         """
 
-        return [c for c in self._files(model=False, control=True)]
+        return [self._determine_dim_type(d) for d in self._files(model=False, control=True)]
 
-    # def get_orphan_attr_dims(self) -> List[TM1AttributeDimensionFile]:
-    #     """Returns list of attribute dim files that don't have corresponding dim files
+    @staticmethod
+    def _determine_dim_type(d):
 
-    #     Returns:
-    #         List of attribute dim files
-    #     """
+        # obviously need to add further logic if we want to use more subclasses
+        if d.stem.startswith(TM1AttributeDimensionFile.attribute_prefix):
 
-    #     return [
-    #         a
-    #         for a in self.get_attr_dims()
-    #         if a.strip_prefix().lower() not in [d.stem.lower() for d in self.get_all_dims()]
-    #     ]
+            return TM1AttributeDimensionFile(d)
+
+        else:
+            return TM1DimensionFile(d)

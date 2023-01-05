@@ -18,23 +18,6 @@ class TM1ProcessFileTool(TM1BaseFileTool):
 
         self._path: Path = path
 
-    def _files(self, model=True, control=False):
-        """
-        A generator that returns all processs with filters applied
-        """
-
-        for proc in self._case_insensitive_glob(self._path, f"*.{self.suffix}"):
-
-            process_file = TM1ProcessFile(proc)
-
-            if not model and not process_file.is_control:
-                continue
-
-            if not control and process_file.is_control:
-                continue
-
-            yield process_file
-
     def get_all(self) -> List[TM1ProcessFile]:
         """Returns a list of all the process files found
 
@@ -42,7 +25,7 @@ class TM1ProcessFileTool(TM1BaseFileTool):
             List of process files
         """
 
-        return [c for c in self._files(control=True)]
+        return [TM1ProcessFile(p) for p in self._files(control=True)]
 
     def get_all_model(self) -> List[TM1ProcessFile]:
         """Returns a list of all the model process files found
@@ -51,7 +34,7 @@ class TM1ProcessFileTool(TM1BaseFileTool):
             List of process files
         """
 
-        return [r for r in self._files()]
+        return [TM1ProcessFile(p) for p in self._files()]
 
     def get_all_control(self) -> List[TM1ProcessFile]:
         """Returns a list of all the model process files found
@@ -60,4 +43,4 @@ class TM1ProcessFileTool(TM1BaseFileTool):
             List of process files
         """
 
-        return [r for r in self._files(model=False, control=True)]
+        return [TM1ProcessFile(p) for p in self._files(model=False, control=True)]
