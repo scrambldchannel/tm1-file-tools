@@ -1,27 +1,4 @@
-# import pytest
-
-from tm1filetools.files import TM1AttributeDimensionFile
 from tm1filetools.tools import TM1FileTool
-
-
-def test_get_model_dims(test_folder):
-
-    ft = TM1FileTool(test_folder)
-
-    dims = ft.get_dims()
-
-    assert any(d.stem == "koala" for d in dims)
-    assert all(d.stem != f"{TM1AttributeDimensionFile.prefix}koala" for d in dims)
-
-
-def test_get_control_dims(test_folder):
-
-    ft = TM1FileTool(test_folder)
-
-    dims = ft.get_dims(model=False, control=True)
-
-    assert any(d.stem == f"{TM1AttributeDimensionFile.prefix}koala" for d in dims)
-    assert all(d.stem != "koala" for d in dims)
 
 
 def test_get_model_procs(test_folder):

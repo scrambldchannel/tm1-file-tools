@@ -20,9 +20,10 @@ from tm1filetools.files import (
 from tm1filetools.files.base import TM1File
 
 from .base import TM1BaseFileTool
-from .cubetool import TM1CubeFileTool
 
 # import specific tools
+from .cubetool import TM1CubeFileTool
+from .dimtool import TM1DimensionFileTool
 from .logfiletool import TM1LogFileTool
 
 
@@ -49,12 +50,15 @@ class TM1FileTool(TM1BaseFileTool):
         # refactor api e.g. have cube tool instance as cubes
 
         self.cubes: TM1CubeFileTool = TM1CubeFileTool(self._data_path)
+        self.dimensions: TM1DimensionFileTool = TM1DimensionFileTool(self._data_path)
 
         # Fetch lists of files on demand
 
         # core model files
-        self._dim_files: Optional[list] = None
+        # self._dim_files: Optional[list] = None
+
         # core code files
+
         self._rules_files: Optional[list] = None
         self._proc_files: Optional[list] = None
         # other model files
@@ -74,7 +78,6 @@ class TM1FileTool(TM1BaseFileTool):
         Do a full scan of the dir(s) and populate all lists of files
         """
 
-        self._find_dims()
         self._find_rules()
         self._find_procs()
         self._find_subs()
@@ -87,21 +90,6 @@ class TM1FileTool(TM1BaseFileTool):
         self._find_non_tm1()
 
     # getters for all file types
-
-    def get_dims(self, model: bool = True, control: bool = False) -> List[TM1DimensionFile]:
-        """Returns list of all dimension files
-
-        Args:
-            model: Return model dims (i.e. not prefixed with "}")
-            control: Return control dims (i.e. prefixed with "}")
-
-        Returns:
-            List of dimension files
-        """
-        if self._dim_files is None:
-            self._find_dims()
-
-        return self._filter_model_and_or_control(self._dim_files, model=model, control=control)
 
     def get_rules(self, model: bool = True, control: bool = False) -> List[TM1RulesFile]:
         """Returns list of all cube rules files
@@ -238,7 +226,7 @@ class TM1FileTool(TM1BaseFileTool):
 
         return [
             TM1AttributeDimensionFile(d._path)
-            for d in self.get_dims(control=True)
+            for d in self.dimensions.get_control_dims()
             if d.name.lower().find(d.attribute_prefix.lower()) == 0
         ]
 
@@ -254,7 +242,7 @@ class TM1FileTool(TM1BaseFileTool):
         return [
             a
             for a in self.cubes.get_attr_cubes()
-            if a.strip_prefix().lower() not in [d.stem.lower() for d in self.get_dims(control=True)]
+            if a.strip_prefix().lower() not in [d.stem.lower() for d in self.dimensions.get_control_dims()]
         ]
 
     def get_orphan_rules(self) -> List[TM1RulesFile]:
@@ -276,7 +264,9 @@ class TM1FileTool(TM1BaseFileTool):
         """
 
         return [
-            a for a in self.get_attr_dims() if a.strip_prefix().lower() not in [d.stem.lower() for d in self.get_dims()]
+            a
+            for a in self.get_attr_dims()
+            if a.strip_prefix().lower() not in [d.stem.lower() for d in self.dimensions.get_model_dims()]
         ]
 
     def get_orphan_subs(self) -> List[TM1SubsetFile]:
@@ -289,7 +279,7 @@ class TM1FileTool(TM1BaseFileTool):
         return [
             s
             for s in self.get_subs(control=True)
-            if s.dimension.lower() not in [d.stem.lower() for d in self.get_dims(control=True)]
+            if s.dimension.lower() not in [d.stem.lower() for d in self.dimensions.get_all_dims()]
         ]
 
     def get_orphan_views(self) -> List[TM1ViewFile]:
@@ -445,8 +435,6 @@ class TM1FileTool(TM1BaseFileTool):
         for d in self.get_orphan_attr_dims():
             count = count + d.delete()
 
-        self._find_dims()
-
         return count
 
     def delete_orphan_attr_cubes(self) -> int:
@@ -508,13 +496,6 @@ class TM1FileTool(TM1BaseFileTool):
         return count
 
     # finders for different file types
-
-    def _find_dims(self):
-        """
-        Returns a list of all dim file objects
-        """
-
-        self._dim_files = [TM1DimensionFile(d) for d in self._find_files(TM1DimensionFile.suffix)]
 
     def _find_rules(self):
 

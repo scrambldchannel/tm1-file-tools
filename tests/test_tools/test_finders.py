@@ -1,16 +1,6 @@
 from tm1filetools.tools import TM1FileTool
 
 
-def test_find_dims(test_folder):
-
-    ft = TM1FileTool(test_folder)
-
-    ft._find_dims()
-
-    assert any(d.stem == "koala" for d in ft._dim_files)
-    assert all(d.stem != "bunyip" for d in ft._dim_files)
-
-
 def test_find_rules(test_folder):
 
     ft = TM1FileTool(test_folder)

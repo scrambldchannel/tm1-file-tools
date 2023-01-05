@@ -45,8 +45,6 @@ class TM1BaseFileTool:
 
         self._path: Path = None
 
-        self._path = None
-
     @staticmethod
     def _case_insensitive_glob(path: Path, pattern: str, recursive: bool = False):
         def either(c):
