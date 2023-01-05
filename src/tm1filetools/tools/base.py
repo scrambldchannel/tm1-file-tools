@@ -27,6 +27,8 @@ class TM1BaseFileTool:
 
     """
 
+    suffix = ""
+
     suffixes = [
         TM1BLBFile.suffix,
         TM1CfgFile.suffix,
