@@ -188,8 +188,8 @@ class TM1FileTool:
 
         return [
             a
-            for a in self.cubes.get_attr_cubes()
-            if a.strip_prefix().lower() not in [d.stem.lower() for d in self.dimensions.get_control_dims()]
+            for a in self.cubes.get_all_attr()
+            if a.strip_prefix().lower() not in [d.stem.lower() for d in self.dimensions.get_all_control()]
         ]
 
     def get_orphan_rules(self) -> List[TM1RulesFile]:
@@ -199,11 +199,7 @@ class TM1FileTool:
             List of rules filesgggg
         """
 
-        return [
-            r
-            for r in self.rules.get_all()
-            if r.stem.lower() not in [c.stem.lower() for c in self.cubes.get_all_cubes()]
-        ]
+        return [r for r in self.rules.get_all() if r.stem.lower() not in [c.stem.lower() for c in self.cubes.get_all()]]
 
     def get_orphan_attr_dims(self) -> List[TM1DimensionFile]:
         """Returns list of attribute dim files that don't have corresponding dim files
@@ -214,8 +210,8 @@ class TM1FileTool:
 
         return [
             a
-            for a in self.dimensions.get_attr_dims()
-            if a.strip_prefix().lower() not in [d.stem.lower() for d in self.dimensions.get_model_dims()]
+            for a in self.dimensions.get_all_attr()
+            if a.strip_prefix().lower() not in [d.stem.lower() for d in self.dimensions.get_all_model()]
         ]
 
     def get_orphan_subs(self) -> List[TM1SubsetFile]:
@@ -228,7 +224,7 @@ class TM1FileTool:
         return [
             s
             for s in self.get_subs(control=True)
-            if s.dimension.lower() not in [d.stem.lower() for d in self.dimensions.get_all_dims()]
+            if s.dimension.lower() not in [d.stem.lower() for d in self.dimensions.get_all()]
         ]
 
     def get_orphan_views(self) -> List[TM1ViewFile]:
@@ -241,7 +237,7 @@ class TM1FileTool:
         return [
             v
             for v in self.get_views(control=True)
-            if v.cube.lower() not in [c.stem.lower() for c in self.cubes.get_all_cubes()]
+            if v.cube.lower() not in [c.stem.lower() for c in self.cubes.get_all()]
         ]
 
     def get_orphan_feeders(self) -> List[TM1FeedersFile]:
@@ -254,7 +250,7 @@ class TM1FileTool:
         return [
             f
             for f in self.get_feeders(control=True)
-            if f.stem.lower() not in [c.stem.lower() for c in self.cubes.get_all_cubes()]
+            if f.stem.lower() not in [c.stem.lower() for c in self.cubes.get_all()]
         ]
 
     # to deprecate

@@ -47,7 +47,7 @@ class TM1CubeFileTool(TM1BaseFileTool):
 
                 yield TM1AttributeCubeFile(cub)
 
-    def get_all_cubes(self) -> List[Union[TM1CubeFile, TM1AttributeCubeFile, TM1CellSecurityCubeFile]]:
+    def get_all(self) -> List[Union[TM1CubeFile, TM1AttributeCubeFile, TM1CellSecurityCubeFile]]:
         """Returns a list of all the cube files found
 
         Returns:
@@ -56,7 +56,7 @@ class TM1CubeFileTool(TM1BaseFileTool):
 
         return [c for c in self._files(control=True)]
 
-    def get_attr_cubes(self) -> List[TM1AttributeCubeFile]:
+    def get_all_attr(self) -> List[TM1AttributeCubeFile]:
         """Returns list of all attribute cube files
 
         Returns:
@@ -70,7 +70,7 @@ class TM1CubeFileTool(TM1BaseFileTool):
             if c.name.startswith(TM1AttributeCubeFile.attribute_prefix)
         ]
 
-    def get_model_cubes(self) -> List[TM1CubeFile]:
+    def get_all_model(self) -> List[TM1CubeFile]:
         """Returns a list of all the model cube files found
 
         Returns:
@@ -79,7 +79,7 @@ class TM1CubeFileTool(TM1BaseFileTool):
 
         return [c for c in self._files()]
 
-    def get_control_cubes(self) -> List[Union[TM1CubeFile, TM1AttributeCubeFile, TM1CellSecurityCubeFile]]:
+    def get_all_control(self) -> List[Union[TM1CubeFile, TM1AttributeCubeFile, TM1CellSecurityCubeFile]]:
         """Returns a list of all the model cube files found
 
         Returns:

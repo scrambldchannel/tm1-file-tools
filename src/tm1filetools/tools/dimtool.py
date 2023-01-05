@@ -47,7 +47,7 @@ class TM1DimensionFileTool(TM1BaseFileTool):
 
                 yield dim_file
 
-    def get_all_dims(self) -> List[Union[TM1DimensionFile, TM1AttributeDimensionFile]]:
+    def get_all(self) -> List[Union[TM1DimensionFile, TM1AttributeDimensionFile]]:
         """Returns a list of all the dim files found
 
         Returns:
@@ -56,7 +56,7 @@ class TM1DimensionFileTool(TM1BaseFileTool):
 
         return [c for c in self._files(control=True)]
 
-    def get_attr_dims(self) -> List[TM1AttributeDimensionFile]:
+    def get_all_attr(self) -> List[TM1AttributeDimensionFile]:
         """Returns list of all attribute dim files
 
         Returns:
@@ -70,7 +70,7 @@ class TM1DimensionFileTool(TM1BaseFileTool):
             if c.name.startswith(TM1AttributeDimensionFile.attribute_prefix)
         ]
 
-    def get_model_dims(self) -> List[TM1DimensionFile]:
+    def get_all_model(self) -> List[TM1DimensionFile]:
         """Returns a list of all the model dim files found
 
         Returns:
@@ -79,7 +79,7 @@ class TM1DimensionFileTool(TM1BaseFileTool):
 
         return [d for d in self._files()]
 
-    def get_control_dims(self) -> List[Union[TM1DimensionFile, TM1AttributeDimensionFile]]:
+    def get_all_control(self) -> List[Union[TM1DimensionFile, TM1AttributeDimensionFile]]:
         """Returns a list of all the control dim files found
 
         Returns:
@@ -88,15 +88,15 @@ class TM1DimensionFileTool(TM1BaseFileTool):
 
         return [c for c in self._files(model=False, control=True)]
 
-    def get_orphan_attr_dims(self) -> List[TM1AttributeDimensionFile]:
-        """Returns list of attribute dim files that don't have corresponding dim files
+    # def get_orphan_attr_dims(self) -> List[TM1AttributeDimensionFile]:
+    #     """Returns list of attribute dim files that don't have corresponding dim files
 
-        Returns:
-            List of attribute dim files
-        """
+    #     Returns:
+    #         List of attribute dim files
+    #     """
 
-        return [
-            a
-            for a in self.get_attr_dims()
-            if a.strip_prefix().lower() not in [d.stem.lower() for d in self.get_all_dims()]
-        ]
+    #     return [
+    #         a
+    #         for a in self.get_attr_dims()
+    #         if a.strip_prefix().lower() not in [d.stem.lower() for d in self.get_all_dims()]
+    #     ]
